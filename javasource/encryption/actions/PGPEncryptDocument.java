@@ -15,11 +15,11 @@ import com.mendix.webui.CustomJavaAction;
 import encryption.pgp.PGPFileProcessor;
 
 /**
- * Encrypt the FileDocument using PGP encryption.
- * This is allowed to be the same FileDocument instance and the action will just store the encrypted file in the provided entity.
- * 
- * The certificate must be a valid public PGP key provided by the external party.
- * 
+ * Encrypt the FileDocument using PGP encryption.
+ * This is allowed to be the same FileDocument instance and the action will just store the encrypted file in the provided entity.
+ * 
+ * The certificate must be a valid public PGP key provided by the external party.
+ * 
  * This action will either return true or an exception
  */
 public class PGPEncryptDocument extends CustomJavaAction<java.lang.Boolean>
