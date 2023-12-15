@@ -28258,6 +28258,10 @@ $callout-info-bg: $color-info-lighter;
   background: linear-gradient(0deg, #185a9d, #43bbce) !important;
 }
 
+.bg-brand-secondary {
+  background: #43bbce !important;
+}
+
 .border-primary {
   border: 1px solid #185a9d;
 }
@@ -28276,7 +28280,7 @@ $callout-info-bg: $color-info-lighter;
   background: rgba(255, 255, 255, 0.2);
 }
 .product-tag .form-control:focus {
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.4);
   color: #1f2431;
 }
 
