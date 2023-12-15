@@ -1,11 +1,6 @@
 @import "./additional-variables";
 @import "../../atlas_core/web/variables";
-//########extra variables
-$brand-secondary: #60efff;
-$brand-secondary: #6CC4C6;
-$brand-secondary: #6fe3e1;
-$border-radius-large: 24px;
-//#######
+
 
 $brand-primary: #0061ff;
 $brand-primary: #012690;
@@ -20,8 +15,8 @@ $font-color-inverse: rgba(255,255,255,0.9);
 
 $topbar-bg: $brand-primary;
 $navsidebar-bg: transparent;
-$navsidebar-bg-hover: transparent; //
-$navsidebar-bg-active: transparent; //
+$navsidebar-bg-hover: rgba($brand-primary, 0.2);
+$navsidebar-bg-active: rgba($brand-primary, 0.5);
 
 $navsidebar-sub-bg: $brand-secondary;
 
