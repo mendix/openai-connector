@@ -1,17 +1,14 @@
 @import "./additional-variables";
 @import "../../atlas_core/web/variables";
 
-
-$brand-primary: #0061ff;
-$brand-primary: #012690;
-$brand-primary: #5257e5;
-$brand-gradient: linear-gradient(83deg, $brand-primary, $brand-secondary);
-$brand-gradient-vertical: linear-gradient(0deg, $brand-primary, $brand-secondary);
+$brand-primary: #185a9d;
+$brand-gradient: linear-gradient(64deg, $brand-primary, $brand-secondary);
+$brand-gradient-vertical: linear-gradient(0deg,$brand-primary,$brand-secondary);
 
 $font-family-import: "resources/fonts/Rethink_Sans/RethinkSans.css";
 $font-family-base: "Rethink Sans", sans-serif;
 $font-color-default: #1f2431;
-$font-color-inverse: rgba(255,255,255,0.9);
+$font-color-inverse: rgba(255, 255, 255, 0.9);
 
 $topbar-bg: $brand-primary;
 $navsidebar-bg: transparent;
@@ -21,9 +18,9 @@ $navsidebar-bg-active: rgba($brand-primary, 0.5);
 $navsidebar-sub-bg: $brand-secondary;
 
 $btn-border-radius: $border-radius-large;
+$btn-default-color: $brand-primary;
 $btn-default-border-color: $brand-primary;
 $btn-primary-border-color: transparent;
-
 $btn-default-bg-hover: rgba($brand-primary, 0.1);
 
 $form-input-bg-disabled: $color-primary-lighter;
