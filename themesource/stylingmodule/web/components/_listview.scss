@@ -1,0 +1,16 @@
+.listview-hover-on-background.mx-listview {
+    > ul > li {
+        &:hover {
+            background: rgba($brand-primary, 0.3) !important;
+        }
+        &.selected, 
+        &.selected:hover,
+        &.selected:active,
+        &.selected:focus
+         {
+            background: rgba($brand-primary, 0.5) !important;
+            color: $font-color-inverse;
+            font-weight: $font-weight-semibold;
+        }
+    }
+}
