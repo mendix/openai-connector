@@ -1,0 +1,19 @@
+//custom tag for the product description
+.product-tag {
+    border-radius: $border-radius-large;
+    .form-control {
+        padding: 3px 8px;
+        border: none;
+        border-radius: $border-radius-large;
+        background: transparent;
+        color: $font-color-inverse;
+        &:hover {
+            background: rgba(255,255,255, 0.2);
+            //color: $font-color-default;
+        }
+        &:focus {
+            background: rgba(255,255,255, 0.6);
+            color: $font-color-default;
+        }
+    }
+}
