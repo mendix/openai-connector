@@ -28305,6 +28305,10 @@ $callout-info-bg: $color-info-lighter;
 .layout-atlas .region-sidebar {
   background: linear-gradient(0deg, #5257e5, #6fe3e1);
 }
+.layout-atlas .region-sidebar .mx-navigationtree .navbar-inner > ul > li > a img {
+  width: 52px;
+  padding: 4px 12px;
+}
 
 .layout-atlas-responsive .region-sidebar .mx-scrollcontainer-wrapper > .mx-navigationtree .navbar-inner > ul > li > a, .layout-atlas-responsive-default .region-sidebar .mx-scrollcontainer-wrapper > .mx-navigationtree .navbar-inner > ul > li > a {
   white-space: normal;

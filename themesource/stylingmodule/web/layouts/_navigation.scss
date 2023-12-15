@@ -1,5 +1,9 @@
 .layout-atlas .region-sidebar {
     background: $brand-gradient-vertical;
+    .mx-navigationtree .navbar-inner > ul > li > a img {
+        width: 52px;
+        padding: 4px 12px;
+    }
 }
 
 .layout-atlas-responsive, .layout-atlas-responsive-default {
