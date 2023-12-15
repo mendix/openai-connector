@@ -1,3 +1,9 @@
 .layout-atlas .region-sidebar {
     background: $brand-gradient-vertical;
 }
+
+.layout-atlas-responsive, .layout-atlas-responsive-default {
+    .region-sidebar .mx-scrollcontainer-wrapper > .mx-navigationtree .navbar-inner > ul > li > a {
+        white-space: normal;
+    }
+}
