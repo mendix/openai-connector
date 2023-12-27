@@ -1,0 +1,1 @@
+{"BranchName":"","ModelerVersion":"9.24.0.2965","ModelChanges":[{"Status":"Modified","UnitID":"d84c2cf0-44aa-4215-bf21-e501723fb7ce","UnitType":"Microflows$Microflow","UnitName":"ChatCompletions_Execute_WithHistory","Module":"OpenAIConnector"}],"RelatedStories":[],"isWebModelerCommit":false,"SolutionVersion":"","HasModelerVersion":true}
