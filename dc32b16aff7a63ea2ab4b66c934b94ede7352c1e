@@ -1,0 +1,1 @@
+{"BranchName":"","ModelerVersion":"9.24.0.2965","ModelChanges":[{"Status":"Moved","UnitID":"2e35e26b-9812-4c05-b0c8-c455a2e16570","UnitType":"Microflows$Microflow","UnitName":"ACT_Postcard_DeleteAll","Module":"PostcardGeneration"}],"RelatedStories":[],"isWebModelerCommit":false,"SolutionVersion":"","HasModelerVersion":true}
