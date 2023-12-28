@@ -1,0 +1,1 @@
+{"BranchName":"","ModelerVersion":"9.24.0.2965","ModelChanges":[{"Status":"Modified","UnitID":"dc0f8c7e-b355-42be-9001-2cdc16bc25e8","UnitType":"Microflows$Microflow","UnitName":"ImageGenerations_Execute","Module":"OpenAIConnector"}],"RelatedStories":[],"isWebModelerCommit":false,"SolutionVersion":"","HasModelerVersion":true}
