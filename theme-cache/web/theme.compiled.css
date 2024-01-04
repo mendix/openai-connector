@@ -28447,6 +28447,13 @@ $callout-info-bg: $color-info-lighter;
   display: inline-block;
 }
 
+.as-control-label {
+  color: #24276c;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
 .layout-atlas .region-sidebar {
   background: linear-gradient(0deg, #185a9d, #43bbce);
 }
@@ -28458,6 +28465,11 @@ $callout-info-bg: $color-info-lighter;
 .layout-atlas-responsive .region-sidebar .mx-scrollcontainer-wrapper > .mx-navigationtree .navbar-inner > ul > li > a,
 .layout-atlas-responsive-default .region-sidebar .mx-scrollcontainer-wrapper > .mx-navigationtree .navbar-inner > ul > li > a {
   white-space: normal;
+}
+
+/*    Mendix 10   */
+.layout-atlas .region-sidebar .mx-navigationtree .navbar-inner > ul > li > a {
+  padding: 8px 0;
 }
 
 /*
