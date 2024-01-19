@@ -1,0 +1,1 @@
+{"BranchName":"SAS-265-embeddings","ModelerVersion":"9.24.0.2965","ModelChanges":[{"Status":"Modified","UnitID":"ee17c084-4274-40a1-abdc-1fe220b21ba8","UnitType":"Microflows$Microflow","UnitName":"DS_Message","Module":"Embeddings_RAG"}],"RelatedStories":[],"isWebModelerCommit":false,"SolutionVersion":"","HasModelerVersion":true}
