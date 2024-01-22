@@ -1,0 +1,32 @@
+.wizard-step-number {
+    padding: 0;
+}
+
+.wizard-circle  {
+    .wizard-step {
+        &::before {
+            height: 1px;
+        }
+        .wizard-step-text {
+            font-weight: $font-weight-semibold;
+        }
+        .wizard-step-number:hover {
+            background: $wizard-default-bg;
+        }
+    }
+    .wizard-step-active {
+        .wizard-step-number {
+            background: $brand-gradient;
+            border-color: transparent;
+            &:hover {
+                background: $brand-gradient;
+            }
+        }
+    }
+    .wizard-step-visited {
+        .wizard-step-number:hover {
+            background: $wizard-visited-bg;
+        }
+    }
+
+}
