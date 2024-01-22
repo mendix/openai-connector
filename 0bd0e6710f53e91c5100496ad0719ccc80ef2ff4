@@ -1,0 +1,1 @@
+{"BranchName":"SAS-265-embeddings","ModelerVersion":"9.24.0.2965","ModelChanges":[{"Status":"Modified","UnitID":"1ead7fae-ce61-4626-ad3e-049b791e6949","UnitType":"Forms$Page","UnitName":"RAG_Step4","Module":"Embeddings_RAG"}],"RelatedStories":[],"isWebModelerCommit":false,"SolutionVersion":"","HasModelerVersion":true}
