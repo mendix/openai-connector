@@ -1,0 +1,1 @@
+{"BranchName":"SAS-265-embeddings","ModelerVersion":"9.24.0.2965","ModelChanges":[{"Status":"Modified","UnitID":"f572f57e-b5d8-407d-905d-e6090bf37375","UnitType":"Microflows$Microflow","UnitName":"NAV_DataBatchImplementation","Module":"Embeddings_RawResponse"}],"RelatedStories":[],"isWebModelerCommit":false,"SolutionVersion":"","HasModelerVersion":true}
