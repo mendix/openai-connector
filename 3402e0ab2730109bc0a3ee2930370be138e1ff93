@@ -1,0 +1,1 @@
+{"BranchName":"SAS-265-embeddings","ModelerVersion":"9.24.0.2965","ModelChanges":[{"Status":"Modified","UnitID":"87943353-8a27-4d88-a0fc-9fff76c9c14d","UnitType":"Microflows$Microflow","UnitName":"ChunkResult_CreateQuery_SelectNearestNeighbors","Module":"Embeddings_RAG"}],"RelatedStories":[],"isWebModelerCommit":false,"SolutionVersion":"","HasModelerVersion":true}
