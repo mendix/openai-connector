@@ -1,0 +1,1 @@
+{"BranchName":"SAS-265-embeddings","ModelerVersion":"9.24.0.2965","ModelChanges":[{"Status":"Modified","UnitID":"dbdfd140-9c47-436f-8fa5-281d2477ad7d","UnitType":"Microflows$Microflow","UnitName":"DataChunkImplementationList_CreateStatement_Insert","Module":"Embeddings_RAG"}],"RelatedStories":[],"isWebModelerCommit":false,"SolutionVersion":"","HasModelerVersion":true}
