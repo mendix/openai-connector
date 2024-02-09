@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.util.LinkedList;
 import com.jujutsu.tsne.TSne;
 import com.jujutsu.tsne.FastTSne;
+import com.jujutsu.tsne.SimpleTSne;
 import com.jujutsu.tsne.TSneConfig;
 import com.jujutsu.tsne.TSneConfiguration;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
@@ -61,8 +62,8 @@ public class JA_TSNE extends CustomJavaAction<java.util.List<IMendixObject>>
 			}
 		}
 		
-		TSneConfiguration config = new TSneConfig(points, 2, 3, 1, 2000, true, 0.5, true, false);
-		TSne TSne = new FastTSne();
+		TSneConfiguration config = new TSneConfig(points, 2, 3, 1, 2000, true, 0.2, true, false);
+		TSne TSne = new SimpleTSne();
 		double[][] TSneOutput = TSne.tsne(config);
 		
 		java.util.List<IMendixObject> coordinatesList = new LinkedList<IMendixObject>();
