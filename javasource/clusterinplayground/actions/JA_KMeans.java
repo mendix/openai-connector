@@ -9,9 +9,7 @@
 
 package clusterinplayground.actions;
 
-import java.util.Collections;
 import java.util.LinkedList;
-import java.util.List;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.webui.CustomJavaAction;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
