@@ -20,15 +20,21 @@ import com.jujutsu.tsne.TSneConfig;
 import com.jujutsu.tsne.TSneConfiguration;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 
-public class JA_TSNE extends CustomJavaAction<java.util.List<IMendixObject>>
+public class JA_TSNE_2D extends CustomJavaAction<java.util.List<IMendixObject>>
 {
 	private java.util.List<IMendixObject> __EmbeddingList;
 	private java.util.List<clusterinplayground.proxies.Embedding> EmbeddingList;
+	private java.lang.Long Perplexity;
+	private java.lang.Long MaxIterations;
+	private java.math.BigDecimal Theta;
 
-	public JA_TSNE(IContext context, java.util.List<IMendixObject> EmbeddingList)
+	public JA_TSNE_2D(IContext context, java.util.List<IMendixObject> EmbeddingList, java.lang.Long Perplexity, java.lang.Long MaxIterations, java.math.BigDecimal Theta)
 	{
 		super(context);
 		this.__EmbeddingList = EmbeddingList;
+		this.Perplexity = Perplexity;
+		this.MaxIterations = MaxIterations;
+		this.Theta = Theta;
 	}
 
 	@java.lang.Override
@@ -60,11 +66,17 @@ public class JA_TSNE extends CustomJavaAction<java.util.List<IMendixObject>>
 			for (int j = 0; j < cols; j++) {
 				points[i][j] = Double.parseDouble(vectorElements[j]);
 			}
-		}
+		}		
 		
-		TSneConfiguration config = new TSneConfig(points, 2, points[0].length, 1, 2000, true, 0.2, true, false);
+		int perplexity = this.Perplexity != null ? this.Perplexity.intValue() : 15;
+		int maxIterations = this.MaxIterations != null ? this.MaxIterations.intValue() : 2000;
+		double theta = this.Theta != null ? this.Theta.doubleValue() : 0.5;
+		int originalDimensions = points[0].length;
+		
+		TSneConfiguration config = new TSneConfig(points, 2, originalDimensions, perplexity, maxIterations, true, theta, true, false);
 		TSne TSne = new SimpleTSne();
 		double[][] TSneOutput = TSne.tsne(config);
+		
 		
 		java.util.List<IMendixObject> coordinatesList = new LinkedList<IMendixObject>();
 		for (int i = 0; i < TSneOutput.length; i++) {
@@ -90,7 +102,7 @@ public class JA_TSNE extends CustomJavaAction<java.util.List<IMendixObject>>
 	@java.lang.Override
 	public java.lang.String toString()
 	{
-		return "JA_TSNE";
+		return "JA_TSNE_2D";
 	}
 
 	// BEGIN EXTRA CODE

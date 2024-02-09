@@ -40,7 +40,7 @@ public class JA_KMeans extends CustomJavaAction<java.util.List<IMendixObject>>
 			.collect(java.util.stream.Collectors.toList());
 
 		// BEGIN USER CODE
-		int k = this.NumberOfClusters != null ? this.NumberOfClusters.intValue() : null;
+		int k = this.NumberOfClusters != null ? this.NumberOfClusters.intValue() : 3;
 		int rows = EmbeddingList.size();
 		int cols = this.EmbeddingList.get(0)
 				.getVector(getContext())
