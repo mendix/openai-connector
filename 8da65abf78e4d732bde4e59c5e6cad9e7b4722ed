@@ -1,0 +1,1 @@
+{"BranchName":"clusteringExample","ModelerVersion":"9.24.0.2965","ModelChanges":[{"Status":"Modified","UnitID":"ce2c8452-c920-41eb-9ccb-878ea61aa01a","UnitType":"Microflows$Microflow","UnitName":"DatabaseConfiguration_TestConnection","Module":"VectorDatabaseConfiguration"}],"RelatedStories":[],"isWebModelerCommit":false,"SolutionVersion":"","HasModelerVersion":true}
