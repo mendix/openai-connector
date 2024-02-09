@@ -77,7 +77,7 @@ public class JA_KMeans extends CustomJavaAction<java.util.List<IMendixObject>>
         
 		java.util.List<IMendixObject> EmbeddingListToReturn = new LinkedList<IMendixObject>();
 		EmbeddingList.forEach((e) -> {
-			e.setCluster(assignmentList.pop());
+			e.setCluster(getContext(), assignmentList.pop());
 			EmbeddingListToReturn.add(e.getMendixObject());
 			}
 		);
