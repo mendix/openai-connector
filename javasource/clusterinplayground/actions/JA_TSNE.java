@@ -62,7 +62,7 @@ public class JA_TSNE extends CustomJavaAction<java.util.List<IMendixObject>>
 			}
 		}
 		
-		TSneConfiguration config = new TSneConfig(points, 2, 3, 1, 2000, true, 0.2, true, false);
+		TSneConfiguration config = new TSneConfig(points, 2, points[0].length, 1, 2000, true, 0.2, true, false);
 		TSne TSne = new SimpleTSne();
 		double[][] TSneOutput = TSne.tsne(config);
 		
