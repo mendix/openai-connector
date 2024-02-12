@@ -65,6 +65,7 @@ public class JA_KMeans extends CustomJavaAction<java.util.List<IMendixObject>>
 				.pp(true)
 				.epsilon(.001)
 				.useEpsilon(true)
+				.useL1norm(false)
 				.build();   
 		
         LinkedList<Integer> assignmentList = new LinkedList<Integer>();
