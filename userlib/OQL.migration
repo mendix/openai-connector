@@ -1,0 +1,12 @@
+dependency com.opencsv:opencsv:5.7.1
+
+delete commons-beanutils-1.9.4.jar
+delete commons-beanutils-1.9.4.jar.OQL.RequiredLib
+delete commons-collections4-4.4.jar
+delete commons-collections4-4.4.jar.OQL.RequiredLib
+delete commons-text-1.10.0.jar
+delete commons-text-1.10.0.jar.OQL.RequiredLib
+delete opencsv-5.7.1.jar
+delete opencsv-5.7.1.jar.OQL.RequiredLib
+delete org.apache.commons.lang3.jar
+delete org.apache.commons.lang3.jar.OQL.RequiredLib
