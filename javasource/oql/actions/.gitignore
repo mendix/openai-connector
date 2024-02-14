@@ -1,0 +1,9 @@
+/AddBooleanParameter.class
+/AddDateTimeParameter.class
+/AddDecimalParameter.class
+/AddIntegerLongValue.class
+/AddObjectParameter.class
+/AddStringParameter.class
+/CountRowsOQLStatement.class
+/ExecuteOQLStatement.class
+/ExportOQLToCSV.class
