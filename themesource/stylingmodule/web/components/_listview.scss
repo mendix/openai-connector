@@ -24,3 +24,59 @@
         }
     }
 }
+
+.listview-lined--default.mx-listview {
+    > ul {
+        > li {
+            border-bottom: 1px solid $grid-border-color;
+        }
+    }
+}
+
+.listview-lined--primary.mx-listview {
+    > ul {
+        > li {
+            border-bottom: 1px solid $brand-primary;
+        }
+    }
+}
+
+.listview--no-background.mx-listview {
+    > ul {
+        > li {
+            background: none;
+        }
+    }
+}
+
+.listview-selectable--primary.mx-listview > ul {
+    > li {
+        &:hover {
+            background-color: rgba($brand-primary, 0.05)
+        }
+
+        &.selected, 
+        &.selected:hover,
+        &.selected:active,
+        &.selected:focus
+         {
+            background: rgba($brand-primary, 0.1) !important;
+         }
+    }
+}
+
+.listview-selectable--secondary.mx-listview > ul {
+    > li {
+        &:hover {
+            background-color: rgba($brand-secondary, 0.05)
+        }
+
+        &.selected, 
+        &.selected:hover,
+        &.selected:active,
+        &.selected:focus
+         {
+            background: rgba($brand-secondary, 0.1) !important;
+         }
+    }
+}
