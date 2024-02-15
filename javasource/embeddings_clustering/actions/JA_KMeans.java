@@ -15,6 +15,10 @@ import com.mendix.webui.CustomJavaAction;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 import embeddings_clustering.implementation.KMeans;
 
+/**
+ * k-means algorithm to identify and assign a predetermined number of clusters to a set of vectors.
+ * Clustering can help discover valuable, hidden groupings within the data.
+ */
 public class JA_KMeans extends CustomJavaAction<java.util.List<IMendixObject>>
 {
 	private java.util.List<IMendixObject> __EmbeddingList;
