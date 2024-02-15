@@ -12,9 +12,9 @@ package embeddings_clustering.actions;
 import java.util.LinkedList;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.webui.CustomJavaAction;
+import embeddings_clustering.impl.KMeans;
+import embeddings_clustering.impl.clusteringUtils;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
-import embeddings_clustering.implementation.KMeans;
-import embeddings_clustering.implementation.clusteringUtils;
 
 /**
  * k-means algorithm to identify and assign a predetermined number of clusters to a set of vectors.
@@ -46,6 +46,8 @@ public class JA_KMeans extends CustomJavaAction<java.lang.Void>
 		int k = this.NumberOfClusters != null ? this.NumberOfClusters.intValue() : 3;
 		double[][] points = clusteringUtils.getEmbeddingsAsDoubles(EmbeddingList, getContext());
 		
+		
+		//calculate clusters
 		KMeans clustering = new KMeans.Builder(k, points)
 				.iterations(50)
 				.pp(true)
@@ -54,17 +56,13 @@ public class JA_KMeans extends CustomJavaAction<java.lang.Void>
 				.useL1norm(true)
 				.build();   
 		
-		
+		//get result into integer array
 		int[] assignments = clustering.getAssignment();
-		LinkedList<Integer> assignmentList = new LinkedList<Integer>();
-        for (int assignment : assignments) {
-        	assignmentList.add(assignment);
-        }
-        
-		java.util.List<IMendixObject> EmbeddingListToReturn = new LinkedList<IMendixObject>();
-		EmbeddingList.forEach((e) -> {
-			e.setCluster(getContext(), assignmentList.pop());
-			EmbeddingListToReturn.add(e.getMendixObject());
+                
+		//map result onto Mendix objects
+		EmbeddingList.forEach((embedding) -> {
+			int i = EmbeddingList.indexOf(embedding);
+			embedding.setCluster(getContext(), assignments[i]);
 			}
 		);
 		return null;

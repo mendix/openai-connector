@@ -9,17 +9,17 @@
 
 package embeddings_clustering.actions;
 
-import com.mendix.systemwideinterfaces.core.IContext;
-import com.mendix.webui.CustomJavaAction;
-import embeddings_clustering.implementation.clusteringUtils;
 import java.math.BigDecimal;
-import java.util.LinkedList;
-import com.jujutsu.tsne.TSne;
-import com.jujutsu.tsne.FastTSne;
+import java.util.ArrayList;
+import java.util.List;
 import com.jujutsu.tsne.SimpleTSne;
+import com.jujutsu.tsne.TSne;
 import com.jujutsu.tsne.TSneConfig;
 import com.jujutsu.tsne.TSneConfiguration;
+import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
+import com.mendix.webui.CustomJavaAction;
+import embeddings_clustering.impl.clusteringUtils;
 
 public class JA_TSNE_2D extends CustomJavaAction<java.util.List<IMendixObject>>
 {
@@ -50,23 +50,26 @@ public class JA_TSNE_2D extends CustomJavaAction<java.util.List<IMendixObject>>
 		// BEGIN USER CODE
 		double[][] points = clusteringUtils.getEmbeddingsAsDoubles(EmbeddingList, getContext());	
 		
+		
+		//TODO replace by validation 
 		int perplexity = this.Perplexity != null ? this.Perplexity.intValue() : 15;
 		int maxIterations = this.MaxIterations != null ? this.MaxIterations.intValue() : 2000;
 		double theta = this.Theta != null ? this.Theta.doubleValue() : 0.5;
+		
+		//
 		int originalDimensions = points[0].length;
 		
 		TSneConfiguration config = new TSneConfig(points, 2, originalDimensions, perplexity, maxIterations, true, theta, true, false);
 		TSne TSne = new SimpleTSne();
 		double[][] TSneOutput = TSne.tsne(config);
 		
-		java.util.List<IMendixObject> coordinatesList = new LinkedList<IMendixObject>();
+		List<IMendixObject> coordinatesList = new ArrayList<IMendixObject>();
 		for (int i = 0; i < TSneOutput.length; i++) {
 			embeddings_clustering.proxies.Coordinates coordinates = new embeddings_clustering.proxies.Coordinates(getContext());
 			coordinates.setX(getContext(), BigDecimal.valueOf(TSneOutput[i][0]));
 			coordinates.setY(getContext(), BigDecimal.valueOf(TSneOutput[i][1]));
 			coordinates.setCluster(getContext(), EmbeddingList.get(i).getCluster());
 			coordinatesList.add(coordinates.getMendixObject());
-					
 		}
 		return coordinatesList;
 		// END USER CODE

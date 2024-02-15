@@ -1,4 +1,4 @@
-package embeddings_clustering.implementation;
+package embeddings_clustering.impl;
 
 /**************************************************************************
  * @author Jason Altschuler
