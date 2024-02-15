@@ -1,9 +1,12 @@
-package embeddings_clustering.implementation;
+package embeddings_clustering.impl;
+
+
+import java.util.List;
 
 import com.mendix.systemwideinterfaces.core.IContext;
 
 public class clusteringUtils {
-	public static double[][] getEmbeddingsAsDoubles(java.util.List<embeddings_clustering.proxies.Embedding> EmbeddingList, IContext context) {
+	public static double[][] getEmbeddingsAsDoubles(List<embeddings_clustering.proxies.Embedding> EmbeddingList, IContext context) {
 		int rows = EmbeddingList.size();
 		int cols = EmbeddingList.get(0)
 				.getVector(context)
