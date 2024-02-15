@@ -3,4 +3,10 @@
         right: unset;
         left: 10px;
     }
+    .widget-charts .plot-container .main-svg {
+        Background: none !important;
+    }
+    .legend .bg {
+        fill-opacity: 0 !important;
+    }
 }

@@ -29875,6 +29875,12 @@ $callout-info-bg: $color-info-lighter;
   right: unset;
   left: 10px;
 }
+.anychart-extension__container .widget-charts .plot-container .main-svg {
+  Background: none !important;
+}
+.anychart-extension__container .legend .bg {
+  fill-opacity: 0 !important;
+}
 
 .btn-primary.btn {
   background: linear-gradient(64deg, #185a9d, #43bbce);
