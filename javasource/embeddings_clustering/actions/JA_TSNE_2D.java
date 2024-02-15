@@ -79,7 +79,7 @@ public class JA_TSNE_2D extends CustomJavaAction<java.util.List<IMendixObject>>
 		
 		java.util.List<IMendixObject> coordinatesList = new LinkedList<IMendixObject>();
 		for (int i = 0; i < TSneOutput.length; i++) {
-			clusterinplayground.proxies.Coordinates coordinates = new clusterinplayground.proxies.Coordinates(getContext());
+			embeddings_clustering.proxies.Coordinates coordinates = new embeddings_clustering.proxies.Coordinates(getContext());
 			coordinates.setX(getContext(), BigDecimal.valueOf(TSneOutput[i][0]));
 			coordinates.setY(getContext(), BigDecimal.valueOf(TSneOutput[i][1]));
 			coordinates.setCluster(getContext(), EmbeddingList.get(i).getCluster());
