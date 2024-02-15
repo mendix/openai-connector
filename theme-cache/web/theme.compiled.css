@@ -29871,6 +29871,11 @@ $callout-info-bg: $color-info-lighter;
   color: #1f2431;
 }
 
+.anychart-extension__container .widget-charts-playground .widget-charts-playground-toggle .btn {
+  right: unset;
+  left: 10px;
+}
+
 .btn-primary.btn {
   background: linear-gradient(64deg, #185a9d, #43bbce);
   background-origin: border-box;
