@@ -11,6 +11,7 @@ package embeddings_clustering.actions;
 
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.webui.CustomJavaAction;
+import embeddings_clustering.implementation.clusteringUtils;
 import java.math.BigDecimal;
 import java.util.LinkedList;
 import com.jujutsu.tsne.TSne;
@@ -47,26 +48,7 @@ public class JA_TSNE_2D extends CustomJavaAction<java.util.List<IMendixObject>>
 			.collect(java.util.stream.Collectors.toList());
 
 		// BEGIN USER CODE
-		int rows = EmbeddingList.size();
-		int cols = this.EmbeddingList.get(0)
-				.getVector(getContext())
-				.replace("[","")
-				.replace("]","")
-				.split(",")
-				.length;
-		
-		double[][] points = new double[rows][cols];
-		
-		for (int i = 0; i< rows; i++) {
-			String vectorString = this.EmbeddingList.get(i)
-				.getVector(getContext())
-				.replace("[","")
-				.replace("]","");
-			String[] vectorElements = vectorString.split(",");
-			for (int j = 0; j < cols; j++) {
-				points[i][j] = Double.parseDouble(vectorElements[j]);
-			}
-		}		
+		double[][] points = clusteringUtils.getEmbeddingsAsDoubles(EmbeddingList, getContext());	
 		
 		int perplexity = this.Perplexity != null ? this.Perplexity.intValue() : 15;
 		int maxIterations = this.MaxIterations != null ? this.MaxIterations.intValue() : 2000;

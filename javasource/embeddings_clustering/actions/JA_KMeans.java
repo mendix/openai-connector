@@ -14,12 +14,13 @@ import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.webui.CustomJavaAction;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 import embeddings_clustering.implementation.KMeans;
+import embeddings_clustering.implementation.clusteringUtils;
 
 /**
  * k-means algorithm to identify and assign a predetermined number of clusters to a set of vectors.
  * Clustering can help discover valuable, hidden groupings within the data.
  */
-public class JA_KMeans extends CustomJavaAction<java.util.List<IMendixObject>>
+public class JA_KMeans extends CustomJavaAction<java.lang.Void>
 {
 	private java.util.List<IMendixObject> __EmbeddingList;
 	private java.util.List<embeddings_clustering.proxies.Embedding> EmbeddingList;
@@ -33,7 +34,7 @@ public class JA_KMeans extends CustomJavaAction<java.util.List<IMendixObject>>
 	}
 
 	@java.lang.Override
-	public java.util.List<IMendixObject> executeAction() throws Exception
+	public java.lang.Void executeAction() throws Exception
 	{
 		this.EmbeddingList = java.util.Optional.ofNullable(this.__EmbeddingList)
 			.orElse(java.util.Collections.emptyList())
@@ -43,26 +44,7 @@ public class JA_KMeans extends CustomJavaAction<java.util.List<IMendixObject>>
 
 		// BEGIN USER CODE
 		int k = this.NumberOfClusters != null ? this.NumberOfClusters.intValue() : 3;
-		int rows = EmbeddingList.size();
-		int cols = this.EmbeddingList.get(0)
-				.getVector(getContext())
-				.replace("[","")
-				.replace("]","")
-				.split(",")
-				.length;
-		
-		double[][] points = new double[rows][cols];
-		
-		for (int i = 0; i< rows; i++) {
-			String vectorString = this.EmbeddingList.get(i)
-				.getVector(getContext())
-				.replace("[","")
-				.replace("]","");
-			String[] vectorElements = vectorString.split(",");
-			for (int j = 0; j < cols; j++) {
-				points[i][j] = Double.parseDouble(vectorElements[j]);
-			}
-		}
+		double[][] points = clusteringUtils.getEmbeddingsAsDoubles(EmbeddingList, getContext());
 		
 		KMeans clustering = new KMeans.Builder(k, points)
 				.iterations(50)
@@ -72,8 +54,9 @@ public class JA_KMeans extends CustomJavaAction<java.util.List<IMendixObject>>
 				.useL1norm(true)
 				.build();   
 		
-        LinkedList<Integer> assignmentList = new LinkedList<Integer>();
-        int[] assignments = clustering.getAssignment();
+		
+		int[] assignments = clustering.getAssignment();
+		LinkedList<Integer> assignmentList = new LinkedList<Integer>();
         for (int assignment : assignments) {
         	assignmentList.add(assignment);
         }
@@ -84,7 +67,7 @@ public class JA_KMeans extends CustomJavaAction<java.util.List<IMendixObject>>
 			EmbeddingListToReturn.add(e.getMendixObject());
 			}
 		);
-		return EmbeddingListToReturn;
+		return null;
 		// END USER CODE
 	}
 
