@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.webui.CustomJavaAction;
 import embeddings_clustering.impl.VectorEmbedding;
+import embeddings_clustering.impl.VectorEmbeddingUtils;
 import embeddings_clustering.impl.clusteringUtils;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 import pl.ksitarski.simplekmeans.KMeansBuilder;
@@ -51,51 +52,32 @@ public class JA_KMeans_Simple extends CustomJavaAction<java.lang.Void>
 		// BEGIN USER CODE
 		
 		int k = this.NumberOfClusters != null ? this.NumberOfClusters.intValue() : 3;
-		List<VectorEmbedding> vectors = clusteringUtils.getEmbeddingsAsDoublesList(EmbeddingList, getContext());
-
+		List<VectorEmbedding> vectors = VectorEmbeddingUtils.getVectorEmbeddingList(EmbeddingList, getContext());
 		
-		
-		//calculate clusters
-
+		// Initialize the Kmeans object to calculate clusters
 		KMeans<VectorEmbedding> kmeans = new KMeansBuilder<VectorEmbedding>(vectors, // input points
 				k, // result count
 				input -> { // function that generates mean from given list of points
-					int dimensionality = input.get(0).getVector().length;
-					double[] result = new double[dimensionality];
-					for (VectorEmbedding vector : input) {
-						for (int i = 0; i < dimensionality; i++) {
-							result[i] += vector.getVector()[i];
-						}	
-					}
-					for (int i = 0; i < dimensionality; i++) { 
-					result [i] = result[i] / input.size();
-					}
-					return new VectorEmbedding(result, null);
+					return VectorEmbeddingUtils.calculateMean(input);
 				}, 
-				(vectorEmbeddingLeft, vectorEmbeddingRight) -> {
-					double[] vectorLeft = vectorEmbeddingLeft.getVector();
-					double[] vectorRight = vectorEmbeddingRight.getVector();
-				    double innerProduct = 0.0;
-				    for (int i = 0; i < vectorLeft.length; i++) {
-				        innerProduct += vectorLeft[i] * vectorRight[i];
-				    }   
-				    return 1.0 - innerProduct ;	
-				} // function that returns distance between two points
+				(vectorEmbeddingLeft, vectorEmbeddingRight) -> { // function that returns distance between two points
+					return VectorEmbeddingUtils.calculateCosineDistance(vectorEmbeddingLeft, vectorEmbeddingRight);	
+				} 
 		).build();
 
-		kmeans.iterate(Iterations.intValue()); // calculating
+		// Calculate the centroids
+		kmeans.iterate(Iterations.intValue()); 
 
-		// printing out results
+		// Retrieve the results
 		List<KMeansCluster<VectorEmbedding>> clusters = kmeans.getClusters();
 		
+		// Copy the resulting cluster assignments to the MxObjects
 		for (KMeansCluster<VectorEmbedding> cluster : clusters) {
 			cluster.getPoints().forEach(e -> {
 				EmbeddingList.stream().filter(x -> x.getMendixObject().getId().toLong() == e.getIdentifier())
 						.collect(Collectors.toList()).get(0).setCluster(getContext(), clusters.indexOf(cluster));
 			});
 		}
-		
-		clusters.forEach(e -> {System.out.println(e.toString());});
 
 		return null;
 		// END USER CODE
