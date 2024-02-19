@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.webui.CustomJavaAction;
-import embeddings_clustering.impl.MxLogger;
 import embeddings_clustering.impl.VectorEmbedding;
 import embeddings_clustering.impl.clusteringUtils;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
@@ -84,7 +83,7 @@ public class JA_KMeans_Simple extends CustomJavaAction<java.lang.Void>
 				} // function that returns distance between two points
 		).build();
 
-		kmeans.iterate(20); // calculating
+		kmeans.iterate(Iterations.intValue()); // calculating
 
 		// printing out results
 		List<KMeansCluster<VectorEmbedding>> clusters = kmeans.getClusters();
@@ -97,21 +96,9 @@ public class JA_KMeans_Simple extends CustomJavaAction<java.lang.Void>
 			});
 
 		}
-
-		LOGGER.info("random" + clusters);
 		
 		clusters.forEach(e -> {System.out.println(e.toString());});
-			
-		
-                
-		//map result onto Mendix objects
-		/*
-		EmbeddingList.forEach((embedding) -> {
-			int i = EmbeddingList.indexOf(embedding);
-			embedding.setCluster(getContext(), assignments[i]);
-			}
-		);
-		*/
+
 		return null;
 		// END USER CODE
 	}
@@ -127,6 +114,5 @@ public class JA_KMeans_Simple extends CustomJavaAction<java.lang.Void>
 	}
 
 	// BEGIN EXTRA CODE
-	private static final MxLogger LOGGER = new MxLogger(JA_KMeans_Simple.class);
 	// END EXTRA CODE
 }
