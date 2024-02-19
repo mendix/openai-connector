@@ -89,12 +89,10 @@ public class JA_KMeans_Simple extends CustomJavaAction<java.lang.Void>
 		List<KMeansCluster<VectorEmbedding>> clusters = kmeans.getClusters();
 		
 		for (KMeansCluster<VectorEmbedding> cluster : clusters) {
-
 			cluster.getPoints().forEach(e -> {
 				EmbeddingList.stream().filter(x -> x.getMendixObject().getId().toLong() == e.getIdentifier())
 						.collect(Collectors.toList()).get(0).setCluster(getContext(), clusters.indexOf(cluster));
 			});
-
 		}
 		
 		clusters.forEach(e -> {System.out.println(e.toString());});
