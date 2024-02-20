@@ -15,7 +15,6 @@ import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.webui.CustomJavaAction;
 import embeddings_clustering.impl.VectorEmbedding;
 import embeddings_clustering.impl.VectorEmbeddingUtils;
-import embeddings_clustering.impl.clusteringUtils;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 import pl.ksitarski.simplekmeans.KMeansBuilder;
 import pl.ksitarski.simplekmeans.KMeansCluster;
@@ -51,12 +50,14 @@ public class JA_KMeans_Simple extends CustomJavaAction<java.lang.Void>
 
 		// BEGIN USER CODE
 		
-		int k = this.NumberOfClusters != null ? this.NumberOfClusters.intValue() : 3;
+		// TODO replace by validation
+		int numberClusters = this.NumberOfClusters != null ? this.NumberOfClusters.intValue() : 3;
+		int iterations = this.Iterations != null ? this.Iterations.intValue() : 200;
 		List<VectorEmbedding> vectors = VectorEmbeddingUtils.getVectorEmbeddingList(EmbeddingList, getContext());
 		
 		// Initialize the Kmeans object to calculate clusters
 		KMeans<VectorEmbedding> kmeans = new KMeansBuilder<VectorEmbedding>(vectors, // input points
-				k, // result count
+				numberClusters, // result count
 				input -> { // function that generates mean from given list of points
 					return VectorEmbeddingUtils.calculateMean(input);
 				}, 
@@ -66,7 +67,7 @@ public class JA_KMeans_Simple extends CustomJavaAction<java.lang.Void>
 		).build();
 
 		// Calculate the centroids
-		kmeans.iterate(Iterations.intValue()); 
+		kmeans.iterate(iterations); 
 
 		// Retrieve the results
 		List<KMeansCluster<VectorEmbedding>> clusters = kmeans.getClusters();
