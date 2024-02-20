@@ -69,6 +69,7 @@ public class JA_TSNE_2D extends CustomJavaAction<java.util.List<IMendixObject>>
 			coordinates.setX(getContext(), BigDecimal.valueOf(TSneOutput[i][0]));
 			coordinates.setY(getContext(), BigDecimal.valueOf(TSneOutput[i][1]));
 			coordinates.setCluster(getContext(), EmbeddingList.get(i).getCluster());
+			coordinates.setText(getContext(), EmbeddingList.get(i).getText());
 			coordinatesList.add(coordinates.getMendixObject());
 		}
 		return coordinatesList;
