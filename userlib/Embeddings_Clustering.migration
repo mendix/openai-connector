@@ -1,0 +1,3 @@
+delete tsne-v2.5.0.jar
+delete tsne-v2.5.0.jar.Embeddings_Clustering.RequiredLib
+dependency com.github.lejon.T-SNE-Java:tsne:v2.5.0
