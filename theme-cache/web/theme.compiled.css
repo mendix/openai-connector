@@ -29128,6 +29128,14 @@ $callout-info-bg: $color-info-lighter;
   border: 1px solid #185a9d;
 }
 
+.line-clamp--4 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
+
 .product-tag {
   border-radius: 24px;
 }
