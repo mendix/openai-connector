@@ -3,10 +3,7 @@ package embeddings_clustering.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
-
 import com.mendix.systemwideinterfaces.core.IContext;
-
-import embeddings_clustering.proxies.Embedding;
 
 public class VectorEmbeddingUtils {
 	

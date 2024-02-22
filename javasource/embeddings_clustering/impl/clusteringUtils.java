@@ -1,10 +1,7 @@
 package embeddings_clustering.impl;
 
-
 import java.util.List;
-
 import com.mendix.systemwideinterfaces.core.IContext;
-
 
 
 public class clusteringUtils {
