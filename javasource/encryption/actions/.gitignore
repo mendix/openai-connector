@@ -1,0 +1,6 @@
+/DecryptString.class
+/EncryptString.class
+/GeneratePGPKeyRing.class
+/PGPDecryptDocument.class
+/PGPEncryptDocument.class
+/ValidatePrivateKeyRing.class
