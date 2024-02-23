@@ -8,6 +8,15 @@
 
 .border-primary {
     border: 1px solid $brand-primary;
+
+}
+
+.line-clamp--4 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+            line-clamp: 4; 
+    -webkit-box-orient: vertical;
 }
 
 .spacing-outer-bottom-extra-small {
