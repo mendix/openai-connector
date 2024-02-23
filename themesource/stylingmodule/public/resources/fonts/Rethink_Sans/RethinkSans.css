@@ -20,13 +20,13 @@
     font-family: 'Rethink Sans';
     font-style: normal;
     font-weight: 300;
-    src: local('static'), url('./RethinkSans-Light.ttf') format('truetype');
+    src: local('static'), url('./RethinkSans-Regular.ttf') format('truetype');
 }
 @font-face {
     font-family: 'Rethink Sans';
     font-style: italic;
     font-weight: 300;
-    src: local('static'), url('./RethinkSans-LightItalic.ttf') format('truetype');
+    src: local('static'), url('./RethinkSans-Italic.ttf') format('truetype');
 }
 @font-face {
     font-family: 'Rethink Sans';
