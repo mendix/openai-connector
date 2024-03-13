@@ -30789,6 +30789,11 @@ $callout-info-bg: $color-info-lighter;
   background: linear-gradient(64deg, #16518d, #3ca8b9);
 }
 
+.card-small.card {
+  margin-bottom: 8px;
+  padding: 8px;
+}
+
 .listview-hover-on-background.mx-listview > ul > li:hover {
   background: rgba(24, 90, 157, 0.3) !important;
 }
