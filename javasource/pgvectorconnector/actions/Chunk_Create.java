@@ -9,6 +9,7 @@
 
 package pgvectorconnector.actions;
 
+import com.mendix.core.Core;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.webui.CustomJavaAction;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
@@ -60,7 +61,7 @@ public class Chunk_Create extends CustomJavaAction<java.lang.Void>
 
 		// BEGIN USER CODE
 		try {
-			ChunkImpl.validate(ChunkList, HumanReadableID, Vector, ChunkType, Key, Value);
+			ChunkImpl.validate(ChunkList, HumanReadableID, Vector, ChunkType, Key, Value); //To Remove?
 			
 			Chunk chunk = new Chunk(getContext());
 			chunk.setChunkID(getContext(), StringUtils.randomHash());
@@ -68,7 +69,7 @@ public class Chunk_Create extends CustomJavaAction<java.lang.Void>
 			chunk.setVector(getContext(), Vector);
 			chunk.setChunkType(getContext(), ChunkType);
 			chunk.setKey(getContext(), Key);
-			chunk.setValue(getContext(), Value);
+			chunk.setValue(getContext(), ChunkType.equals(pgvectorconnector.proxies.ENUM_ChunkType.KeyValue) ? Value : null);
 			chunk.setMxObjectID(getContext(), MxObject == null ? null : MxObject.getId().toString());
 			chunk.setMxEntity(getContext(), MxObject == null ? null : MxObject.getType());
 			
