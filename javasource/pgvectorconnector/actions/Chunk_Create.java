@@ -9,13 +9,11 @@
 
 package pgvectorconnector.actions;
 
-import com.mendix.core.Core;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.webui.CustomJavaAction;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 import communitycommons.StringUtils;
 import pgvectorconnector.proxies.Chunk;
-import pgvectorconnector.impl.ChunkImpl;
 import pgvectorconnector.impl.MxLogger;
 
 public class Chunk_Create extends CustomJavaAction<java.lang.Void>
@@ -61,8 +59,6 @@ public class Chunk_Create extends CustomJavaAction<java.lang.Void>
 
 		// BEGIN USER CODE
 		try {
-			ChunkImpl.validate(ChunkList, HumanReadableID, Vector, ChunkType, Key, Value); //To Remove?
-			
 			Chunk chunk = new Chunk(getContext());
 			chunk.setChunkID(getContext(), StringUtils.randomHash());
 			chunk.setHumanReadableID(getContext(), HumanReadableID);
