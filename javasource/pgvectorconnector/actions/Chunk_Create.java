@@ -9,6 +9,8 @@
 
 package pgvectorconnector.actions;
 
+import static java.util.Objects.requireNonNull;
+import org.checkerframework.checker.nullness.qual.RequiresNonNull;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.webui.CustomJavaAction;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
@@ -59,19 +61,23 @@ public class Chunk_Create extends CustomJavaAction<java.lang.Void>
 
 		// BEGIN USER CODE
 		try {
+			requireNonNull(__ChunkList, "ChunkList is required.");
+			
 			Chunk chunk = new Chunk(getContext());
 			chunk.setChunkID(getContext(), StringUtils.randomHash());
 			chunk.setHumanReadableID(getContext(), HumanReadableID);
 			chunk.setVector(getContext(), Vector);
 			chunk.setChunkType(getContext(), ChunkType);
 			chunk.setKey(getContext(), Key);
-			chunk.setValue(getContext(), ChunkType.equals(pgvectorconnector.proxies.ENUM_ChunkType.KeyValue) ? Value : null);
-			chunk.setMxObjectID(getContext(), MxObject == null ? null : MxObject.getId().toString());
+			chunk.setValue(getContext(), ChunkType != null 
+					&& ChunkType.equals(pgvectorconnector.proxies.ENUM_ChunkType.KeyValue) 
+					? Value : null);
+			chunk.setMxObjectID(getContext(), MxObject == null ? null : String.valueOf(MxObject.getId().toLong()));
 			chunk.setMxEntity(getContext(), MxObject == null ? null : MxObject.getType());
 			
 			LabelList.forEach(label -> label.setLabel_Chunk(getContext(), chunk));
 			
-			ChunkList.add(chunk);
+			__ChunkList.add(chunk.getMendixObject());
 			
 			return null;
 			
