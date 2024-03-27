@@ -18,6 +18,10 @@ import communitycommons.StringUtils;
 import pgvectorconnector.proxies.Chunk;
 import pgvectorconnector.impl.MxLogger;
 
+/**
+ * This action can be used for instantiating Chunk objects to create the input for the knowledge base based on your own data structure. A ChunkList must be passed to which the new Chunk object will be added.
+ * Optionally, use Label_Create to construct a list of Labels for custom filtering during the retrieval.
+ */
 public class Chunk_Create extends CustomJavaAction<java.lang.Void>
 {
 	private java.util.List<IMendixObject> __ChunkList;
