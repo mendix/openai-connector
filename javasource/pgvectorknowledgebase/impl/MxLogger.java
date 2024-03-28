@@ -1,4 +1,4 @@
-package pgvectorconnector.impl;
+package pgvectorknowledgebase.impl;
 
 
 import com.mendix.core.Core;

@@ -7,16 +7,15 @@
 // Other code you write will be lost the next time you deploy the project.
 // Special characters, e.g., é, ö, à, etc. are supported in comments.
 
-package pgvectorconnector.actions;
+package pgvectorknowledgebase.actions;
 
 import static java.util.Objects.requireNonNull;
-import org.checkerframework.checker.nullness.qual.RequiresNonNull;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.webui.CustomJavaAction;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 import communitycommons.StringUtils;
-import pgvectorconnector.proxies.Chunk;
-import pgvectorconnector.impl.MxLogger;
+import pgvectorknowledgebase.proxies.Chunk;
+import pgvectorknowledgebase.impl.MxLogger;
 
 /**
  * This action can be used for instantiating Chunk objects to create the input for the knowledge base based on your own data structure. A ChunkList must be passed to which the new Chunk object will be added.
@@ -25,15 +24,15 @@ import pgvectorconnector.impl.MxLogger;
 public class Chunk_Create extends CustomJavaAction<java.lang.Void>
 {
 	private java.util.List<IMendixObject> __ChunkList;
-	private java.util.List<pgvectorconnector.proxies.Chunk> ChunkList;
+	private java.util.List<pgvectorknowledgebase.proxies.Chunk> ChunkList;
 	private java.lang.String HumanReadableID;
 	private java.lang.String Vector;
-	private pgvectorconnector.proxies.ENUM_ChunkType ChunkType;
+	private pgvectorknowledgebase.proxies.ENUM_ChunkType ChunkType;
 	private java.lang.String Key;
 	private java.lang.String Value;
 	private IMendixObject MxObject;
 	private java.util.List<IMendixObject> __LabelList;
-	private java.util.List<pgvectorconnector.proxies.Label> LabelList;
+	private java.util.List<pgvectorknowledgebase.proxies.Label> LabelList;
 
 	public Chunk_Create(IContext context, java.util.List<IMendixObject> ChunkList, java.lang.String HumanReadableID, java.lang.String Vector, java.lang.String ChunkType, java.lang.String Key, java.lang.String Value, IMendixObject MxObject, java.util.List<IMendixObject> LabelList)
 	{
@@ -41,7 +40,7 @@ public class Chunk_Create extends CustomJavaAction<java.lang.Void>
 		this.__ChunkList = ChunkList;
 		this.HumanReadableID = HumanReadableID;
 		this.Vector = Vector;
-		this.ChunkType = ChunkType == null ? null : pgvectorconnector.proxies.ENUM_ChunkType.valueOf(ChunkType);
+		this.ChunkType = ChunkType == null ? null : pgvectorknowledgebase.proxies.ENUM_ChunkType.valueOf(ChunkType);
 		this.Key = Key;
 		this.Value = Value;
 		this.MxObject = MxObject;
@@ -54,13 +53,13 @@ public class Chunk_Create extends CustomJavaAction<java.lang.Void>
 		this.ChunkList = java.util.Optional.ofNullable(this.__ChunkList)
 			.orElse(java.util.Collections.emptyList())
 			.stream()
-			.map(__ChunkListElement -> pgvectorconnector.proxies.Chunk.initialize(getContext(), __ChunkListElement))
+			.map(__ChunkListElement -> pgvectorknowledgebase.proxies.Chunk.initialize(getContext(), __ChunkListElement))
 			.collect(java.util.stream.Collectors.toList());
 
 		this.LabelList = java.util.Optional.ofNullable(this.__LabelList)
 			.orElse(java.util.Collections.emptyList())
 			.stream()
-			.map(__LabelListElement -> pgvectorconnector.proxies.Label.initialize(getContext(), __LabelListElement))
+			.map(__LabelListElement -> pgvectorknowledgebase.proxies.Label.initialize(getContext(), __LabelListElement))
 			.collect(java.util.stream.Collectors.toList());
 
 		// BEGIN USER CODE
@@ -74,7 +73,7 @@ public class Chunk_Create extends CustomJavaAction<java.lang.Void>
 			chunk.setChunkType(getContext(), ChunkType);
 			chunk.setKey(getContext(), Key);
 			chunk.setValue(getContext(), ChunkType != null 
-					&& ChunkType.equals(pgvectorconnector.proxies.ENUM_ChunkType.KeyValue) 
+					&& ChunkType.equals(pgvectorknowledgebase.proxies.ENUM_ChunkType.KeyValue) 
 					? Value : null);
 			chunk.setMxObjectID(getContext(), MxObject == null ? null : String.valueOf(MxObject.getId().toLong()));
 			chunk.setMxEntity(getContext(), MxObject == null ? null : MxObject.getType());
