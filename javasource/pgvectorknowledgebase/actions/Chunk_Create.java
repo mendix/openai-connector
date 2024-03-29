@@ -65,16 +65,15 @@ public class Chunk_Create extends CustomJavaAction<java.lang.Void>
 		// BEGIN USER CODE
 		try {
 			requireNonNull(__ChunkList, "ChunkList is required.");
-			
+			requireNonNull(ChunkType, "ChunkType is required.");
 			Chunk chunk = new Chunk(getContext());
 			chunk.setChunkID(getContext(), StringUtils.randomHash());
 			chunk.setHumanReadableID(getContext(), HumanReadableID);
 			chunk.setVector(getContext(), Vector);
 			chunk.setChunkType(getContext(), ChunkType);
-			chunk.setKey(getContext(), Key.replaceAll("'", "''"));
-			chunk.setValue(getContext(), ChunkType != null 
-					&& ChunkType.equals(pgvectorknowledgebase.proxies.ENUM_ChunkType.KeyValue) 
-					? Value.replaceAll("'", "''") : null);
+			chunk.setKey(getContext(), Key);
+			chunk.setValue(getContext(), ChunkType.equals(pgvectorknowledgebase.proxies.ENUM_ChunkType.KeyValue) 
+					? Value : null);
 			chunk.setMxObjectID(getContext(), MxObject == null ? null : String.valueOf(MxObject.getId().toLong()));
 			chunk.setMxEntity(getContext(), MxObject == null ? null : MxObject.getType());
 			
