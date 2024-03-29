@@ -71,10 +71,10 @@ public class Chunk_Create extends CustomJavaAction<java.lang.Void>
 			chunk.setHumanReadableID(getContext(), HumanReadableID);
 			chunk.setVector(getContext(), Vector);
 			chunk.setChunkType(getContext(), ChunkType);
-			chunk.setKey(getContext(), Key);
+			chunk.setKey(getContext(), Key.replaceAll("'", "''"));
 			chunk.setValue(getContext(), ChunkType != null 
 					&& ChunkType.equals(pgvectorknowledgebase.proxies.ENUM_ChunkType.KeyValue) 
-					? Value : null);
+					? Value.replaceAll("'", "''") : null);
 			chunk.setMxObjectID(getContext(), MxObject == null ? null : String.valueOf(MxObject.getId().toLong()));
 			chunk.setMxEntity(getContext(), MxObject == null ? null : MxObject.getType());
 			
