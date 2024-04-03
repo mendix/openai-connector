@@ -10,6 +10,8 @@
 package pgvectorknowledgebase.actions;
 
 import static java.util.Objects.requireNonNull;
+import java.util.ArrayList;
+import java.util.List;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.webui.CustomJavaAction;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
@@ -77,7 +79,7 @@ public class Chunk_Create extends CustomJavaAction<java.lang.Void>
 			chunk.setMxObjectID(getContext(), MxObject == null ? null : String.valueOf(MxObject.getId().toLong()));
 			chunk.setMxEntity(getContext(), MxObject == null ? null : MxObject.getType());
 			
-			LabelList.forEach(label -> label.setLabel_Chunk(getContext(), chunk));
+			chunk.setChunk_Label(getContext(), LabelList);
 			
 			__ChunkList.add(chunk.getMendixObject());
 			
