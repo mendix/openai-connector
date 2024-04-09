@@ -46,6 +46,7 @@ public class Function_Create extends CustomJavaAction<IMendixObject>
 			function.setName(Name);	
 			function.setDescription(Description);
 			function.setParameters(Parameters);
+			function.setFunction_FunctionCalling(FunctionCalling);
 			
 			return function.getMendixObject();
 		
