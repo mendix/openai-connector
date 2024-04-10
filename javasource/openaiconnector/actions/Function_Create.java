@@ -11,8 +11,8 @@ package openaiconnector.actions;
 
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.webui.CustomJavaAction;
-import openaiconnector.impl.MxLogger;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
+import openaiconnector.impl.MxLogger;
 import openaiconnector.proxies.Function;
 
 public class Function_Create extends CustomJavaAction<IMendixObject>
