@@ -22,18 +22,14 @@ public class Function_Create extends CustomJavaAction<IMendixObject>
 	private IMendixObject __FunctionCalling;
 	private openaiconnector.proxies.FunctionCalling FunctionCalling;
 	private java.lang.String Description;
-	private java.lang.String ParameterDescription;
-	private java.lang.Boolean ParameterIsRequired;
 
-	public Function_Create(IContext context, java.lang.String Name, java.lang.String ActionMicroflow, IMendixObject FunctionCalling, java.lang.String Description, java.lang.String ParameterDescription, java.lang.Boolean ParameterIsRequired)
+	public Function_Create(IContext context, java.lang.String Name, java.lang.String ActionMicroflow, IMendixObject FunctionCalling, java.lang.String Description)
 	{
 		super(context);
 		this.Name = Name;
 		this.ActionMicroflow = ActionMicroflow;
 		this.__FunctionCalling = FunctionCalling;
 		this.Description = Description;
-		this.ParameterDescription = ParameterDescription;
-		this.ParameterIsRequired = ParameterIsRequired;
 	}
 
 	@java.lang.Override
@@ -48,8 +44,6 @@ public class Function_Create extends CustomJavaAction<IMendixObject>
 			function.setName(Name);	
 			function.setDescription(Description);
 			function.setFunction_FunctionCalling(FunctionCalling);
-			function.setParameterDescription(ParameterDescription);
-			function.setParameterIsRequired(ParameterIsRequired);
 			
 			return function.getMendixObject();
 		
