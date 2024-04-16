@@ -37,6 +37,7 @@ public class Function_ExecuteAction extends CustomJavaAction<java.lang.String>
 		// BEGIN USER CODE
 		try {
 			requireNonNull(Function, "Function is required.");
+			requireNonNull(Function.getActionMicroflow(), "Function has no ActionMicroflow.");
 			
 			return Core.microflowCall(Function.getActionMicroflow()).withParam("StringArgument", StringArgument).execute(this.getContext());
 		
