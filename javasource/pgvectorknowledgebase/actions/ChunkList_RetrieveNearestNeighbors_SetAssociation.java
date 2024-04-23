@@ -9,8 +9,10 @@
 
 package pgvectorknowledgebase.actions;
 
+import com.mendix.core.Core;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.webui.CustomJavaAction;
+import pgvectorknowledgebase.proxies.Chunk;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 
 public class ChunkList_RetrieveNearestNeighbors_SetAssociation extends CustomJavaAction<java.util.List<IMendixObject>>
@@ -49,7 +51,27 @@ public class ChunkList_RetrieveNearestNeighbors_SetAssociation extends CustomJav
 			.collect(java.util.stream.Collectors.toList());
 
 		// BEGIN USER CODE
-		throw new com.mendix.systemwideinterfaces.MendixRuntimeException("Java action was not implemented");
+		// verify target chunk on non-null, then non-duplicate outgoing associations
+		
+		//try-catch here needed
+		java.util.List<IMendixObject> __ChunkList = Core.microflowCall("PgVectorKnowledgeBase.ChunkList_RetrieveNearestNeighbors")
+														.withParam("Vector", Vector)
+														.withParam("KnowledgeBaseName", KnowledgeBaseName)
+														.withParam("DatabaseConfiguration", __DatabaseConfiguration)
+														.withParam("LabelList", __LabelList)
+														.withParam("MaxNumberOfResults", MaxNumberOfResults)
+														.withParam("MinimumSimilarity", MinimumSimilarity)
+														.execute(this.getContext());
+		
+		// per element:
+		// - initialize Chunk w/ proxies
+		// - use Chunk.guid to retrieve mendix object 
+		// - get meta object name
+		// - find matching association based on meta object name
+		// - set association if found, otherwise throw warning
+		
+		
+		return __ChunkList;
 		// END USER CODE
 	}
 
