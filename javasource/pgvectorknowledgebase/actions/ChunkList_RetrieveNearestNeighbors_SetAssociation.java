@@ -23,6 +23,7 @@ import pgvectorknowledgebase.proxies.Chunk;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 import com.mendix.systemwideinterfaces.core.IMendixObjectMember;
 import com.mendix.systemwideinterfaces.core.meta.IMetaAssociation;
+import com.mendix.systemwideinterfaces.core.meta.IMetaObject;
 
 public class ChunkList_RetrieveNearestNeighbors_SetAssociation extends CustomJavaAction<java.util.List<IMendixObject>>
 {
@@ -62,18 +63,23 @@ public class ChunkList_RetrieveNearestNeighbors_SetAssociation extends CustomJav
 		// BEGIN USER CODE
 		
 		try { 
-			// verify target chunk on non-null, subclass of chunk, then non-duplicate outgoing associations
+			// verify target chunk on non-null, subclass of chunk, 
 			requireNonNull(TargetChunk, "Target Chunk must be specified");
 			if (! TargetChunk.getMetaObject().isSubClassOf("PgVectorKnowledgeBase.Chunk")){
 				throw new Exception("Target Chunk must be a specialization of PgVectorKnowledgeBase.Chunk");
 			}
-			java.util.Set<IMetaAssociation> associations = new HashSet<IMetaAssociation>();
+			
+			// store specialization name for reusing
+			String targetChunkMetaObjectName = TargetChunk.getMetaObject().getName();
+			
+			// validate on non-duplicate outgoing associations
+			java.util.Set<IMetaObject> metaObjects = new HashSet<IMetaObject>();
 			java.util.List<IMetaAssociation> duplicateAssociations = 
 					TargetChunk.getMetaObject().getMetaAssociationsParent().stream()
-						.filter(n -> !associations.add(n))
+						.filter(n -> !metaObjects.add(n.getChild()))
 						.collect(Collectors.toList());
 			if (! duplicateAssociations.isEmpty()){
-				throw new Exception("Multiple outgoing associations found");
+				throw new Exception("Duplicate outgoing associations found for entity " + targetChunkMetaObjectName);
 			}
 			
 			
@@ -88,8 +94,7 @@ public class ChunkList_RetrieveNearestNeighbors_SetAssociation extends CustomJav
 														.withParam("MinimumSimilarity", this.MinimumSimilarity)
 														.execute(this.getContext());
 			
-			//
-			String targetChunkMetaObjectName = TargetChunk.getMetaObject().getName();
+			
 			
 			// create list to return
 			java.util.List<IMendixObject> TargetChunkList = new ArrayList<IMendixObject>();
@@ -112,7 +117,9 @@ public class ChunkList_RetrieveNearestNeighbors_SetAssociation extends CustomJav
 					ORM.cloneObject(this.getContext(), c, targetChunk, true);
 					
 					// find matching association based on meta object name 
-					java.util.List<IMetaAssociation> assocationsFiltered = associations
+					java.util.List<IMetaAssociation> assocationsFiltered = TargetChunk
+							.getMetaObject()
+							.getMetaAssociationsParent()
 							.stream()
 							.filter(a -> targetObject == null ? false : a.getChild().equals(targetObject.getMetaObject()))
 							.collect(Collectors.toList());
