@@ -96,16 +96,16 @@ public class ChatCompletionsRequest_ManipulateExportMapping extends CustomJavaAc
 		} else if (ChatCompletionsRequest.getChatCompletionsRequest_ToolRequest_ToolChoice() == null
 				|| ChatCompletionsRequest.getChatCompletionsRequest_ToolRequest_ToolChoice().getToolType() == null
 				|| ChatCompletionsRequest.getChatCompletionsRequest_ToolRequest_ToolChoice()
-						.getFunctionRequest_ToolRequest() == null
+						.getToolRequest_FunctionRequest() == null
 				|| ChatCompletionsRequest.getChatCompletionsRequest_ToolRequest_ToolChoice()
-						.getFunctionRequest_ToolRequest().getName().isBlank()) {
+						.getToolRequest_FunctionRequest().getName().isBlank()) {
 			LOGGER.debug("ToolChoice is set to function, but function information is missing. Removing ToolChoice from Request.");
 			ChatCompletionsRequest_Json = ChatCompletionsRequest_Json.replace(",\"tool_choice\":\"function\"", "");
 
 		// Add ToolChoice Function if it has not yet been called
 		} else {
 			ToolRequest toolRequest = ChatCompletionsRequest.getChatCompletionsRequest_ToolRequest_ToolChoice();
-			FunctionRequest functionRequest = toolRequest.getFunctionRequest_ToolRequest();
+			FunctionRequest functionRequest = toolRequest.getToolRequest_FunctionRequest();
 			String toolChoice = ",\"tool_choice\":{\"type\": \"" + toolRequest.getToolType().name()
 					+ "\",\"function\": {\"name\": \"" + functionRequest.getName() + "\"}}";
 			
