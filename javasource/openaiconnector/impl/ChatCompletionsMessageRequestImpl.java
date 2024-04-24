@@ -16,11 +16,9 @@ public class ChatCompletionsMessageRequestImpl {
 			ChatCompletionsMessages chatCompletionsMessages, ENUM_Role filterByRole, IContext context) {
 
 		return Core.retrieveByPath(context, chatCompletionsMessages.getMendixObject(),
-				ChatCompletionsMessageRequest.MemberNames.ChatCompletionsMessageRequest_ChatCompletionsMessages
-						.toString())
+				ChatCompletionsMessageRequest.MemberNames.ChatCompletionsMessageRequest_ChatCompletionsMessages.toString())
 				.stream().filter(mxObject -> {
-					String messageRole = mxObject.getValue(context,
-							ChatCompletionsMessageRequest.MemberNames.Role.name());
+					String messageRole = mxObject.getValue(context, ChatCompletionsMessageRequest.MemberNames.Role.name());
 					return messageRole.equals(filterByRole.name());
 				}).map(mxObject -> ChatCompletionsMessageRequest.initialize(context, mxObject))
 				.collect(Collectors.toList());

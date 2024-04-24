@@ -10,11 +10,16 @@
 package openaiconnector.actions;
 
 import static java.util.Objects.requireNonNull;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.*;
+import com.mendix.core.Core;
 import com.mendix.systemwideinterfaces.core.IContext;
+import com.mendix.systemwideinterfaces.core.IDataType;
 import com.mendix.webui.CustomJavaAction;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 import openaiconnector.impl.MxLogger;
+import openaiconnector.impl.FunctionImpl;
 import openaiconnector.proxies.Function;
 
 public class Function_Create extends CustomJavaAction<IMendixObject>
@@ -75,13 +80,12 @@ public class Function_Create extends CustomJavaAction<IMendixObject>
 		requireNonNull(ActionMicroflow, "ActionMicroflow is required.");
 		requireNonNull(Name, "Name is required.");
 		requireNonNull(FunctionCalling, "FunctionCalling object is required.");
-		
-		if(!isValidName()) {
-			throw new IllegalArgumentException("Function Name is not valid. Name must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length of 64.");
-		}
+		validateFunctionName();
+		FunctionImpl.validateActionMicroflow(ActionMicroflow);
 	}
+		
 	
-	private boolean isValidName() {
+	private void validateFunctionName() {
 	    // Name must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length of 64
 	    String pattern = "^[a-zA-Z0-9_-]{1,64}$";
 
@@ -92,7 +96,9 @@ public class Function_Create extends CustomJavaAction<IMendixObject>
 	    Matcher matcher = regex.matcher(Name);
 
 	    // Check if the input string matches the pattern
-	    return matcher.matches();
+	    if(!matcher.matches()) {
+	    	throw new IllegalArgumentException("Function Name is not valid. Name must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length of 64.");
+	    }
 	}
 	// END EXTRA CODE
 }

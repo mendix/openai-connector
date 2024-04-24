@@ -10,9 +10,12 @@
 package openaiconnector.actions;
 
 import static java.util.Objects.requireNonNull;
+import java.util.Map;
 import com.mendix.core.Core;
 import com.mendix.systemwideinterfaces.core.IContext;
+import com.mendix.systemwideinterfaces.core.IDataType;
 import com.mendix.webui.CustomJavaAction;
+import openaiconnector.impl.FunctionImpl;
 import openaiconnector.impl.MxLogger;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 
@@ -38,8 +41,11 @@ public class Function_ExecuteAction extends CustomJavaAction<java.lang.String>
 		try {
 			requireNonNull(Function, "Function is required.");
 			requireNonNull(Function.getActionMicroflow(), "Function has no ActionMicroflow.");
+			FunctionImpl.validateActionMicroflow(Function.getActionMicroflow());
 			
-			return Core.microflowCall(Function.getActionMicroflow()).withParam("StringArgument", StringArgument).execute(this.getContext());
+			String inputParamName = getInputParamName();
+			LOGGER.info("Calling microflow ", Function.getActionMicroflow(), " with input parameter ", inputParamName, ": ", StringArgument, " with context ", this.context(), ".");
+			return Core.microflowCall(Function.getActionMicroflow()).withParam(inputParamName, StringArgument).execute(this.getContext());
 		
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
@@ -60,5 +66,11 @@ public class Function_ExecuteAction extends CustomJavaAction<java.lang.String>
 
 	// BEGIN EXTRA CODE
 	private static final MxLogger LOGGER = new MxLogger(Function_ExecuteAction.class);
+	
+	private String getInputParamName() {
+		Map<String, IDataType> inputParameters = Core.getInputParameters(Function.getActionMicroflow());
+		return inputParameters.entrySet().iterator().next().getKey();
+	}
+	
 	// END EXTRA CODE
 }

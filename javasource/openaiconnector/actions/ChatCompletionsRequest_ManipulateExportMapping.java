@@ -10,10 +10,6 @@
 package openaiconnector.actions;
 
 import static java.util.Objects.requireNonNull;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -34,7 +30,6 @@ import openaiconnector.impl.ChatCompletionsMessageRequestImpl;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class ChatCompletionsRequest_ManipulateExportMapping extends CustomJavaAction<java.lang.String>
@@ -105,16 +100,11 @@ public class ChatCompletionsRequest_ManipulateExportMapping extends CustomJavaAc
 
 	private void setFunctionToolCall(JsonNode rootNode) throws CoreException {
 
-		// ToolChoice is empty
-		if (ChatCompletionsRequest.getToolChoice() == null) {
-			LOGGER.debug("ToolChoice is null.");
-			((ObjectNode)rootNode).remove("tool_choice");
-
 		// ToolChoice is not function and thus auto or none
-		} else if (ChatCompletionsRequest.getToolChoice().equals(ENUM_ToolChoice.function) == false) {
+		if (ChatCompletionsRequest.getToolChoice() == null || ChatCompletionsRequest.getToolChoice().equals(ENUM_ToolChoice.function) == false) {
 			return;
 
-		// Revert function ToolChoice to default, because information is missing
+		// Remove ToolChoice, because information is missing
 		} else if (ChatCompletionsRequest.getChatCompletionsRequest_ToolRequest_ToolChoice() == null
 				|| ChatCompletionsRequest.getChatCompletionsRequest_ToolRequest_ToolChoice().getToolType() == null
 				|| ChatCompletionsRequest.getChatCompletionsRequest_ToolRequest_ToolChoice()
@@ -129,6 +119,7 @@ public class ChatCompletionsRequest_ManipulateExportMapping extends CustomJavaAc
 			ToolRequest toolRequest = ChatCompletionsRequest.getChatCompletionsRequest_ToolRequest_ToolChoice();
 			FunctionRequest functionRequest = toolRequest.getToolRequest_FunctionRequest();
 			
+			//Remove tool choice function, because it has already been called; this prevents and infinite loop
 			if (isToolRecall(functionRequest.getName())) {
 				LOGGER.debug("ToolChoice function " + functionRequest.getName() + " has already been called. Removing ToolChoice from Request.");
 				((ObjectNode)rootNode).remove("tool_choice");
@@ -145,10 +136,6 @@ public class ChatCompletionsRequest_ManipulateExportMapping extends CustomJavaAc
 		        
 		        // Update the original JsonNode with the tool_choice object
 		        ((ObjectNode) rootNode).set("tool_choice", toolChoiceNode);
-				
-				//String toolChoice = ",\"tool_choice\":{\"type\": \"" + toolRequest.getToolType().name()
-				//		+ "\",\"function\": {\"name\": \"" + functionRequest.getName() + "\"}}";
-				//ChatCompletionsRequest_Json = ChatCompletionsRequest_Json.replace(",\"tool_choice\":\"function\"", toolChoice);
 			}
 		}
 	}
