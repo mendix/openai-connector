@@ -83,13 +83,16 @@ public class ChunkList_RetrieveNearestNeighbors_SetAssociation extends CustomJav
 														.withParam("MinimumSimilarity", this.MinimumSimilarity)
 														.execute(this.getContext());
 			
+			//
+			String targetChunkMetaObjectName = TargetChunk.getMetaObject().getName();
+			
 			// create list to return
 			java.util.List<IMendixObject> TargetChunkList = new ArrayList<IMendixObject>();
 			
 			// per chunk create a TargetChunk (custom specialization) 
 			__ChunkList.forEach(c -> {
 				// - instantiate Target Chunk (custom specialization)
-				IMendixObject targetChunk = Core.instantiate(this.getContext(), TargetChunk.getMetaObject().getName());
+				IMendixObject targetChunk = Core.instantiate(this.getContext(), targetChunkMetaObjectName);
 				try {
 					// - initialize Chunk w/ proxies so that we can use Chunk.MendixObjectId to retrieve mendix object
 					String MxObjectID = pgvectorknowledgebase.proxies.Chunk.initialize(getContext(), c)
@@ -109,8 +112,16 @@ public class ChunkList_RetrieveNearestNeighbors_SetAssociation extends CustomJav
 							.filter(a -> targetObject == null ? false : a.getChild().equals(targetObject.getMetaObject()))
 							.collect(Collectors.toList());
 					
-					// set association if found, otherwise throw warning
-					if (!assocationsFiltered.isEmpty()){
+					// set association if found, otherwise log a warning
+					if (assocationsFiltered.isEmpty()){
+						if (targetObject == null) {
+							LOGGER.warn("No target object was found to set association for");
+						} else {
+							LOGGER.warn("No eligible association found for target object " + targetObject.getMetaObject().getName()
+							+ " on entity " + targetChunkMetaObjectName);
+						}
+						
+					} else {
 						targetChunk.setValue(getContext(), assocationsFiltered.get(0).getName(), targetObject.getId());
 					}
 					
