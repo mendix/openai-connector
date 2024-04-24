@@ -9,11 +9,20 @@
 
 package pgvectorknowledgebase.actions;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.stream.Collectors;
+import static java.util.Objects.requireNonNull;
 import com.mendix.core.Core;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.webui.CustomJavaAction;
+import communitycommons.ORM;
+import pgvectorknowledgebase.impl.MxLogger;
 import pgvectorknowledgebase.proxies.Chunk;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
+import com.mendix.systemwideinterfaces.core.IMendixObjectMember;
+import com.mendix.systemwideinterfaces.core.meta.IMetaAssociation;
 
 public class ChunkList_RetrieveNearestNeighbors_SetAssociation extends CustomJavaAction<java.util.List<IMendixObject>>
 {
@@ -52,16 +61,55 @@ public class ChunkList_RetrieveNearestNeighbors_SetAssociation extends CustomJav
 
 		// BEGIN USER CODE
 		// verify target chunk on non-null, then non-duplicate outgoing associations
-		
-		//try-catch here needed
-		java.util.List<IMendixObject> __ChunkList = Core.microflowCall("PgVectorKnowledgeBase.ChunkList_RetrieveNearestNeighbors")
-														.withParam("Vector", Vector)
-														.withParam("KnowledgeBaseName", KnowledgeBaseName)
-														.withParam("DatabaseConfiguration", __DatabaseConfiguration)
-														.withParam("LabelList", __LabelList)
-														.withParam("MaxNumberOfResults", MaxNumberOfResults)
-														.withParam("MinimumSimilarity", MinimumSimilarity)
+		try { 
+			requireNonNull(TargetChunk, "Target Chunk must be specified");
+			java.util.Set<IMetaAssociation> associations = new HashSet<IMetaAssociation>();
+			java.util.List<IMetaAssociation> duplicateAssociations = 
+					TargetChunk.getMetaObject().getMetaAssociationsParent().stream()
+						.filter(n -> !associations.add(n))
+						.collect(Collectors.toList());
+			if (!duplicateAssociations.isEmpty()){
+				throw new Exception("Multiple outgoing associations found");
+			}
+			java.util.List<IMendixObject> __ChunkList = Core.microflowCall("PgVectorKnowledgeBase.ChunkList_RetrieveNearestNeighbors")
+														.withParam("Vector", this.Vector)
+														.withParam("KnowledgeBaseName", this.KnowledgeBaseName)
+														.withParam("DatabaseConfiguration", this.__DatabaseConfiguration)
+														.withParam("LabelList", this.__LabelList)
+														.withParam("MaxNumberOfResults", this.MaxNumberOfResults)
+														.withParam("MinimumSimilarity", this.MinimumSimilarity)
 														.execute(this.getContext());
+		
+			java.util.List<IMendixObject> TargetChunkList = new ArrayList<IMendixObject>();
+			__ChunkList.forEach(c -> {
+				IMendixObject targetChunk = Core.instantiate(this.getContext(), TargetChunk.getMetaObject().getName());
+				try {
+					String MxObjectID = pgvectorknowledgebase.proxies.Chunk.initialize(getContext(), c)
+							.getMxObjectID(getContext());
+					IMendixObject targetObject = MxObjectID == null ? null : Core.retrieveId(
+							getContext(), Core.createMendixIdentifier(
+									pgvectorknowledgebase.proxies.Chunk.initialize(getContext(), c)
+									.getMxObjectID(getContext())
+									)
+							
+							); 
+					
+					ORM.cloneObject(this.getContext(), c, targetChunk, true);
+					
+					java.util.List<IMetaAssociation> assocationsFiltered = associations
+							.stream()
+							.filter(a -> targetObject == null ? false : a.getChild().equals(targetObject.getMetaObject()))
+							.collect(Collectors.toList());
+					if (!assocationsFiltered.isEmpty()){
+						targetChunk.setValue(getContext(), assocationsFiltered.get(0).getName(), targetObject);
+					}
+					
+				} catch (Exception e) {
+					LOGGER.error(e.getMessage());
+				}							
+			TargetChunkList.add(targetChunk);
+			
+			});
 		
 		// per element:
 		// - initialize Chunk w/ proxies
@@ -71,7 +119,12 @@ public class ChunkList_RetrieveNearestNeighbors_SetAssociation extends CustomJav
 		// - set association if found, otherwise throw warning
 		
 		
-		return __ChunkList;
+			return TargetChunkList;
+			
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage());
+			throw e;
+		}
 		// END USER CODE
 	}
 
@@ -86,5 +139,6 @@ public class ChunkList_RetrieveNearestNeighbors_SetAssociation extends CustomJav
 	}
 
 	// BEGIN EXTRA CODE
+	private static final MxLogger LOGGER = new MxLogger(ChunkList_RetrieveNearestNeighbors_SetAssociation.class);
 	// END EXTRA CODE
 }
