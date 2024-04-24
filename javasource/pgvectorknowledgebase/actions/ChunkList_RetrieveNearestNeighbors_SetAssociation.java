@@ -88,10 +88,8 @@ public class ChunkList_RetrieveNearestNeighbors_SetAssociation extends CustomJav
 							.getMxObjectID(getContext());
 					IMendixObject targetObject = MxObjectID == null ? null : Core.retrieveId(
 							getContext(), Core.createMendixIdentifier(
-									pgvectorknowledgebase.proxies.Chunk.initialize(getContext(), c)
-									.getMxObjectID(getContext())
+									MxObjectID
 									)
-							
 							); 
 					
 					ORM.cloneObject(this.getContext(), c, targetChunk, true);
@@ -101,7 +99,7 @@ public class ChunkList_RetrieveNearestNeighbors_SetAssociation extends CustomJav
 							.filter(a -> targetObject == null ? false : a.getChild().equals(targetObject.getMetaObject()))
 							.collect(Collectors.toList());
 					if (!assocationsFiltered.isEmpty()){
-						targetChunk.setValue(getContext(), assocationsFiltered.get(0).getName(), targetObject);
+						targetChunk.setValue(getContext(), assocationsFiltered.get(0).getName(), targetObject.getId());
 					}
 					
 				} catch (Exception e) {
