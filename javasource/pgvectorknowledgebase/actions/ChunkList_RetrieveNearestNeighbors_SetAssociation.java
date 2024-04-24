@@ -62,16 +62,21 @@ public class ChunkList_RetrieveNearestNeighbors_SetAssociation extends CustomJav
 		// BEGIN USER CODE
 		
 		try { 
-			// verify target chunk on non-null, then non-duplicate outgoing associations
+			// verify target chunk on non-null, subclass of chunk, then non-duplicate outgoing associations
 			requireNonNull(TargetChunk, "Target Chunk must be specified");
+			if (! TargetChunk.getMetaObject().isSubClassOf("PgVectorKnowledgeBase.Chunk")){
+				throw new Exception("Target Chunk must be a specialization of PgVectorKnowledgeBase.Chunk");
+			}
 			java.util.Set<IMetaAssociation> associations = new HashSet<IMetaAssociation>();
 			java.util.List<IMetaAssociation> duplicateAssociations = 
 					TargetChunk.getMetaObject().getMetaAssociationsParent().stream()
 						.filter(n -> !associations.add(n))
 						.collect(Collectors.toList());
-			if (!duplicateAssociations.isEmpty()){
+			if (! duplicateAssociations.isEmpty()){
 				throw new Exception("Multiple outgoing associations found");
 			}
+			
+			
 			
 			// call a microflow to retrieve chunks
 			java.util.List<IMendixObject> __ChunkList = Core.microflowCall("PgVectorKnowledgeBase.ChunkList_RetrieveNearestNeighbors")
