@@ -10,6 +10,10 @@
 package openaiconnector.actions;
 
 import static java.util.Objects.requireNonNull;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -28,6 +32,10 @@ import openaiconnector.proxies.ChatCompletionsMessages;
 import openaiconnector.proxies.ENUM_Role;
 import openaiconnector.impl.ChatCompletionsMessageRequestImpl;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class ChatCompletionsRequest_ManipulateExportMapping extends CustomJavaAction<java.lang.String>
 {
@@ -52,11 +60,13 @@ public class ChatCompletionsRequest_ManipulateExportMapping extends CustomJavaAc
 			requireNonNull(ChatCompletionsRequest, "ChatCompletionsRequest is required.");
 			requireNonNull(ChatCompletionsRequest_Json, "ChatCompletionsRequest_Json is required.");
 
-			removeEmptyMessageToolCalls();
+			rootNode = mapper.readTree(ChatCompletionsRequest_Json);
+			
+			removeEmptyMessageToolCalls(rootNode);
 
-			setFunctionToolCall();
+			//setFunctionToolCall();
 
-			return ChatCompletionsRequest_Json;
+			return mapper.writeValueAsString(rootNode);
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
 			throw e;
@@ -76,9 +86,23 @@ public class ChatCompletionsRequest_ManipulateExportMapping extends CustomJavaAc
 
 	// BEGIN EXTRA CODE
 	private static final MxLogger LOGGER = new MxLogger(ChatCompletionsRequest_ManipulateExportMapping.class);
-
-	private void removeEmptyMessageToolCalls() {
-		ChatCompletionsRequest_Json = ChatCompletionsRequest_Json.replace(",\"tool_calls\":[]", "");
+	private static ObjectMapper mapper = new ObjectMapper();
+	private JsonNode rootNode;
+	
+	private void removeEmptyMessageToolCalls(JsonNode rootNode) {
+		//Get messages node
+		JsonNode messagesNode = rootNode.path("messages");
+		//Loop over all messages, find tool_calls node and remove if array is empty
+		for (JsonNode messageNode : messagesNode) {
+            JsonNode toolCallsNode = messageNode.path("tool_calls");
+            if (toolCallsNode.isArray() && toolCallsNode.size() == 0) {
+                ((ObjectNode) messageNode).remove("tool_calls");
+            }
+        }
+		((ObjectNode)rootNode).remove("tool_choice");
+		//Update messages within rootNode
+		((ObjectNode) rootNode).set("messages", messagesNode);
+		//ChatCompletionsRequest_Json = ChatCompletionsRequest_Json.replace(",\"tool_calls\":[]", "");
 	}
 
 	private void setFunctionToolCall() throws CoreException {
