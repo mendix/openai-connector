@@ -64,7 +64,7 @@ public class ChatCompletionsRequest_ManipulateExportMapping extends CustomJavaAc
 			
 			removeEmptyMessageToolCalls(rootNode);
 
-			//setFunctionToolCall();
+			setFunctionToolCall(rootNode);
 
 			return mapper.writeValueAsString(rootNode);
 		} catch (Exception e) {
@@ -99,18 +99,16 @@ public class ChatCompletionsRequest_ManipulateExportMapping extends CustomJavaAc
                 ((ObjectNode) messageNode).remove("tool_calls");
             }
         }
-		((ObjectNode)rootNode).remove("tool_choice");
 		//Update messages within rootNode
 		((ObjectNode) rootNode).set("messages", messagesNode);
-		//ChatCompletionsRequest_Json = ChatCompletionsRequest_Json.replace(",\"tool_calls\":[]", "");
 	}
 
-	private void setFunctionToolCall() throws CoreException {
+	private void setFunctionToolCall(JsonNode rootNode) throws CoreException {
 
-		// ToolChoice is empty (should not happen)
+		// ToolChoice is empty
 		if (ChatCompletionsRequest.getToolChoice() == null) {
 			LOGGER.debug("ToolChoice is null.");
-			ChatCompletionsRequest_Json = ChatCompletionsRequest_Json.replace(",\"tool_choice\":\"function\"", "");
+			((ObjectNode)rootNode).remove("tool_choice");
 
 		// ToolChoice is not function and thus auto or none
 		} else if (ChatCompletionsRequest.getToolChoice().equals(ENUM_ToolChoice.function) == false) {
@@ -124,22 +122,33 @@ public class ChatCompletionsRequest_ManipulateExportMapping extends CustomJavaAc
 				|| ChatCompletionsRequest.getChatCompletionsRequest_ToolRequest_ToolChoice()
 						.getToolRequest_FunctionRequest().getName().isBlank()) {
 			LOGGER.debug("ToolChoice is set to function, but function information is missing. Removing ToolChoice from Request.");
-			ChatCompletionsRequest_Json = ChatCompletionsRequest_Json.replace(",\"tool_choice\":\"function\"", "");
+			((ObjectNode)rootNode).remove("tool_choice");
 
-		// Add ToolChoice Function if it has not yet been called
+		// Add ToolChoice Function if it has not yet been called in a previous iteration
 		} else {
 			ToolRequest toolRequest = ChatCompletionsRequest.getChatCompletionsRequest_ToolRequest_ToolChoice();
 			FunctionRequest functionRequest = toolRequest.getToolRequest_FunctionRequest();
-			String toolChoice = ",\"tool_choice\":{\"type\": \"" + toolRequest.getToolType().name()
-					+ "\",\"function\": {\"name\": \"" + functionRequest.getName() + "\"}}";
 			
 			if (isToolRecall(functionRequest.getName())) {
 				LOGGER.debug("ToolChoice function " + functionRequest.getName() + " has already been called. Removing ToolChoice from Request.");
-				ChatCompletionsRequest_Json = ChatCompletionsRequest_Json.replace(",\"tool_choice\":\"function\"", "");
+				((ObjectNode)rootNode).remove("tool_choice");
 			
 			} else {
-				LOGGER.debug("ToolChoice has not been called yet. Updating ToolChoice placeholder with: " + toolChoice);
-				ChatCompletionsRequest_Json = ChatCompletionsRequest_Json.replace(",\"tool_choice\":\"function\"", toolChoice);
+				// Create a new ObjectNode for the tool_choice object
+		        ObjectNode toolChoiceNode = mapper.createObjectNode();
+		        toolChoiceNode.put("type", toolRequest.getToolType().name());
+		        ObjectNode functionNode = mapper.createObjectNode();
+		        functionNode.put("name", functionRequest.getName());
+		        toolChoiceNode.set("function", functionNode);
+		        
+		        LOGGER.debug("ToolChoice has not been called yet. Updating ToolChoice function placeholder with: " + toolChoiceNode);
+		        
+		        // Update the original JsonNode with the tool_choice object
+		        ((ObjectNode) rootNode).set("tool_choice", toolChoiceNode);
+				
+				//String toolChoice = ",\"tool_choice\":{\"type\": \"" + toolRequest.getToolType().name()
+				//		+ "\",\"function\": {\"name\": \"" + functionRequest.getName() + "\"}}";
+				//ChatCompletionsRequest_Json = ChatCompletionsRequest_Json.replace(",\"tool_choice\":\"function\"", toolChoice);
 			}
 		}
 	}
