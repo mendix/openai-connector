@@ -60,8 +60,9 @@ public class ChunkList_RetrieveNearestNeighbors_SetAssociation extends CustomJav
 			.collect(java.util.stream.Collectors.toList());
 
 		// BEGIN USER CODE
-		// verify target chunk on non-null, then non-duplicate outgoing associations
+		
 		try { 
+			// verify target chunk on non-null, then non-duplicate outgoing associations
 			requireNonNull(TargetChunk, "Target Chunk must be specified");
 			java.util.Set<IMetaAssociation> associations = new HashSet<IMetaAssociation>();
 			java.util.List<IMetaAssociation> duplicateAssociations = 
@@ -71,6 +72,8 @@ public class ChunkList_RetrieveNearestNeighbors_SetAssociation extends CustomJav
 			if (!duplicateAssociations.isEmpty()){
 				throw new Exception("Multiple outgoing associations found");
 			}
+			
+			// call a microflow to retrieve chunks
 			java.util.List<IMendixObject> __ChunkList = Core.microflowCall("PgVectorKnowledgeBase.ChunkList_RetrieveNearestNeighbors")
 														.withParam("Vector", this.Vector)
 														.withParam("KnowledgeBaseName", this.KnowledgeBaseName)
@@ -79,11 +82,16 @@ public class ChunkList_RetrieveNearestNeighbors_SetAssociation extends CustomJav
 														.withParam("MaxNumberOfResults", this.MaxNumberOfResults)
 														.withParam("MinimumSimilarity", this.MinimumSimilarity)
 														.execute(this.getContext());
-		
+			
+			// create list to return
 			java.util.List<IMendixObject> TargetChunkList = new ArrayList<IMendixObject>();
+			
+			// per chunk create a TargetChunk (custom specialization) 
 			__ChunkList.forEach(c -> {
+				// - instantiate Target Chunk (custom specialization)
 				IMendixObject targetChunk = Core.instantiate(this.getContext(), TargetChunk.getMetaObject().getName());
 				try {
+					// - initialize Chunk w/ proxies so that we can use Chunk.MendixObjectId to retrieve mendix object
 					String MxObjectID = pgvectorknowledgebase.proxies.Chunk.initialize(getContext(), c)
 							.getMxObjectID(getContext());
 					IMendixObject targetObject = MxObjectID == null ? null : Core.retrieveId(
@@ -92,30 +100,27 @@ public class ChunkList_RetrieveNearestNeighbors_SetAssociation extends CustomJav
 									)
 							); 
 					
+					// copy values from Chunk to Target Chunk (custom specialization)
 					ORM.cloneObject(this.getContext(), c, targetChunk, true);
 					
+					// find matching association based on meta object name 
 					java.util.List<IMetaAssociation> assocationsFiltered = associations
 							.stream()
 							.filter(a -> targetObject == null ? false : a.getChild().equals(targetObject.getMetaObject()))
 							.collect(Collectors.toList());
+					
+					// set association if found, otherwise throw warning
 					if (!assocationsFiltered.isEmpty()){
 						targetChunk.setValue(getContext(), assocationsFiltered.get(0).getName(), targetObject.getId());
 					}
 					
 				} catch (Exception e) {
 					LOGGER.error(e.getMessage());
-				}							
+				}
+				
 			TargetChunkList.add(targetChunk);
 			
 			});
-		
-		// per element:
-		// - initialize Chunk w/ proxies
-		// - use Chunk.guid to retrieve mendix object 
-		// - get meta object name
-		// - find matching association based on meta object name
-		// - set association if found, otherwise throw warning
-		
 		
 			return TargetChunkList;
 			
