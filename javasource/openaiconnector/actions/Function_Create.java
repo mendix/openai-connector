@@ -10,12 +10,8 @@
 package openaiconnector.actions;
 
 import static java.util.Objects.requireNonNull;
-import java.util.Map;
-import java.util.Set;
 import java.util.regex.*;
-import com.mendix.core.Core;
 import com.mendix.systemwideinterfaces.core.IContext;
-import com.mendix.systemwideinterfaces.core.IDataType;
 import com.mendix.webui.CustomJavaAction;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 import openaiconnector.impl.MxLogger;
@@ -25,16 +21,16 @@ import openaiconnector.proxies.Function;
 public class Function_Create extends CustomJavaAction<IMendixObject>
 {
 	private java.lang.String Name;
-	private java.lang.String ActionMicroflow;
+	private java.lang.String FunctionMicroflow;
 	private IMendixObject __FunctionCalling;
 	private openaiconnector.proxies.FunctionCalling FunctionCalling;
 	private java.lang.String Description;
 
-	public Function_Create(IContext context, java.lang.String Name, java.lang.String ActionMicroflow, IMendixObject FunctionCalling, java.lang.String Description)
+	public Function_Create(IContext context, java.lang.String Name, java.lang.String FunctionMicroflow, IMendixObject FunctionCalling, java.lang.String Description)
 	{
 		super(context);
 		this.Name = Name;
-		this.ActionMicroflow = ActionMicroflow;
+		this.FunctionMicroflow = FunctionMicroflow;
 		this.__FunctionCalling = FunctionCalling;
 		this.Description = Description;
 	}
@@ -49,7 +45,7 @@ public class Function_Create extends CustomJavaAction<IMendixObject>
 			validateInput();
 			
 			Function function = new Function(getContext());
-			function.setActionMicroflow(ActionMicroflow);
+			function.setFunctionMicroflow(FunctionMicroflow);
 			function.setName(Name);	
 			function.setDescription(Description); //Optional parameter
 			function.setFunction_FunctionCalling(FunctionCalling);
@@ -77,11 +73,11 @@ public class Function_Create extends CustomJavaAction<IMendixObject>
 	private static final MxLogger LOGGER = new MxLogger(Function_Create.class);
 	
 	private void validateInput() throws Exception {
-		requireNonNull(ActionMicroflow, "ActionMicroflow is required.");
+		requireNonNull(FunctionMicroflow, "FunctionMicroflow is required.");
 		requireNonNull(Name, "Name is required.");
 		requireNonNull(FunctionCalling, "FunctionCalling object is required.");
 		validateFunctionName();
-		FunctionImpl.validateActionMicroflow(ActionMicroflow);
+		FunctionImpl.validateFunctionMicroflow(FunctionMicroflow);
 	}
 		
 	

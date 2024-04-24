@@ -40,12 +40,12 @@ public class Function_ExecuteAction extends CustomJavaAction<java.lang.String>
 		// BEGIN USER CODE
 		try {
 			requireNonNull(Function, "Function is required.");
-			requireNonNull(Function.getActionMicroflow(), "Function has no ActionMicroflow.");
-			FunctionImpl.validateActionMicroflow(Function.getActionMicroflow());
+			requireNonNull(Function.getFunctionMicroflow(), "Function has no FunctionMicroflow.");
+			FunctionImpl.validateFunctionMicroflow(Function.getFunctionMicroflow());
 			
 			String inputParamName = getInputParamName();
-			LOGGER.info("Calling microflow ", Function.getActionMicroflow(), " with input parameter ", inputParamName, ": ", StringArgument, " with context ", this.context(), ".");
-			return Core.microflowCall(Function.getActionMicroflow()).withParam(inputParamName, StringArgument).execute(this.getContext());
+			LOGGER.info("Calling microflow ", Function.getFunctionMicroflow(), " with input parameter ", inputParamName, ": ", StringArgument, " with ", this.context(), ".");
+			return Core.microflowCall(Function.getFunctionMicroflow()).withParam(inputParamName, StringArgument).execute(this.getContext());
 		
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
@@ -68,7 +68,7 @@ public class Function_ExecuteAction extends CustomJavaAction<java.lang.String>
 	private static final MxLogger LOGGER = new MxLogger(Function_ExecuteAction.class);
 	
 	private String getInputParamName() {
-		Map<String, IDataType> inputParameters = Core.getInputParameters(Function.getActionMicroflow());
+		Map<String, IDataType> inputParameters = Core.getInputParameters(Function.getFunctionMicroflow());
 		return inputParameters.entrySet().iterator().next().getKey();
 	}
 	

@@ -8,7 +8,7 @@ import com.mendix.systemwideinterfaces.core.IDataType;
 
 public class FunctionImpl {
 	
-	public static boolean validateActionMicroflow(String actionMicroflow) {
+	public static boolean validateFunctionMicroflow(String actionMicroflow) {
 		Set<String> microflowNames = Core.getMicroflowNames();
 		if(!microflowNames.contains(actionMicroflow)) {
 			throw new IllegalArgumentException("ActionMicroflow " + actionMicroflow + " does not exists.");
