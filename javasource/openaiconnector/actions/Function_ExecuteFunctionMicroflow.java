@@ -20,7 +20,6 @@ import openaiconnector.impl.MxLogger;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class Function_ExecuteFunctionMicroflow extends CustomJavaAction<java.lang.String>
 {
@@ -50,7 +49,7 @@ public class Function_ExecuteFunctionMicroflow extends CustomJavaAction<java.lan
 			
 			if(firstInputParamName == null || firstInputParamName.isBlank()){
 				LOGGER.info("Calling microflow ", Function.getFunctionMicroflow(), " without input parameters with ", this.context(), ".");
-				return Core.microflowCall(Function.getFunctionMicroflow()).withParam(firstInputParamName, Arguments).execute(this.getContext());
+				return Core.microflowCall(Function.getFunctionMicroflow()).execute(this.getContext());
 			} else {
 				rootNodeArguments = mapper.readTree(Arguments);
 				String firstInputParamNameLowerCase = firstInputParamName.substring(0, 1).toLowerCase() + firstInputParamName.substring(1); //make first letter LowerCase as in JSON
@@ -60,7 +59,7 @@ public class Function_ExecuteFunctionMicroflow extends CustomJavaAction<java.lan
 					throw new IllegalArgumentException("Arguments " + Arguments + " does not match the expected input of the function microflow " + Function.getFunctionMicroflow()+ ".");		
 				}
 				LOGGER.info("Calling microflow ", Function.getFunctionMicroflow(), " with input parameter ", firstInputParamName, ": ", firstInputParamNode.asText(), " with ", this.context(), ".");
-				return Core.microflowCall(Function.getFunctionMicroflow()).withParam(firstInputParamName, firstInputParamNode.asText()).execute(this.getContext());
+				return Core.microflowCall(Function.getFunctionMicroflow()).withParam(firstInputParamName, firstInputParamNode.asText()).execute(getContext());
 			}
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
@@ -86,7 +85,11 @@ public class Function_ExecuteFunctionMicroflow extends CustomJavaAction<java.lan
 	
 	private String getFirstInputParamName() {
 		Map<String, IDataType> inputParameters = Core.getInputParameters(Function.getFunctionMicroflow());
-		return inputParameters.entrySet().iterator().next().getKey();
+		if(inputParameters != null && !inputParameters.entrySet().isEmpty()) {
+			return inputParameters.entrySet().iterator().next().getKey();
+		} else {
+			return null;
+		}
 	}
 	
 	// END EXTRA CODE

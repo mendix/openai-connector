@@ -10,7 +10,6 @@
 package openaiconnector.actions;
 
 import static java.util.Objects.requireNonNull;
-import java.util.regex.*;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.webui.CustomJavaAction;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
@@ -23,7 +22,7 @@ public class Function_Create extends CustomJavaAction<IMendixObject>
 	private java.lang.String Name;
 	private java.lang.String FunctionMicroflow;
 	private IMendixObject __FunctionCalling;
-	private openaiconnector.proxies.FunctionCalling FunctionCalling;
+	private openaiconnector.proxies.FunctionCollection FunctionCalling;
 	private java.lang.String Description;
 
 	public Function_Create(IContext context, java.lang.String Name, java.lang.String FunctionMicroflow, IMendixObject FunctionCalling, java.lang.String Description)
@@ -38,17 +37,18 @@ public class Function_Create extends CustomJavaAction<IMendixObject>
 	@java.lang.Override
 	public IMendixObject executeAction() throws Exception
 	{
-		this.FunctionCalling = this.__FunctionCalling == null ? null : openaiconnector.proxies.FunctionCalling.initialize(getContext(), __FunctionCalling);
+		this.FunctionCalling = this.__FunctionCalling == null ? null : openaiconnector.proxies.FunctionCollection.initialize(getContext(), __FunctionCalling);
 
 		// BEGIN USER CODE
 		try{
-			validateInput();
+			requireNonNull(FunctionCalling, "FunctionCalling object is required.");
+			FunctionImpl.validateInput(FunctionMicroflow, Name);
 			
 			Function function = new Function(getContext());
 			function.setFunctionMicroflow(FunctionMicroflow);
 			function.setName(Name);	
 			function.setDescription(Description); //Optional parameter
-			function.setFunction_FunctionCalling(FunctionCalling);
+			function.setFunction_FunctionCollection(FunctionCalling);
 			
 			return function.getMendixObject();
 		
@@ -71,30 +71,5 @@ public class Function_Create extends CustomJavaAction<IMendixObject>
 
 	// BEGIN EXTRA CODE
 	private static final MxLogger LOGGER = new MxLogger(Function_Create.class);
-	
-	private void validateInput() throws Exception {
-		requireNonNull(FunctionMicroflow, "FunctionMicroflow is required.");
-		requireNonNull(Name, "Name is required.");
-		requireNonNull(FunctionCalling, "FunctionCalling object is required.");
-		validateFunctionName();
-		FunctionImpl.validateFunctionMicroflow(FunctionMicroflow);
-	}
-		
-	
-	private void validateFunctionName() {
-	    // Name must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length of 64
-	    String pattern = "^[a-zA-Z0-9_-]{1,64}$";
-
-	    // Compile the pattern into a regular expression
-	    Pattern regex = Pattern.compile(pattern);
-
-	    // Create a matcher with the input string (Name)
-	    Matcher matcher = regex.matcher(Name);
-
-	    // Check if the input string matches the pattern
-	    if(!matcher.matches()) {
-	    	throw new IllegalArgumentException("Function Name is not valid. Name must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length of 64.");
-	    }
-	}
 	// END EXTRA CODE
 }
