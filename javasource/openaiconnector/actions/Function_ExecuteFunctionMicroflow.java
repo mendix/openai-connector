@@ -72,9 +72,7 @@ public class Function_ExecuteFunctionMicroflow extends CustomJavaAction<java.lan
 		String firstInputParamName = FunctionImpl.getFirstInputParamName(FunctionRequest.getFunctionMicroflow());
 		
 		if(firstInputParamName == null || firstInputParamName.isBlank()){
-			String response = Core.microflowCall(FunctionRequest.getFunctionMicroflow()).execute(getContext());
-			LOGGER.info("Calling microflow ", FunctionRequest.getFunctionMicroflow(), " without input parameters ", getContext(), " retured response \"", response, "\".");
-			return response;
+			return executeAndLogFunctionMicroflow(null, null);
 		
 		} else {
 			rootNodeArguments = mapper.readTree(Arguments);
@@ -83,10 +81,26 @@ public class Function_ExecuteFunctionMicroflow extends CustomJavaAction<java.lan
 			if (!firstInputParamNode.isTextual()) {
 				throw new IOException("Arguments " + Arguments + " does not match the expected input of the function microflow " + FunctionRequest.getFunctionMicroflow()+ ".");		
 			}
-			String response = Core.microflowCall(FunctionRequest.getFunctionMicroflow()).withParam(firstInputParamName, firstInputParamNode.asText()).execute(getContext());
-			LOGGER.info("Calling microflow ", FunctionRequest.getFunctionMicroflow(), " with input parameter \"", firstInputParamName, "\": \"", firstInputParamNode.asText(), "\" with ", getContext(), " retured response \"", response, "\".");
-			return response;
+			return executeAndLogFunctionMicroflow(firstInputParamName, firstInputParamNode.asText());
 		}
+	}
+	
+	private String executeAndLogFunctionMicroflow(String firstInputParamName, String firstInputParamValue) {
+		String response;
+		String logMessage = "Finished calling microflow " + FunctionRequest.getFunctionMicroflow() + " with " + getContext();
+		long startTime = System.currentTimeMillis();
+		if(firstInputParamName == null || firstInputParamName.isBlank()) {
+			logMessage = logMessage + "\nwithout input parameters ";
+			response = Core.microflowCall(FunctionRequest.getFunctionMicroflow()).execute(getContext());
+		} else {
+			logMessage = logMessage +  "\n\nInput parameter [" + firstInputParamName + "]:\n" + firstInputParamValue;
+			response = Core.microflowCall(FunctionRequest.getFunctionMicroflow()).withParam(firstInputParamName, firstInputParamValue).execute(getContext());
+		}
+		long endTime = System.currentTimeMillis();
+		long executionTime = endTime - startTime;
+		logMessage = logMessage + "\n\nReturn value:\n" + response + "\n\nDuration:\n" + executionTime + "ms";
+		LOGGER.debug(logMessage);
+		return response;
 	}
 	
 	// END EXTRA CODE
