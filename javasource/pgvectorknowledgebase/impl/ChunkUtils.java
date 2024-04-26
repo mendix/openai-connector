@@ -3,6 +3,8 @@ package pgvectorknowledgebase.impl;
 import com.mendix.core.Core;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
+import com.mendix.systemwideinterfaces.core.meta.IMetaAssociation;
+
 import communitycommons.ORM;
 import pgvectorknowledgebase.proxies.Chunk;
 import static java.util.Objects.requireNonNull;
@@ -24,7 +26,7 @@ public class ChunkUtils {
 
 
 	public static java.util.List<IMendixObject> getTargetChunkList(
-			java.util.List<Chunk> ChunkList, IContext context, IMendixObject TargetChunk, MxLogger LOGGER) {
+			IContext context, java.util.List<Chunk> ChunkList, IMendixObject TargetChunk, MxLogger LOGGER) {
 		// create list to return
 		java.util.List<IMendixObject> TargetChunkList = new ArrayList<IMendixObject>();
 		
@@ -48,8 +50,8 @@ public class ChunkUtils {
 						.getMetaObject()
 						.getMetaAssociationsParent()
 						.stream()
-						.filter(a -> targetObject == null ? false : targetObject.getMetaObject().isSubClassOf(a.getChild())) 
-						.peek(a -> targetChunk.setValue(context, a.getName(), targetObject.getId()))
+						.filter(a -> assocationMatchesTarget(a, targetObject)) 
+						.peek(a -> setAssociationToTarget(context, targetChunk, targetObject, a))
 						.collect(Collectors.counting());
 				
 				// set association if found, otherwise log a warning
@@ -62,9 +64,20 @@ public class ChunkUtils {
 				LOGGER.error(e.getMessage());
 			}
 			
-		TargetChunkList.add(targetChunk);
+			TargetChunkList.add(targetChunk);
 					
 		});
 		return TargetChunkList;
+	}
+
+
+
+
+	public static void setAssociationToTarget(IContext context,IMendixObject chunk,IMendixObject targetObject, IMetaAssociation association){
+		chunk.setValue(context, association.getName(), targetObject.getId());
+	}
+
+	public static boolean assocationMatchesTarget(IMetaAssociation asssociation, IMendixObject targetObject){
+		return targetObject == null ? false : targetObject.getMetaObject().isSubClassOf(asssociation.getChild());
 	}
 }

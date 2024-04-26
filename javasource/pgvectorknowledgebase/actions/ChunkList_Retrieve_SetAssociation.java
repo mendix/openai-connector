@@ -67,8 +67,8 @@ public class ChunkList_Retrieve_SetAssociation extends CustomJavaAction<java.uti
 			java.util.List<Chunk> ChunkList = pgvectorknowledgebase.proxies.microflows.Microflows.chunkList_Retrieve(
 					getContext(), DatabaseConfiguration, KnowledgeBaseName, MaxNumberOfResults, LabelList, Offset);
 			
-		
-			return ChunkUtils.getTargetChunkList(ChunkList, getContext(), TargetChunk, LOGGER);
+			//map to target chunks to return
+			return ChunkUtils.getTargetChunkList(getContext(), ChunkList, TargetChunk, LOGGER);
 			
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());

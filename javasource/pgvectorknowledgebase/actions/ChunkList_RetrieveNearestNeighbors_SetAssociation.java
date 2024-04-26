@@ -70,7 +70,7 @@ public class ChunkList_RetrieveNearestNeighbors_SetAssociation extends CustomJav
 					getContext(), DatabaseConfiguration, KnowledgeBaseName, Vector, MinimumSimilarity, MaxNumberOfResults, LabelList);
 			
 			//map to target chunks to return
-			return ChunkUtils.getTargetChunkList(ChunkList, getContext(), TargetChunk, LOGGER);
+			return ChunkUtils.getTargetChunkList(getContext(), ChunkList, TargetChunk, LOGGER);
 			
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
@@ -91,8 +91,5 @@ public class ChunkList_RetrieveNearestNeighbors_SetAssociation extends CustomJav
 
 	// BEGIN EXTRA CODE
 	private static final MxLogger LOGGER = new MxLogger(ChunkList_RetrieveNearestNeighbors_SetAssociation.class);
-	
-	
-	
 	// END EXTRA CODE
 }
