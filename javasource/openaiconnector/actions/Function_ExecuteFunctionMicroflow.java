@@ -87,19 +87,22 @@ public class Function_ExecuteFunctionMicroflow extends CustomJavaAction<java.lan
 	
 	private String executeAndLogFunctionMicroflow(String firstInputParamName, String firstInputParamValue) {
 		String response;
-		String logMessage = "Finished calling microflow " + FunctionRequest.getFunctionMicroflow() + " with " + getContext();
+		String logMessageInfo = "Finished calling microflow " + FunctionRequest.getFunctionMicroflow() + " with " + getContext();
+		String logMessageTrace = logMessageInfo;
 		long startTime = System.currentTimeMillis();
 		if(firstInputParamName == null || firstInputParamName.isBlank()) {
-			logMessage = logMessage + "\nwithout input parameters ";
+			logMessageTrace = logMessageTrace + "\nwithout input parameters ";
 			response = Core.microflowCall(FunctionRequest.getFunctionMicroflow()).execute(getContext());
 		} else {
-			logMessage = logMessage +  "\n\nInput parameter [" + firstInputParamName + "]:\n" + firstInputParamValue;
+			logMessageTrace = logMessageTrace +  "\n\nInput parameter [" + firstInputParamName + "]:\n" + firstInputParamValue;
 			response = Core.microflowCall(FunctionRequest.getFunctionMicroflow()).withParam(firstInputParamName, firstInputParamValue).execute(getContext());
 		}
 		long endTime = System.currentTimeMillis();
 		long executionTime = endTime - startTime;
-		logMessage = logMessage + "\n\nReturn value:\n" + response + "\n\nDuration:\n" + executionTime + "ms";
-		LOGGER.debug(logMessage);
+		logMessageInfo = logMessageInfo + "\n\nDuration:\n" + executionTime + "ms";
+		logMessageTrace = logMessageTrace+ "\n\nReturn value:\n" + response + "\n\nDuration:\n" + executionTime + "ms";
+		LOGGER.info(logMessageInfo);
+		LOGGER.trace(logMessageTrace);
 		return response;
 	}
 	
