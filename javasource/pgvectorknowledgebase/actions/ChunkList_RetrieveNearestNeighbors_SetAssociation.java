@@ -11,13 +11,13 @@ package pgvectorknowledgebase.actions;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.stream.Collectors;
 import static java.util.Objects.requireNonNull;
 import com.mendix.core.Core;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.webui.CustomJavaAction;
 import communitycommons.ORM;
+import pgvectorknowledgebase.impl.ChunkUtils;
 import pgvectorknowledgebase.impl.MxLogger;
 import pgvectorknowledgebase.proxies.Chunk;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
@@ -63,89 +63,14 @@ public class ChunkList_RetrieveNearestNeighbors_SetAssociation extends CustomJav
 		// BEGIN USER CODE
 		
 		try { 
-			// verify target chunk on non-null, subclass of chunk, 
-			requireNonNull(TargetChunk, "Target Chunk must be specified");
-			if (! TargetChunk.getMetaObject().isSubClassOf("PgVectorKnowledgeBase.Chunk")){
-				throw new Exception("Target Chunk must be a specialization of PgVectorKnowledgeBase.Chunk");
-			}
-			
-			// store specialization name for reusing
-			String targetChunkMetaObjectName = TargetChunk.getMetaObject().getName();
-			
-			// validate on non-duplicate outgoing associations
-			java.util.Set<IMetaObject> metaObjects = new HashSet<IMetaObject>();
-			java.util.List<IMetaAssociation> duplicateAssociations = 
-					TargetChunk.getMetaObject().getMetaAssociationsParent().stream()
-						.filter(n -> !metaObjects.add(n.getChild()))
-						.collect(Collectors.toList());
-			if (! duplicateAssociations.isEmpty()){
-				throw new Exception("Duplicate outgoing associations found for entity " + targetChunkMetaObjectName);
-			}
-			
-			
+			ChunkUtils.validateTargetChunk(this.TargetChunk);
 			
 			// call a microflow to retrieve chunks
-			java.util.List<IMendixObject> __ChunkList = Core.microflowCall("PgVectorKnowledgeBase.ChunkList_RetrieveNearestNeighbors")
-														.withParam("Vector", this.Vector)
-														.withParam("KnowledgeBaseName", this.KnowledgeBaseName)
-														.withParam("DatabaseConfiguration", this.__DatabaseConfiguration)
-														.withParam("LabelList", this.__LabelList)
-														.withParam("MaxNumberOfResults", this.MaxNumberOfResults)
-														.withParam("MinimumSimilarity", this.MinimumSimilarity)
-														.execute(this.getContext());
+			java.util.List<Chunk> ChunkList = pgvectorknowledgebase.proxies.microflows.Microflows.chunkList_RetrieveNearestNeighbors(
+					getContext(), DatabaseConfiguration, KnowledgeBaseName, Vector, MinimumSimilarity, MaxNumberOfResults, LabelList);
 			
-			
-			
-			// create list to return
-			java.util.List<IMendixObject> TargetChunkList = new ArrayList<IMendixObject>();
-			
-			// per chunk create a TargetChunk (custom specialization) 
-			__ChunkList.forEach(c -> {
-				// - instantiate Target Chunk (custom specialization)
-				IMendixObject targetChunk = Core.instantiate(this.getContext(), targetChunkMetaObjectName);
-				try {
-					// - initialize Chunk w/ proxies so that we can use Chunk.MendixObjectId to retrieve mendix object
-					String MxObjectID = pgvectorknowledgebase.proxies.Chunk.initialize(getContext(), c)
-							.getMxObjectID(getContext());
-					IMendixObject targetObject = MxObjectID == null ? null : Core.retrieveId(
-							getContext(), Core.createMendixIdentifier(
-									MxObjectID
-									)
-							); 
-					
-					// copy values from Chunk to Target Chunk (custom specialization)
-					ORM.cloneObject(this.getContext(), c, targetChunk, true);
-					
-					// find matching association based on meta object name 
-					java.util.List<IMetaAssociation> assocationsFiltered = TargetChunk
-							.getMetaObject()
-							.getMetaAssociationsParent()
-							.stream()
-							.filter(a -> targetObject == null ? false : a.getChild().equals(targetObject.getMetaObject()))
-							.collect(Collectors.toList());
-					
-					// set association if found, otherwise log a warning
-					if (assocationsFiltered.isEmpty()){
-						if (targetObject == null) {
-							LOGGER.warn("No target object was found to set association for");
-						} else {
-							LOGGER.warn("No eligible association found for target object " + targetObject.getMetaObject().getName()
-							+ " on entity " + targetChunkMetaObjectName);
-						}
-						
-					} else {
-						targetChunk.setValue(getContext(), assocationsFiltered.get(0).getName(), targetObject.getId());
-					}
-					
-				} catch (Exception e) {
-					LOGGER.error(e.getMessage());
-				}
-				
-			TargetChunkList.add(targetChunk);
-			
-			});
-		
-			return TargetChunkList;
+			//map to target chunks to return
+			return ChunkUtils.getTargetChunkList(ChunkList, getContext(), TargetChunk, LOGGER);
 			
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
@@ -166,5 +91,8 @@ public class ChunkList_RetrieveNearestNeighbors_SetAssociation extends CustomJav
 
 	// BEGIN EXTRA CODE
 	private static final MxLogger LOGGER = new MxLogger(ChunkList_RetrieveNearestNeighbors_SetAssociation.class);
+	
+	
+	
 	// END EXTRA CODE
 }
