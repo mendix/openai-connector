@@ -18,7 +18,6 @@ import openaiconnector.impl.FunctionCollectionImpl;
 import openaiconnector.impl.FunctionImpl;
 import openaiconnector.proxies.ENUM_ToolChoice;
 import openaiconnector.proxies.Function;
-import openaiconnector.proxies.FunctionCollection;
 
 public class FunctionCollection_AddFunction extends CustomJavaAction<java.lang.Void>
 {

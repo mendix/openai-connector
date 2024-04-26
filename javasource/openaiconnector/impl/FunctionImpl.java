@@ -12,6 +12,7 @@ import com.mendix.systemwideinterfaces.core.IDataType;
 
 import openaiconnector.proxies.Function;
 import openaiconnector.proxies.FunctionCollection;
+import openaiconnector.proxies.FunctionRequest;
 
 public class FunctionImpl {
 	
@@ -25,15 +26,10 @@ public class FunctionImpl {
 	public static void validateFunctionName(String functionName) throws Exception {
 	    // Name must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length of 64
 	    String pattern = "^[a-zA-Z0-9_-]{1,64}$";
-
-	    // Compile the pattern into a regular expression
 	    Pattern regex = Pattern.compile(pattern);
 
-	    // Create a matcher with the input string (Name)
-	    Matcher matcher = regex.matcher(functionName);
-
 	    // Check if the input string matches the pattern
-	    if(!matcher.matches()) {
+	    if(!regex.matcher(functionName).matches()) {
 	    	throw new IllegalArgumentException("Function Name is not valid. Name must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length of 64.");
 	    }
 	}
@@ -49,7 +45,8 @@ public class FunctionImpl {
 			throw new IllegalArgumentException("FunctionMicroflow " + FunctionMicroflow + " should only have one input parameter of type String.");
 		}
 		
-		if(inputParameters != null && !inputParameters.entrySet().isEmpty() && IDataType.DataTypeEnum.String.equals(inputParameters.entrySet().iterator().next().getValue().getType()) == false) {
+		if(inputParameters != null && !inputParameters.entrySet().isEmpty()
+				&& IDataType.DataTypeEnum.String.equals(inputParameters.entrySet().iterator().next().getValue().getType()) == false) {
 			throw new IllegalArgumentException("FunctionMicroflow " + FunctionMicroflow + " should have an input parameter of type String.");			
 		}
 
@@ -67,4 +64,12 @@ public class FunctionImpl {
 		return function;
 	}
 	
+	public static String getFirstInputParamName(String FunctionMicroflow) {
+		Map<String, IDataType> inputParameters = Core.getInputParameters(FunctionMicroflow);
+		if(inputParameters != null && !inputParameters.entrySet().isEmpty()) {
+			return inputParameters.entrySet().iterator().next().getKey();
+		} else {
+			return null;
+		}
+	}
 }

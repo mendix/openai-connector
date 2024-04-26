@@ -14,7 +14,6 @@ import com.mendix.webui.CustomJavaAction;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 import openaiconnector.impl.MxLogger;
 import openaiconnector.impl.FunctionImpl;
-import openaiconnector.proxies.ENUM_ToolChoice;
 import openaiconnector.proxies.Function;
 import openaiconnector.proxies.FunctionCollection;
 import openaiconnector.impl.FunctionCollectionImpl;

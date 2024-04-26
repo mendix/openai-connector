@@ -12,6 +12,7 @@ package openaiconnector.actions;
 import static java.util.Objects.requireNonNull;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 import com.mendix.core.Core;
@@ -21,24 +22,27 @@ import com.mendix.webui.CustomJavaAction;
 import openaiconnector.impl.MxLogger;
 import openaiconnector.proxies.ENUM_ToolChoice;
 import openaiconnector.proxies.ToolRequest;
+import openaiconnector.proxies.Tools;
 import openaiconnector.proxies.FunctionRequest;
 import openaiconnector.proxies.ToolCall;
 import openaiconnector.proxies.ChatCompletionsMessageRequest;
 import openaiconnector.proxies.ChatCompletionsMessages;
 import openaiconnector.proxies.ENUM_Role;
 import openaiconnector.impl.ChatCompletionsMessageRequestImpl;
+import openaiconnector.impl.FunctionImpl;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
-public class ChatCompletionsRequest_ManipulateExportMapping extends CustomJavaAction<java.lang.String>
+public class ChatCompletionsRequest_ManipulateJson extends CustomJavaAction<java.lang.String>
 {
 	private IMendixObject __ChatCompletionsRequest;
 	private openaiconnector.proxies.ChatCompletionsRequest ChatCompletionsRequest;
 	private java.lang.String ChatCompletionsRequest_Json;
 
-	public ChatCompletionsRequest_ManipulateExportMapping(IContext context, IMendixObject ChatCompletionsRequest, java.lang.String ChatCompletionsRequest_Json)
+	public ChatCompletionsRequest_ManipulateJson(IContext context, IMendixObject ChatCompletionsRequest, java.lang.String ChatCompletionsRequest_Json)
 	{
 		super(context);
 		this.__ChatCompletionsRequest = ChatCompletionsRequest;
@@ -58,8 +62,8 @@ public class ChatCompletionsRequest_ManipulateExportMapping extends CustomJavaAc
 			rootNode = mapper.readTree(ChatCompletionsRequest_Json);
 			
 			removeEmptyMessageToolCalls(rootNode);
-
-			setFunctionToolCall(rootNode);
+			setFunctionToolChoice(rootNode);
+			mapFunctionParameters();
 
 			return mapper.writeValueAsString(rootNode);
 		} catch (Exception e) {
@@ -76,11 +80,11 @@ public class ChatCompletionsRequest_ManipulateExportMapping extends CustomJavaAc
 	@java.lang.Override
 	public java.lang.String toString()
 	{
-		return "ChatCompletionsRequest_ManipulateExportMapping";
+		return "ChatCompletionsRequest_ManipulateJson";
 	}
 
 	// BEGIN EXTRA CODE
-	private static final MxLogger LOGGER = new MxLogger(ChatCompletionsRequest_ManipulateExportMapping.class);
+	private static final MxLogger LOGGER = new MxLogger(ChatCompletionsRequest_ManipulateJson.class);
 	private static ObjectMapper mapper = new ObjectMapper();
 	private JsonNode rootNode;
 	
@@ -98,40 +102,26 @@ public class ChatCompletionsRequest_ManipulateExportMapping extends CustomJavaAc
 		((ObjectNode) rootNode).set("messages", messagesNode);
 	}
 
-	private void setFunctionToolCall(JsonNode rootNode) throws CoreException {
+	private void setFunctionToolChoice(JsonNode rootNode) throws CoreException {
 
-		// ToolChoice is not function and thus auto or none
-		if (ChatCompletionsRequest.getToolChoice() == null || ChatCompletionsRequest.getToolChoice().equals(ENUM_ToolChoice.function) == false) {
+		// ToolChoice is not function and thus empty, auto or none
+		if (ChatCompletionsRequest.getToolChoice() == null || !ChatCompletionsRequest.getToolChoice().equals(ENUM_ToolChoice.function)) {
 			return;
-
-		// Remove ToolChoice, because information is missing
-		} else if (ChatCompletionsRequest.getChatCompletionsRequest_ToolRequest_ToolChoice() == null
-				|| ChatCompletionsRequest.getChatCompletionsRequest_ToolRequest_ToolChoice().getToolType() == null
-				|| ChatCompletionsRequest.getChatCompletionsRequest_ToolRequest_ToolChoice()
-						.getToolRequest_FunctionRequest() == null
-				|| ChatCompletionsRequest.getChatCompletionsRequest_ToolRequest_ToolChoice()
-						.getToolRequest_FunctionRequest().getName().isBlank()) {
-			LOGGER.debug("ToolChoice is set to function, but function information is missing. Removing ToolChoice from Request.");
-			((ObjectNode)rootNode).remove("tool_choice");
 
 		// Add ToolChoice Function if it has not yet been called in a previous iteration
 		} else {
 			ToolRequest toolRequest = ChatCompletionsRequest.getChatCompletionsRequest_ToolRequest_ToolChoice();
 			FunctionRequest functionRequest = toolRequest.getToolRequest_FunctionRequest();
 			
-			//Remove tool choice function, because it has already been called; this prevents and infinite loop
+			// Remove tool choice function, because it has already been called
+			// This prevents and infinite loop
 			if (isToolRecall(functionRequest.getName())) {
 				LOGGER.debug("ToolChoice function " + functionRequest.getName() + " has already been called. Removing ToolChoice from Request.");
 				((ObjectNode)rootNode).remove("tool_choice");
 			
 			} else {
-				// Create a new ObjectNode for the tool_choice object
-		        ObjectNode toolChoiceNode = mapper.createObjectNode();
-		        toolChoiceNode.put("type", toolRequest.getToolType().name());
-		        ObjectNode functionNode = mapper.createObjectNode();
-		        functionNode.put("name", functionRequest.getName());
-		        toolChoiceNode.set("function", functionNode);
-		        
+				// Create a new tool_choice node
+		        ObjectNode toolChoiceNode = createFunctionToolChoiceNode(toolRequest, functionRequest);
 		        LOGGER.debug("ToolChoice has not been called yet. Updating ToolChoice function placeholder with: " + toolChoiceNode);
 		        
 		        // Update the original JsonNode with the tool_choice object
@@ -139,49 +129,63 @@ public class ChatCompletionsRequest_ManipulateExportMapping extends CustomJavaAc
 			}
 		}
 	}
+	
+	private ObjectNode createFunctionToolChoiceNode(ToolRequest toolRequest, FunctionRequest functionRequest) {
+		ObjectNode toolChoiceNode = mapper.createObjectNode();
+        toolChoiceNode.put("type", toolRequest.getToolType().name());
+        ObjectNode functionNode = mapper.createObjectNode();
+        functionNode.put("name", functionRequest.getName());
+        toolChoiceNode.set("function", functionNode);
+        return toolChoiceNode;
+	}
 
 	private boolean isToolRecall(String toolChoiceFunctionName) throws CoreException {
 		ChatCompletionsMessages chatCompletionsMessages = ChatCompletionsRequest
 				.getChatCompletionsMessages_ChatCompletionsRequest();
 
+		// Get all messages with role 'tool'
 		List<ChatCompletionsMessageRequest> messageListTool = ChatCompletionsMessageRequestImpl
-				.retrieveMessageListByRole(chatCompletionsMessages, ENUM_Role.tool, this.getContext());
+				.retrieveMessageListByRole(chatCompletionsMessages, ENUM_Role.tool, getContext());
 
-		// No tool calls yet
+		// No tool calls yet; thus no tool recall
 		if (messageListTool.size() == 0) {
 			return false;
 		}
 
+		// Get all messages with role assistant
+		// Assistant messages optionally have an array of tool_calls that contain an id and the functionName
 		List<ChatCompletionsMessageRequest> messageListAssistant = ChatCompletionsMessageRequestImpl
-				.retrieveMessageListByRole(chatCompletionsMessages, ENUM_Role.assistant, this.getContext());
+				.retrieveMessageListByRole(chatCompletionsMessages, ENUM_Role.assistant, getContext());
 
-		// HashMap with ToolCall._id and ToolCallFunction.Name
-		Map<String, String> toolIdNameMap = new HashMap<>();
+		// HashMap with ToolCall._id and ToolCallFunction.Name created from the messageListAssistant
+		// The map contains only those tool calls, where functionName equals the toolChoiceFunctionName
+		Map<String, String> ToolChoiceToolCallMap = new HashMap<>();
 
 		for (int i = 0; i < messageListAssistant.size(); i++) {
 
 			// Get ToolCall list for each assistant message where the function name equals
 			// the function name from the tool choice (toolChoiceFunctionName)
-			List<ToolCall> toolCallList = Core.retrieveByPath(this.getContext(), messageListAssistant.get(i).getMendixObject(),
+			List<ToolCall> toolCallList = Core.retrieveByPath(getContext(), messageListAssistant.get(i).getMendixObject(),
 							ToolCall.MemberNames.ToolCall_AbstractChatCompletionsMessage.toString())
-
-					.stream().filter(mxObject -> {
+					.stream()
+					.filter(mxObject -> {
 						String functionName = "";
 						try {
 							functionName = ToolCall.initialize(getContext(), mxObject).getToolCallFunction_ToolCall().getName();
 						} catch (CoreException e) {
 							LOGGER.error(e);
 						}
+						// Add if the functionName equals toolChoiceFunctionName
 						return functionName.equals(toolChoiceFunctionName);
 					})
-					.map(mxObject -> ToolCall.initialize(this.getContext(), mxObject))
+					.map(mxObject -> ToolCall.initialize(getContext(), mxObject))
 					.collect(Collectors.toList());
 
 			// Loop over toolCallList and add _id and functionName to a HashMap
 			for (int j = 0; j < toolCallList.size(); j++) {
 				String toolCallId = toolCallList.get(j).get_id();
 				String functionName = toolCallList.get(j).getToolCallFunction_ToolCall().getName();
-				toolIdNameMap.put(toolCallId, functionName);
+				ToolChoiceToolCallMap.put(toolCallId, functionName);
 			}
 		}
 
@@ -190,11 +194,73 @@ public class ChatCompletionsRequest_ManipulateExportMapping extends CustomJavaAc
 		// already been called
 		for (int i = 0; i < messageListTool.size(); i++) {
 			String toolId = messageListTool.get(i).getToolCallId();
-			if (toolIdNameMap.containsKey(toolId)) {
+			if (ToolChoiceToolCallMap.containsKey(toolId)) {
 				return true;
 			}
 		}
 		return false;
 	}
+	
+	private void mapFunctionParameters() throws CoreException {
+		Tools tools = ChatCompletionsRequest.getChatCompletionsRequest_Tools();
+		List<ToolRequest> toolRequestList = Core.retrieveByPath(getContext(),
+				tools.getMendixObject(), ToolRequest.MemberNames.ToolRequest_Tools.toString())
+				.stream()
+				.map(mxObject -> ToolRequest.initialize(getContext(), mxObject))
+				.collect(Collectors.toList());
+		
+		// Loop through all tools, find FunctionRequest object by functionName that contains the FunctionMicroflow,
+		// get InputParameterName of the FunctionMicroflow, create parametersNode and add to toolNode
+		JsonNode toolsNode = rootNode.path("tools");
+		for (JsonNode toolNode : toolsNode) {
+			String functionName = toolNode.path("function").path("name").asText();
+			Optional<ToolRequest> toolRequestMatch = toolRequestList.stream()
+					.filter(toolRequest -> {
+						try {
+							return toolRequest.getToolRequest_FunctionRequest().getName().equals(functionName);
+						} catch (CoreException e) {
+							LOGGER.error(e);
+						}
+						return false;
+					})
+					.findFirst();
+			if(toolRequestMatch.isPresent()) {
+				ObjectNode parametersNode = createFunctionParametersNode(toolRequestMatch.get().getToolRequest_FunctionRequest().getFunctionMicroflow());
+				if(parametersNode != null) {
+					JsonNode functionNode = toolNode.path("function");
+					((ObjectNode) functionNode).set("parameters", parametersNode);
+					((ObjectNode) toolNode).set("function", functionNode);
+				}
+			}
+		}
+		
+		// Update tools within rootNode
+		((ObjectNode) rootNode).set("tools", toolsNode);
+	}
+	
+	private ObjectNode createFunctionParametersNode(String FunctionMicroflow) {
+		String inputParamName = FunctionImpl.getFirstInputParamName(FunctionMicroflow);
+		if (inputParamName == null || inputParamName.isBlank()) {
+			return null;
+		}
+
+		ObjectNode parametersNode = mapper.createObjectNode();
+		ObjectNode propertiesNode = mapper.createObjectNode();
+		ObjectNode propertyNode = mapper.createObjectNode(); 
+		ArrayNode requiredNode = mapper.createArrayNode();
+		
+		propertyNode.put("type", "string");
+		
+		propertiesNode.set(inputParamName, propertyNode);
+		
+		requiredNode.add(inputParamName);
+		
+		parametersNode.put("type", "object");
+		parametersNode.set("properties", propertiesNode);
+		parametersNode.set("required", requiredNode);
+		
+		return parametersNode;
+	}
+	
 	// END EXTRA CODE
 }
