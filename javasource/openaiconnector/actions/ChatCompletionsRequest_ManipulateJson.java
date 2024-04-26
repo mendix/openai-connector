@@ -103,7 +103,6 @@ public class ChatCompletionsRequest_ManipulateJson extends CustomJavaAction<java
 	}
 
 	private void setFunctionToolChoice(JsonNode rootNode) throws CoreException {
-
 		// ToolChoice is not function and thus empty, auto or none
 		if (ChatCompletionsRequest.getToolChoice() == null || !ChatCompletionsRequest.getToolChoice().equals(ENUM_ToolChoice.function)) {
 			return;
@@ -203,6 +202,9 @@ public class ChatCompletionsRequest_ManipulateJson extends CustomJavaAction<java
 	
 	private void mapFunctionParameters() throws CoreException {
 		Tools tools = ChatCompletionsRequest.getChatCompletionsRequest_Tools();
+		if(tools == null) {
+			return;
+		}
 		List<ToolRequest> toolRequestList = Core.retrieveByPath(getContext(),
 				tools.getMendixObject(), ToolRequest.MemberNames.ToolRequest_Tools.toString())
 				.stream()

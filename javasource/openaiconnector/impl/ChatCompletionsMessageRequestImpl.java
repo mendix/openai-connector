@@ -2,11 +2,13 @@ package openaiconnector.impl;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 import com.mendix.core.Core;
+import com.mendix.systemwideinterfaces.core.IContext;
+
 import openaiconnector.proxies.ChatCompletionsMessages;
 import openaiconnector.proxies.ChatCompletionsMessageRequest;
 import openaiconnector.proxies.ENUM_Role;
-import com.mendix.systemwideinterfaces.core.IContext;
 
 public class ChatCompletionsMessageRequestImpl {
 

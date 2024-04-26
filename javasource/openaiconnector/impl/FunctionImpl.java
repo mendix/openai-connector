@@ -4,15 +4,14 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import com.mendix.core.Core;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.systemwideinterfaces.core.IDataType;
 
 import openaiconnector.proxies.Function;
 import openaiconnector.proxies.FunctionCollection;
-import openaiconnector.proxies.FunctionRequest;
 
 public class FunctionImpl {
 	

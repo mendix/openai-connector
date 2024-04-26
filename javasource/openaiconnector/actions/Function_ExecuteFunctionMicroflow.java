@@ -10,12 +10,13 @@
 package openaiconnector.actions;
 
 import static java.util.Objects.requireNonNull;
+import java.io.IOException;
 import com.mendix.core.Core;
 import com.mendix.systemwideinterfaces.core.IContext;
+import com.mendix.systemwideinterfaces.core.IMendixObject;
 import com.mendix.webui.CustomJavaAction;
 import openaiconnector.impl.FunctionImpl;
 import openaiconnector.impl.MxLogger;
-import com.mendix.systemwideinterfaces.core.IMendixObject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -43,25 +44,7 @@ public class Function_ExecuteFunctionMicroflow extends CustomJavaAction<java.lan
 			requireNonNull(FunctionRequest.getFunctionMicroflow(), "Function has no FunctionMicroflow.");
 			FunctionImpl.validateFunctionMicroflow(FunctionRequest.getFunctionMicroflow());
 			
-			String firstInputParamName = FunctionImpl.getFirstInputParamName(FunctionRequest.getFunctionMicroflow());
-			
-			if(firstInputParamName == null || firstInputParamName.isBlank()){
-				String response = Core.microflowCall(FunctionRequest.getFunctionMicroflow()).execute(getContext());
-				LOGGER.info("Calling microflow ", FunctionRequest.getFunctionMicroflow(), " without input parameters ", getContext(), " retured response \"", response, "\".");
-				return response;
-			
-			} else {
-				rootNodeArguments = mapper.readTree(Arguments);
-				JsonNode firstInputParamNode = rootNodeArguments.path(firstInputParamName);
-				
-				if (!firstInputParamNode.isTextual()) {
-					throw new IllegalArgumentException("Arguments " + Arguments + " does not match the expected input of the function microflow " + FunctionRequest.getFunctionMicroflow()+ ".");		
-				}
-				
-				String response = Core.microflowCall(FunctionRequest.getFunctionMicroflow()).withParam(firstInputParamName, firstInputParamNode.asText()).execute(getContext());
-				LOGGER.info("Calling microflow ", FunctionRequest.getFunctionMicroflow(), " with input parameter \"", firstInputParamName, "\": \"", firstInputParamNode.asText(), "\" with ", getContext(), " retured response \"", response, "\".");
-				return response;
-			}
+			return executeFunctionMicroflow();
 		
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
@@ -84,5 +67,27 @@ public class Function_ExecuteFunctionMicroflow extends CustomJavaAction<java.lan
 	private static final MxLogger LOGGER = new MxLogger(Function_ExecuteFunctionMicroflow.class);
 	private static ObjectMapper mapper = new ObjectMapper();
 	private JsonNode rootNodeArguments;
+	
+	private String executeFunctionMicroflow() throws Exception {
+		String firstInputParamName = FunctionImpl.getFirstInputParamName(FunctionRequest.getFunctionMicroflow());
+		
+		if(firstInputParamName == null || firstInputParamName.isBlank()){
+			String response = Core.microflowCall(FunctionRequest.getFunctionMicroflow()).execute(getContext());
+			LOGGER.info("Calling microflow ", FunctionRequest.getFunctionMicroflow(), " without input parameters ", getContext(), " retured response \"", response, "\".");
+			return response;
+		
+		} else {
+			rootNodeArguments = mapper.readTree(Arguments);
+			JsonNode firstInputParamNode = rootNodeArguments.path(firstInputParamName);
+			
+			if (!firstInputParamNode.isTextual()) {
+				throw new IOException("Arguments " + Arguments + " does not match the expected input of the function microflow " + FunctionRequest.getFunctionMicroflow()+ ".");		
+			}
+			String response = Core.microflowCall(FunctionRequest.getFunctionMicroflow()).withParam(firstInputParamName, firstInputParamNode.asText()).execute(getContext());
+			LOGGER.info("Calling microflow ", FunctionRequest.getFunctionMicroflow(), " with input parameter \"", firstInputParamName, "\": \"", firstInputParamNode.asText(), "\" with ", getContext(), " retured response \"", response, "\".");
+			return response;
+		}
+	}
+	
 	// END EXTRA CODE
 }
