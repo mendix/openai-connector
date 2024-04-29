@@ -19,6 +19,16 @@ import openaiconnector.impl.FunctionImpl;
 import openaiconnector.proxies.ENUM_ToolChoice;
 import openaiconnector.proxies.Function;
 
+/**
+ * Adds a new Function to an existing FunctionCollection.
+ * 
+ * Parameters: 
+ * - FunctionCollection: The FunctionCollection to which the new function should be added.
+ * - FunctionName: The name of the function to call.
+ * - FunctionMicroflow: The microflow that is called within this function.
+ * - FunctionDescription (optional): A description of what the function does, used by the model to choose when and how to call the function.
+ * - IsToolChoiceFunction: If set to true, the new function will become the tool choice of the FunctionCollection. This will force the model to call that particular function.
+ */
 public class FunctionCollection_AddFunction extends CustomJavaAction<java.lang.Void>
 {
 	private IMendixObject __FunctionCollection;

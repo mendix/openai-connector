@@ -18,6 +18,20 @@ import openaiconnector.proxies.Function;
 import openaiconnector.proxies.FunctionCollection;
 import openaiconnector.impl.FunctionCollectionImpl;
 
+/**
+ * Initialize a FunctionCollection and add a Function to it.
+ * Returns the new FunctionCollection.
+ * 
+ * Parameters: 
+ * - FunctionName: The name of the function to call.
+ * - FunctionMicroflow: The microflow that is called within this function.
+ * - FunctionDescription (optional): A description of what the function does, used by the model to choose when and how to call the function.
+ * - ToolChoice: Controls which (if any) function is called by the model.
+ * `none` means the model will not call a function and instead generates a message.
+ * `auto` means the model can pick between generating a message or calling a function.
+ * `function` means that the new function will become the tool choice of the FunctionCollection. This will force the model to call that particular function.
+ * `auto` is the default if functions are present.
+ */
 public class FunctionCollection_CreateAndAddFunction extends CustomJavaAction<IMendixObject>
 {
 	private java.lang.String FunctionName;
