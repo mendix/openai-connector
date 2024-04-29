@@ -24,6 +24,17 @@ import com.mendix.systemwideinterfaces.core.IMendixObject;
 import com.mendix.systemwideinterfaces.core.meta.IMetaAssociation;
 import com.mendix.systemwideinterfaces.core.meta.IMetaObject;
 
+/**
+ * Use this operation to retrieve chunks from the knowledge base and set associations to the related mendix objects (if applicable). This operation returns a list of the same type of the TargetChunk input variable. 
+ * Additional selection and filtering can be done by specifying the optional input parameters:
+ * -Offset: number of records to skip (for batching purposes)
+ * -MaxNumberOfResults: limit of the amount of records returned
+ * -LabelList: when provided, this operation only returns chunks that are conform with all of the labels in the list.
+ * 
+ * The DatabaseConfiguration that is passed must contain the connection details to a PostgreSQL database server with the PgVector extension installed. This entity is typically configured at runtime or in after-startup logic.
+ * By providing the KnowledgeBaseName parameter, you determine the knowledge base that was used for population earlier. 
+ * The TargetChunk entity (type parameter) must be a specialization of the Chunk entity from this module. If it contains associations to (specializations of) the related mendix object for which the chunk was created, this will be set by this operation for easy processing afterwards.
+ */
 public class ChunkList_Retrieve_SetAssociation extends CustomJavaAction<java.util.List<IMendixObject>>
 {
 	private IMendixObject __DatabaseConfiguration;
