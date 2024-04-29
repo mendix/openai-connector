@@ -28,16 +28,16 @@ public class ChunkUtils {
 
 
 	public static java.util.List<IMendixObject> getTargetChunkList(
-			IContext context, java.util.List<Chunk> ChunkList, IMendixObject TargetChunk, MxLogger LOGGER) {
+			IContext context, java.util.List<Chunk> chunkList, IMendixObject targetChunk, MxLogger LOGGER) {
 		// create list to return
-		java.util.List<IMendixObject> TargetChunkList = new ArrayList<IMendixObject>();
+		java.util.List<IMendixObject> targetChunkList = new ArrayList<IMendixObject>();
 		
 		// per chunk create a TargetChunk (custom specialization) 
-		ChunkList.forEach(c -> {
+		chunkList.forEach(c -> {
 			// - instantiate Target Chunk (custom specialization)
-			IMendixObject targetChunk = Core.instantiate(context, TargetChunk.getMetaObject().getName());
+			IMendixObject targetChunkSpecialization = Core.instantiate(context, targetChunk.getMetaObject().getName());
 			// copy values from Chunk to Target Chunk (custom specialization)
-			ORM.cloneObject(context, c.getMendixObject(), targetChunk, true);
+			ORM.cloneObject(context, c.getMendixObject(), targetChunkSpecialization, true);
 			try {
 				// - retrieve Mendix target object    
 				String MxObjectID = c.getMxObjectID(context);
@@ -48,28 +48,28 @@ public class ChunkUtils {
 						); 
 				
 				// find matching association based on meta object name 
-				Long assocationsSetCount= TargetChunk
+				Long assocationsSetCount= targetChunk
 						.getMetaObject()
 						.getMetaAssociationsParent()
 						.stream()
 						.filter(a -> assocationMatchesTarget(a, targetObject)) 
-						.peek(a -> setAssociationToTarget(context, targetChunk, targetObject, a))
+						.peek(a -> setAssociationToTarget(context, targetChunkSpecialization, targetObject, a))
 						.collect(Collectors.counting());
 				
 				// set association if found, otherwise log a warning
 				if (assocationsSetCount == 0){
 					LOGGER.warn("No eligible association found for target object " + targetObject.getMetaObject().getName()
-						+ " on entity " + TargetChunk.getMetaObject().getName());	
+						+ " on entity " + targetChunk.getMetaObject().getName());	
 				}
 				
 			} catch (Exception e) {
 				LOGGER.error(e.getMessage());
 			}
 			
-			TargetChunkList.add(targetChunk);
+			targetChunkList.add(targetChunkSpecialization);
 					
 		});
-		return TargetChunkList;
+		return targetChunkList;
 	}
 
 

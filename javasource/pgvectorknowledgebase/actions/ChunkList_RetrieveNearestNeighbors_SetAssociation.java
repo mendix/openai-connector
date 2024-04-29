@@ -68,11 +68,11 @@ public class ChunkList_RetrieveNearestNeighbors_SetAssociation extends CustomJav
 			ChunkUtils.validateTargetChunk(this.TargetChunk);
 			
 			// call a microflow to retrieve chunks
-			java.util.List<Chunk> ChunkList = pgvectorknowledgebase.proxies.microflows.Microflows.chunkList_RetrieveNearestNeighbors(
+			java.util.List<Chunk> chunkList = pgvectorknowledgebase.proxies.microflows.Microflows.chunkList_RetrieveNearestNeighbors(
 					getContext(), DatabaseConfiguration, KnowledgeBaseName, Vector, MinimumSimilarity, MaxNumberOfResults, LabelList);
 			
 			//map to target chunks to return
-			return ChunkUtils.getTargetChunkList(getContext(), ChunkList, TargetChunk, LOGGER);
+			return ChunkUtils.getTargetChunkList(getContext(), chunkList, TargetChunk, LOGGER);
 			
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
