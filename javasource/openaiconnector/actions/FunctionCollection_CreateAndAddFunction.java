@@ -55,13 +55,13 @@ public class FunctionCollection_CreateAndAddFunction extends CustomJavaAction<IM
 		try{
 			FunctionImpl.validateInput(FunctionMicroflow, FunctionName);
 			
-			FunctionCollection FunctionCollection = new FunctionCollection(getContext());
+			FunctionCollection functionCollection = new FunctionCollection(getContext());
 			
-			Function function = FunctionImpl.createFunction(getContext(), FunctionMicroflow, FunctionName, FunctionDescription, FunctionCollection);		
+			Function function = FunctionImpl.createFunction(getContext(), FunctionMicroflow, FunctionName, FunctionDescription, functionCollection);		
 			
-			FunctionCollectionImpl.setToolChoice(FunctionCollection, ToolChoice, function);
+			FunctionCollectionImpl.setToolChoice(functionCollection, ToolChoice, function);
 			
-			return FunctionCollection.getMendixObject();
+			return functionCollection.getMendixObject();
 		
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());

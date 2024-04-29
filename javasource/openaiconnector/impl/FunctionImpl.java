@@ -33,38 +33,38 @@ public class FunctionImpl {
 	    }
 	}
 	
-	public static void validateFunctionMicroflow(String FunctionMicroflow) throws Exception {
+	public static void validateFunctionMicroflow(String functionMicroflow) throws Exception {
 		Set<String> microflowNames = Core.getMicroflowNames();
-		if(!microflowNames.contains(FunctionMicroflow)) {
-			throw new IllegalArgumentException("FunctionMicroflow " + FunctionMicroflow + " does not exists.");
+		if(!microflowNames.contains(functionMicroflow)) {
+			throw new IllegalArgumentException("FunctionMicroflow " + functionMicroflow + " does not exists.");
 		}
 		
-		Map<String, IDataType> inputParameters = Core.getInputParameters(FunctionMicroflow);
+		Map<String, IDataType> inputParameters = Core.getInputParameters(functionMicroflow);
 		if (inputParameters != null && inputParameters.size() > 1) {
-			throw new IllegalArgumentException("FunctionMicroflow " + FunctionMicroflow + " should only have one input parameter of type String.");
+			throw new IllegalArgumentException("FunctionMicroflow " + functionMicroflow + " should only have one input parameter of type String.");
 		}
 		
 		if(inputParameters != null && !inputParameters.entrySet().isEmpty()
 				&& IDataType.DataTypeEnum.String.equals(inputParameters.entrySet().iterator().next().getValue().getType()) == false) {
-			throw new IllegalArgumentException("FunctionMicroflow " + FunctionMicroflow + " should have an input parameter of type String.");			
+			throw new IllegalArgumentException("FunctionMicroflow " + functionMicroflow + " should have an input parameter of type String.");			
 		}
 
-		if(Core.getReturnType(FunctionMicroflow) == null || IDataType.DataTypeEnum.String.equals(Core.getReturnType(FunctionMicroflow).getType()) == false) {
-			throw new IllegalArgumentException("FunctionMicroflow " + FunctionMicroflow + " should have a String return value.");		
+		if(Core.getReturnType(functionMicroflow) == null || IDataType.DataTypeEnum.String.equals(Core.getReturnType(functionMicroflow).getType()) == false) {
+			throw new IllegalArgumentException("FunctionMicroflow " + functionMicroflow + " should have a String return value.");		
 		}
 	}
 	
-	public static Function createFunction(IContext context, String FunctionMicroflow, String FunctionName, String FunctionDescription, FunctionCollection FunctionCollection) {
+	public static Function createFunction(IContext context, String functionMicroflow, String functionName, String functionDescription, FunctionCollection functionCollection) {
 		Function function = new Function(context);
-		function.setFunctionMicroflow(FunctionMicroflow);
-		function.setName(FunctionName);	
-		function.setDescription(FunctionDescription); //Optional parameter
-		function.setFunction_FunctionCollection(FunctionCollection);
+		function.setFunctionMicroflow(functionMicroflow);
+		function.setName(functionName);	
+		function.setDescription(functionDescription); //Optional parameter
+		function.setFunction_FunctionCollection(functionCollection);
 		return function;
 	}
 	
-	public static String getFirstInputParamName(String FunctionMicroflow) {
-		Map<String, IDataType> inputParameters = Core.getInputParameters(FunctionMicroflow);
+	public static String getFirstInputParamName(String functionMicroflow) {
+		Map<String, IDataType> inputParameters = Core.getInputParameters(functionMicroflow);
 		if(inputParameters != null && !inputParameters.entrySet().isEmpty()) {
 			return inputParameters.entrySet().iterator().next().getKey();
 		} else {

@@ -158,7 +158,7 @@ public class ChatCompletionsRequest_ManipulateJson extends CustomJavaAction<java
 
 		// HashMap with ToolCall._id and ToolCallFunction.Name created from the messageListAssistant
 		// The map contains only those tool calls, where functionName equals the toolChoiceFunctionName
-		Map<String, String> ToolChoiceToolCallMap = new HashMap<>();
+		Map<String, String> toolChoiceToolCallMap = new HashMap<>();
 
 		for (int i = 0; i < messageListAssistant.size(); i++) {
 
@@ -184,7 +184,7 @@ public class ChatCompletionsRequest_ManipulateJson extends CustomJavaAction<java
 			for (int j = 0; j < toolCallList.size(); j++) {
 				String toolCallId = toolCallList.get(j).get_id();
 				String functionName = toolCallList.get(j).getToolCallFunction_ToolCall().getName();
-				ToolChoiceToolCallMap.put(toolCallId, functionName);
+				toolChoiceToolCallMap.put(toolCallId, functionName);
 			}
 		}
 
@@ -193,7 +193,7 @@ public class ChatCompletionsRequest_ManipulateJson extends CustomJavaAction<java
 		// already been called
 		for (int i = 0; i < messageListTool.size(); i++) {
 			String toolId = messageListTool.get(i).getToolCallId();
-			if (ToolChoiceToolCallMap.containsKey(toolId)) {
+			if (toolChoiceToolCallMap.containsKey(toolId)) {
 				return true;
 			}
 		}
@@ -240,8 +240,8 @@ public class ChatCompletionsRequest_ManipulateJson extends CustomJavaAction<java
 		((ObjectNode) rootNode).set("tools", toolsNode);
 	}
 	
-	private ObjectNode createFunctionParametersNode(String FunctionMicroflow) {
-		String inputParamName = FunctionImpl.getFirstInputParamName(FunctionMicroflow);
+	private ObjectNode createFunctionParametersNode(String functionMicroflow) {
+		String inputParamName = FunctionImpl.getFirstInputParamName(functionMicroflow);
 		if (inputParamName == null || inputParamName.isBlank()) {
 			return null;
 		}
