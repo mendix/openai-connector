@@ -1,5 +1,10 @@
 package pgvectorknowledgebase.impl;
 
+import static java.util.Objects.requireNonNull;
+
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+
 import com.mendix.core.Core;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
@@ -7,9 +12,6 @@ import com.mendix.systemwideinterfaces.core.meta.IMetaAssociation;
 
 import communitycommons.ORM;
 import pgvectorknowledgebase.proxies.Chunk;
-import static java.util.Objects.requireNonNull;
-import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 public class ChunkUtils {
 	
@@ -37,7 +39,7 @@ public class ChunkUtils {
 			// copy values from Chunk to Target Chunk (custom specialization)
 			ORM.cloneObject(context, c.getMendixObject(), targetChunk, true);
 			try {
-				// - retrieve mendix target object    
+				// - retrieve Mendix target object    
 				String MxObjectID = c.getMxObjectID(context);
 				IMendixObject targetObject = MxObjectID == null ? null : Core.retrieveId(
 						context, Core.createMendixIdentifier(
@@ -74,7 +76,9 @@ public class ChunkUtils {
 
 
 	public static void setAssociationToTarget(IContext context,IMendixObject chunk,IMendixObject targetObject, IMetaAssociation association){
-		chunk.setValue(context, association.getName(), targetObject.getId());
+		if (targetObject != null) {
+			chunk.setValue(context, association.getName(), targetObject.getId());
+		}
 	}
 
 	public static boolean assocationMatchesTarget(IMetaAssociation asssociation, IMendixObject targetObject){

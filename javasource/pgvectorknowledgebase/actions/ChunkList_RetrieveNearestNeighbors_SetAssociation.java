@@ -9,21 +9,12 @@
 
 package pgvectorknowledgebase.actions;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.stream.Collectors;
-import static java.util.Objects.requireNonNull;
-import com.mendix.core.Core;
 import com.mendix.systemwideinterfaces.core.IContext;
+import com.mendix.systemwideinterfaces.core.IMendixObject;
 import com.mendix.webui.CustomJavaAction;
-import communitycommons.ORM;
 import pgvectorknowledgebase.impl.ChunkUtils;
 import pgvectorknowledgebase.impl.MxLogger;
 import pgvectorknowledgebase.proxies.Chunk;
-import com.mendix.systemwideinterfaces.core.IMendixObject;
-import com.mendix.systemwideinterfaces.core.IMendixObjectMember;
-import com.mendix.systemwideinterfaces.core.meta.IMetaAssociation;
-import com.mendix.systemwideinterfaces.core.meta.IMetaObject;
 
 /**
  * Use this operation to retrieve chunks from the knowledge base and set associations to the related mendix objects (if applicable). The retrieval is based on similarity with respect to the input vector provided.  This operation returns a list of the same type of the TargetChunk input variable. The returned list is sorted on similarity.
