@@ -9,8 +9,10 @@
 
 package pgvectorknowledgebase.actions;
 
+import com.mendix.core.Core;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
+import com.mendix.systemwideinterfaces.core.meta.IMetaObject;
 import com.mendix.webui.CustomJavaAction;
 import pgvectorknowledgebase.impl.ChunkUtils;
 import pgvectorknowledgebase.impl.MxLogger;
@@ -32,13 +34,13 @@ public class ChunkList_Retrieve_SetAssociation extends CustomJavaAction<java.uti
 	private IMendixObject __DatabaseConfiguration;
 	private pgvectorknowledgebase.proxies.DatabaseConfiguration DatabaseConfiguration;
 	private java.lang.String KnowledgeBaseName;
-	private IMendixObject TargetChunk;
+	private java.lang.String TargetChunk;
 	private java.util.List<IMendixObject> __LabelList;
 	private java.util.List<pgvectorknowledgebase.proxies.Label> LabelList;
 	private java.lang.Long MaxNumberOfResults;
 	private java.lang.Long Offset;
 
-	public ChunkList_Retrieve_SetAssociation(IContext context, IMendixObject DatabaseConfiguration, java.lang.String KnowledgeBaseName, IMendixObject TargetChunk, java.util.List<IMendixObject> LabelList, java.lang.Long MaxNumberOfResults, java.lang.Long Offset)
+	public ChunkList_Retrieve_SetAssociation(IContext context, IMendixObject DatabaseConfiguration, java.lang.String KnowledgeBaseName, java.lang.String TargetChunk, java.util.List<IMendixObject> LabelList, java.lang.Long MaxNumberOfResults, java.lang.Long Offset)
 	{
 		super(context);
 		this.__DatabaseConfiguration = DatabaseConfiguration;
@@ -63,15 +65,15 @@ public class ChunkList_Retrieve_SetAssociation extends CustomJavaAction<java.uti
 		// BEGIN USER CODE
 		
 		try { 
-			
-			ChunkUtils.validateTargetChunk(TargetChunk);
+			IMetaObject targetChunk = Core.getMetaObject(TargetChunk);
+			ChunkUtils.validateTargetChunk(targetChunk);
 			
 			// call a microflow to retrieve chunks
 			java.util.List<Chunk> chunkList = pgvectorknowledgebase.proxies.microflows.Microflows.chunkList_Retrieve(
 					getContext(), DatabaseConfiguration, KnowledgeBaseName, MaxNumberOfResults, LabelList, Offset);
 			
 			//map to target chunks to return
-			return ChunkUtils.getTargetChunkList(getContext(), chunkList, TargetChunk, LOGGER);
+			return ChunkUtils.getTargetChunkList(getContext(), chunkList, targetChunk, LOGGER);
 			
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
