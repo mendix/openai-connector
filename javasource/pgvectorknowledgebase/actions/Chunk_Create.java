@@ -10,14 +10,12 @@
 package pgvectorknowledgebase.actions;
 
 import static java.util.Objects.requireNonNull;
-import java.util.ArrayList;
-import java.util.List;
 import com.mendix.systemwideinterfaces.core.IContext;
-import com.mendix.webui.CustomJavaAction;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
+import com.mendix.webui.CustomJavaAction;
 import communitycommons.StringUtils;
-import pgvectorknowledgebase.proxies.Chunk;
 import pgvectorknowledgebase.impl.MxLogger;
+import pgvectorknowledgebase.proxies.Chunk;
 
 /**
  * This action can be used for instantiating Chunk objects to create the input for the knowledge base based on your own data structure. A ChunkList must be passed to which the new Chunk object will be added.

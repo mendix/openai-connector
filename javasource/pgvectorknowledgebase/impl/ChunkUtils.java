@@ -1,0 +1,87 @@
+package pgvectorknowledgebase.impl;
+
+import static java.util.Objects.requireNonNull;
+
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+
+import com.mendix.core.Core;
+import com.mendix.systemwideinterfaces.core.IContext;
+import com.mendix.systemwideinterfaces.core.IMendixObject;
+import com.mendix.systemwideinterfaces.core.meta.IMetaAssociation;
+
+import communitycommons.ORM;
+import pgvectorknowledgebase.proxies.Chunk;
+
+public class ChunkUtils {
+	
+	
+	public static void validateTargetChunk(IMendixObject TargetChunk) throws Exception {
+		// verify target chunk on non-null, subclass of chunk, 
+		requireNonNull(TargetChunk, "Target Chunk must be specified");
+		if (! TargetChunk.getMetaObject().isSubClassOf("PgVectorKnowledgeBase.Chunk")){
+			throw new Exception("Target Chunk must be a specialization of PgVectorKnowledgeBase.Chunk");
+		}		
+	};
+
+
+
+
+	public static java.util.List<IMendixObject> getTargetChunkList(
+			IContext context, java.util.List<Chunk> chunkList, IMendixObject targetChunk, MxLogger LOGGER) {
+		// create list to return
+		java.util.List<IMendixObject> targetChunkList = new ArrayList<IMendixObject>();
+		
+		// per chunk create a TargetChunk (custom specialization) 
+		chunkList.forEach(c -> {
+			// - instantiate Target Chunk (custom specialization)
+			IMendixObject targetChunkSpecialization = Core.instantiate(context, targetChunk.getMetaObject().getName());
+			// copy values from Chunk to Target Chunk (custom specialization)
+			ORM.cloneObject(context, c.getMendixObject(), targetChunkSpecialization, true);
+			try {
+				// - retrieve Mendix target object    
+				String MxObjectID = c.getMxObjectID(context);
+				IMendixObject targetObject = MxObjectID == null ? null : Core.retrieveId(
+						context, Core.createMendixIdentifier(
+								MxObjectID
+								)
+						); 
+				
+				// find matching association based on meta object name 
+				Long assocationsSetCount= targetChunk
+						.getMetaObject()
+						.getMetaAssociationsParent()
+						.stream()
+						.filter(a -> assocationMatchesTarget(a, targetObject)) 
+						.peek(a -> setAssociationToTarget(context, targetChunkSpecialization, targetObject, a))
+						.collect(Collectors.counting());
+				
+				// set association if found, otherwise log a warning
+				if (assocationsSetCount == 0){
+					LOGGER.warn("No eligible association found for target object " + targetObject.getMetaObject().getName()
+						+ " on entity " + targetChunk.getMetaObject().getName());	
+				}
+				
+			} catch (Exception e) {
+				LOGGER.error(e.getMessage());
+			}
+			
+			targetChunkList.add(targetChunkSpecialization);
+					
+		});
+		return targetChunkList;
+	}
+
+
+
+
+	public static void setAssociationToTarget(IContext context,IMendixObject chunk,IMendixObject targetObject, IMetaAssociation association){
+		if (targetObject != null) {
+			chunk.setValue(context, association.getName(), targetObject.getId());
+		}
+	}
+
+	public static boolean assocationMatchesTarget(IMetaAssociation asssociation, IMendixObject targetObject){
+		return targetObject == null ? false : targetObject.getMetaObject().isSubClassOf(asssociation.getChild());
+	}
+}
