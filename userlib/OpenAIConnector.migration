@@ -1,0 +1,9 @@
+dependency com.fasterxml.jackson.core:jackson-databind:2.17.0
+delete byte-buddy-1.14.9.jar
+delete byte-buddy-1.14.9.jar.OpenAIConnector.RequiredLib
+delete jackson-annotations-2.17.0.jar
+delete jackson-annotations-2.17.0.jar.OpenAIConnector.RequiredLib
+delete jackson-core-2.17.0.jar
+delete jackson-core-2.17.0.jar.OpenAIConnector.RequiredLib
+delete jackson-databind-2.17.0.jar
+delete jackson-databind-2.17.0.jar.OpenAIConnector.RequiredLib
