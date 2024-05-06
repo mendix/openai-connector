@@ -72,16 +72,28 @@ public class ChunkUtils {
 		return targetChunkList;
 	}
 
+	
+	
+	public static void addChunkWithMxObjectID(IContext context, IMendixObject MxObject, java.util.List<Chunk> chunkList) {
+		Chunk chunk = new Chunk(context);
+		chunk.setMxObjectID(context, String.valueOf(MxObject.getId().toLong()));
+		chunkList.add(chunk);
+	}
 
-
-
-	public static void setAssociationToTarget(IContext context,IMendixObject chunk,IMendixObject targetObject, IMetaAssociation association){
+	
+	
+	private static void setAssociationToTarget(IContext context, IMendixObject chunk,IMendixObject targetObject, IMetaAssociation association){
 		if (targetObject != null) {
 			chunk.setValue(context, association.getName(), targetObject.getId());
 		}
 	}
 
-	public static boolean assocationMatchesTarget(IMetaAssociation asssociation, IMendixObject targetObject){
+	
+	
+	private static boolean assocationMatchesTarget(IMetaAssociation asssociation, IMendixObject targetObject){
 		return targetObject == null ? false : targetObject.getMetaObject().isSubClassOf(asssociation.getChild());
 	}
+	
+	
+	
 }

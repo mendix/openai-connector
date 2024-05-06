@@ -15,6 +15,7 @@ import com.mendix.core.Core;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.webui.CustomJavaAction;
 import communitycommons.StringUtils;
+import pgvectorknowledgebase.impl.ChunkUtils;
 import pgvectorknowledgebase.impl.MxLogger;
 import pgvectorknowledgebase.proxies.Chunk;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
@@ -46,9 +47,7 @@ public class Chunk_Delete extends CustomJavaAction<java.lang.Boolean>
 				LOGGER.warn("No MxObject was passed, nothing was deleted");
 			}
 			else {
-				Chunk chunk = new Chunk(getContext());
-				chunk.setMxObjectID(getContext(), String.valueOf(MxObject.getId().toLong()));
-				chunkList.add(chunk);
+				ChunkUtils.addChunkWithMxObjectID(getContext(), MxObject, chunkList);
 			}
 			return pgvectorknowledgebase.proxies.microflows.Microflows.chunkList_Delete_FromKnowledgeBase(getContext(), DatabaseConfiguration, KnowledgeBaseName, chunkList);
 		} catch (Error e) {
