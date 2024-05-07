@@ -12,7 +12,6 @@ import com.mendix.systemwideinterfaces.core.meta.IMetaAssociation;
 import com.mendix.systemwideinterfaces.core.meta.IMetaObject;
 
 import communitycommons.ORM;
-import pgvectorknowledgebase.actions.ChunkList_RetrieveNearestNeighbors_SetAssociation;
 import pgvectorknowledgebase.proxies.Chunk;
 
 public class ChunkUtils {
@@ -21,8 +20,8 @@ public class ChunkUtils {
 	public static void validateTargetChunk(IMetaObject TargetChunk) throws Exception {
 		// verify target chunk on non-null, subclass of chunk, 
 		requireNonNull(TargetChunk, "Target Chunk must be specified");
-		if (! TargetChunk.isSubClassOf("PgVectorKnowledgeBase.Chunk")){
-			throw new Exception("Target Chunk must be a specialization of PgVectorKnowledgeBase.Chunk");
+		if (! TargetChunk.isSubClassOf(Chunk.entityName)){
+			throw new IllegalArgumentException("Target Chunk must be a specialization of " + Chunk.entityName);
 		}		
 	};
 
