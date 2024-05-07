@@ -75,7 +75,7 @@ public class ChunkList_RetrieveNearestNeighbors_SetAssociation extends CustomJav
 					getContext(), DatabaseConfiguration, KnowledgeBaseName, Vector, MinimumSimilarity, MaxNumberOfResults, LabelList);
 			
 			//map to target chunks to return
-			return ChunkUtils.getTargetChunkList(getContext(), chunkList, targetChunk, LOGGER);
+			return ChunkUtils.getTargetChunkList(getContext(), chunkList, targetChunk);
 			
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
