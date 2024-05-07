@@ -9,7 +9,7 @@ public class FunctionCollectionImpl{
 	public static void setToolChoice(FunctionCollection functionCollection, ENUM_ToolChoice toolChoice, Function function) {
 		functionCollection.setToolChoice(toolChoice); //Optional parameter
 		
-		if(toolChoice == ENUM_ToolChoice.function) {
+		if(toolChoice.equals(ENUM_ToolChoice.function)) {
 			functionCollection.setFunctionCollection_Function_ToolChoice(function);
 		}
 	}

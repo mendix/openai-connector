@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import com.mendix.core.Core;
 import com.mendix.systemwideinterfaces.core.IContext;
+import com.mendix.systemwideinterfaces.core.IMendixObject;
 
 import openaiconnector.proxies.ChatCompletionsMessages;
 import openaiconnector.proxies.ChatCompletionsMessageRequest;
@@ -18,9 +19,13 @@ public class ChatCompletionsMessageRequestImpl {
 		return Core.retrieveByPath(context, chatCompletionsMessages.getMendixObject(),
 				ChatCompletionsMessageRequest.MemberNames.ChatCompletionsMessageRequest_ChatCompletionsMessages.toString())
 				.stream().filter(mxObject -> {
-					String messageRole = mxObject.getValue(context, ChatCompletionsMessageRequest.MemberNames.Role.name());
-					return messageRole.equals(filterByRole.name());
+					return filterMessageByRole(filterByRole, context, mxObject);
 				}).map(mxObject -> ChatCompletionsMessageRequest.initialize(context, mxObject))
 				.collect(Collectors.toList());
+	}
+
+	private static boolean filterMessageByRole(ENUM_Role filterByRole, IContext context, IMendixObject mxObject) {
+		String messageRole = mxObject.getValue(context, ChatCompletionsMessageRequest.MemberNames.Role.name());
+		return messageRole.equals(filterByRole.name());
 	}
 }

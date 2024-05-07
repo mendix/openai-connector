@@ -79,7 +79,7 @@ public class Function_ExecuteFunctionMicroflow extends CustomJavaAction<java.lan
 			JsonNode firstInputParamNode = rootNodeArguments.path(firstInputParamName);
 			
 			if (!firstInputParamNode.isTextual()) {
-				throw new IOException("Arguments " + Arguments + " does not match the expected input of the function microflow " + FunctionRequest.getFunctionMicroflow()+ ".");		
+				throw new IllegalArgumentException("Arguments " + Arguments + " does not match the expected input of the function microflow " + FunctionRequest.getFunctionMicroflow()+ ".");		
 			}
 			return executeAndLogFunctionMicroflow(firstInputParamName, firstInputParamNode.asText());
 		}
@@ -99,10 +99,9 @@ public class Function_ExecuteFunctionMicroflow extends CustomJavaAction<java.lan
 		}
 		long endTime = System.currentTimeMillis();
 		long executionTime = endTime - startTime;
-		logMessageInfo = logMessageInfo + "\n\nDuration:\n" + executionTime + "ms";
-		logMessageTrace = logMessageTrace+ "\n\nReturn value:\n" + response + "\n\nDuration:\n" + executionTime + "ms";
-		LOGGER.info(logMessageInfo);
-		LOGGER.trace(logMessageTrace);
+		String duration = "\n\nDuration:\n" + executionTime + "ms";
+		LOGGER.info(logMessageInfo + duration);
+		LOGGER.trace(logMessageTrace+ "\n\nReturn value:\n" + response + duration);
 		return response;
 	}
 	

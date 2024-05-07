@@ -22,7 +22,7 @@ public class FunctionImpl {
 		validateFunctionMicroflow(functionMicroflow);
 	}
 		
-	public static void validateFunctionName(String functionName) throws Exception {
+	private static void validateFunctionName(String functionName) throws Exception {
 	    // Name must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length of 64
 	    String pattern = "^[a-zA-Z0-9_-]{1,64}$";
 	    Pattern regex = Pattern.compile(pattern);
