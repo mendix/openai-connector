@@ -12,6 +12,7 @@ import com.mendix.systemwideinterfaces.core.meta.IMetaAssociation;
 import com.mendix.systemwideinterfaces.core.meta.IMetaObject;
 
 import communitycommons.ORM;
+import pgvectorknowledgebase.actions.ChunkList_RetrieveNearestNeighbors_SetAssociation;
 import pgvectorknowledgebase.proxies.Chunk;
 
 public class ChunkUtils {
@@ -29,7 +30,7 @@ public class ChunkUtils {
 
 
 	public static java.util.List<IMendixObject> getTargetChunkList(
-			IContext context, java.util.List<Chunk> chunkList, IMetaObject targetChunk, MxLogger LOGGER) {
+			IContext context, java.util.List<Chunk> chunkList, IMetaObject targetChunk) {
 		// create list to return
 		java.util.List<IMendixObject> targetChunkList = new ArrayList<IMendixObject>();
 		
@@ -95,5 +96,7 @@ public class ChunkUtils {
 	}
 	
 	
+	
+	private static final MxLogger LOGGER = new MxLogger(ChunkUtils.class);
 	
 }
