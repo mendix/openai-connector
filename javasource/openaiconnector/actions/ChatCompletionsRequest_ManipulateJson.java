@@ -61,7 +61,7 @@ public class ChatCompletionsRequest_ManipulateJson extends CustomJavaAction<java
 
 			rootNode = MAPPER.readTree(ChatCompletionsRequest_Json);
 			
-			removeEmptyMessageToolCalls(rootNode);
+			updateMessages(rootNode);
 			setFunctionToolChoice(rootNode);
 			mapFunctionParameters();
 
@@ -88,18 +88,60 @@ public class ChatCompletionsRequest_ManipulateJson extends CustomJavaAction<java
 	private static final ObjectMapper MAPPER = new ObjectMapper();
 	private JsonNode rootNode;
 	
-	private void removeEmptyMessageToolCalls(JsonNode rootNode) {
+	private void updateMessages(JsonNode rootNode) {
 		//Get messages node
 		JsonNode messagesNode = rootNode.path("messages");
-		//Loop over all messages, find tool_calls node and remove if array is empty
+		//Loop over all messages
 		for (JsonNode messageNode : messagesNode) {
-            JsonNode toolCallsNode = messageNode.path("tool_calls");
-            if (toolCallsNode != null && toolCallsNode.isArray() && toolCallsNode.size() == 0) {
-                ((ObjectNode) messageNode).remove("tool_calls");
-            }
+			//find tool_calls node and remove if array is empty
+            removeEmptyToolCalls(messageNode);
+            
+            //If an imageCollection has been added replace content node with array of text content and image content
+            updateImageMessages(messageNode);
         }
 		//Update messages within rootNode
 		((ObjectNode) rootNode).set("messages", messagesNode);
+	}
+
+	private void removeEmptyToolCalls(JsonNode messageNode) {
+		JsonNode toolCallsNode = messageNode.path("tool_calls");
+		if (toolCallsNode != null && toolCallsNode.isArray() && toolCallsNode.size() == 0) {
+		    ((ObjectNode) messageNode).remove("tool_calls");
+		}
+	}
+
+	private void updateImageMessages(JsonNode messageNode) {
+		JsonNode imageCollection = messageNode.path("imagecollection");
+		if(imageCollection == null) {
+			return;
+		}
+		ArrayNode content = MAPPER.createArrayNode();
+			
+		//set text content string as first element in array
+		ObjectNode textContent = MAPPER.createObjectNode();
+		textContent.put("type", "text");
+		textContent.put("text", messageNode.path("content").asText());
+		content.add(textContent);
+		
+		//add image content to array
+		for (JsonNode image : imageCollection) {
+			ObjectNode imageURL = MAPPER.createObjectNode();
+			imageURL.put("url", image.path("imagecontent").asText());
+			
+			if(image.path("detail") != null) {
+				imageURL.put("detail", image.path("detail").asText());
+			}
+			
+			ObjectNode imageContent = MAPPER.createObjectNode();
+			imageContent.put("type", "image_url");
+			imageContent.set("image_url", imageURL);
+			content.add(imageContent);
+		}
+			
+		//Remove imageCollection helper structure
+		((ObjectNode) messageNode).remove("imagecollection");
+		//Overwrite content node including images
+		((ObjectNode) messageNode).set("content", content);
 	}
 
 	private void setFunctionToolChoice(JsonNode rootNode) throws CoreException {
