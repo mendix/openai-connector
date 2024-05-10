@@ -20,8 +20,8 @@ public class ChunkUtils {
 	public static void validateTargetChunk(IMetaObject TargetChunk) throws Exception {
 		// verify target chunk on non-null, subclass of chunk, 
 		requireNonNull(TargetChunk, "Target Chunk must be specified");
-		if (! TargetChunk.isSubClassOf("PgVectorKnowledgeBase.Chunk")){
-			throw new Exception("Target Chunk must be a specialization of PgVectorKnowledgeBase.Chunk");
+		if (! TargetChunk.isSubClassOf(Chunk.entityName)){
+			throw new IllegalArgumentException("Target Chunk must be a specialization of " + Chunk.entityName);
 		}		
 	};
 
@@ -29,7 +29,7 @@ public class ChunkUtils {
 
 
 	public static java.util.List<IMendixObject> getTargetChunkList(
-			IContext context, java.util.List<Chunk> chunkList, IMetaObject targetChunk, MxLogger LOGGER) {
+			IContext context, java.util.List<Chunk> chunkList, IMetaObject targetChunk) {
 		// create list to return
 		java.util.List<IMendixObject> targetChunkList = new ArrayList<IMendixObject>();
 		
@@ -72,16 +72,30 @@ public class ChunkUtils {
 		return targetChunkList;
 	}
 
+	
+	
+	public static void addChunkWithMxObjectID(IContext context, IMendixObject MxObject, java.util.List<Chunk> chunkList) {
+		Chunk chunk = new Chunk(context);
+		chunk.setMxObjectID(context, String.valueOf(MxObject.getId().toLong()));
+		chunkList.add(chunk);
+	}
 
-
-
-	public static void setAssociationToTarget(IContext context,IMendixObject chunk,IMendixObject targetObject, IMetaAssociation association){
+	
+	
+	private static void setAssociationToTarget(IContext context, IMendixObject chunk,IMendixObject targetObject, IMetaAssociation association){
 		if (targetObject != null) {
 			chunk.setValue(context, association.getName(), targetObject.getId());
 		}
 	}
 
-	public static boolean assocationMatchesTarget(IMetaAssociation asssociation, IMendixObject targetObject){
+	
+	
+	private static boolean assocationMatchesTarget(IMetaAssociation asssociation, IMendixObject targetObject){
 		return targetObject == null ? false : targetObject.getMetaObject().isSubClassOf(asssociation.getChild());
 	}
+	
+	
+	
+	private static final MxLogger LOGGER = new MxLogger(ChunkUtils.class);
+	
 }

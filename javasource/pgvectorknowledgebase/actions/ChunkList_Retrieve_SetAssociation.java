@@ -73,7 +73,7 @@ public class ChunkList_Retrieve_SetAssociation extends CustomJavaAction<java.uti
 					getContext(), DatabaseConfiguration, KnowledgeBaseName, MaxNumberOfResults, LabelList, Offset);
 			
 			//map to target chunks to return
-			return ChunkUtils.getTargetChunkList(getContext(), chunkList, targetChunk, LOGGER);
+			return ChunkUtils.getTargetChunkList(getContext(), chunkList, targetChunk);
 			
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
@@ -93,6 +93,6 @@ public class ChunkList_Retrieve_SetAssociation extends CustomJavaAction<java.uti
 	}
 
 	// BEGIN EXTRA CODE
-	private static final MxLogger LOGGER = new MxLogger(ChunkList_RetrieveNearestNeighbors_SetAssociation.class);
+	private static final MxLogger LOGGER = new MxLogger(ChunkList_Retrieve_SetAssociation.class);
 	// END EXTRA CODE
 }
