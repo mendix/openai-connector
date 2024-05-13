@@ -59,13 +59,13 @@ public class ChatCompletionsRequest_ManipulateJson extends CustomJavaAction<java
 			requireNonNull(ChatCompletionsRequest, "ChatCompletionsRequest is required.");
 			requireNonNull(ChatCompletionsRequest_Json, "ChatCompletionsRequest_Json is required.");
 
-			rootNode = mapper.readTree(ChatCompletionsRequest_Json);
+			rootNode = MAPPER.readTree(ChatCompletionsRequest_Json);
 			
-			removeEmptyMessageToolCalls(rootNode);
+			updateMessages(rootNode);
 			setFunctionToolChoice(rootNode);
 			mapFunctionParameters();
 
-			return mapper.writeValueAsString(rootNode);
+			return MAPPER.writeValueAsString(rootNode);
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
 			throw e;
@@ -85,21 +85,65 @@ public class ChatCompletionsRequest_ManipulateJson extends CustomJavaAction<java
 
 	// BEGIN EXTRA CODE
 	private static final MxLogger LOGGER = new MxLogger(ChatCompletionsRequest_ManipulateJson.class);
-	private static ObjectMapper mapper = new ObjectMapper();
+	private static final ObjectMapper MAPPER = new ObjectMapper();
 	private JsonNode rootNode;
 	
-	private void removeEmptyMessageToolCalls(JsonNode rootNode) {
+	private void updateMessages(JsonNode rootNode) {
 		//Get messages node
 		JsonNode messagesNode = rootNode.path("messages");
-		//Loop over all messages, find tool_calls node and remove if array is empty
+		//Loop over all messages
 		for (JsonNode messageNode : messagesNode) {
-            JsonNode toolCallsNode = messageNode.path("tool_calls");
-            if (toolCallsNode.isArray() && toolCallsNode.size() == 0) {
-                ((ObjectNode) messageNode).remove("tool_calls");
-            }
+			//find tool_calls node and remove if array is empty
+            removeEmptyToolCalls(messageNode);
+            
+            //If an imageCollection has been added replace content node with array of text content and image content
+            updateImageMessages(messageNode);
         }
 		//Update messages within rootNode
 		((ObjectNode) rootNode).set("messages", messagesNode);
+	}
+
+	private void removeEmptyToolCalls(JsonNode messageNode) {
+		JsonNode toolCallsNode = messageNode.path("tool_calls");
+		if (toolCallsNode != null && toolCallsNode.isArray() && toolCallsNode.size() == 0) {
+		    ((ObjectNode) messageNode).remove("tool_calls");
+		}
+	}
+
+	private void updateImageMessages(JsonNode messageNode) {
+		JsonNode imageCollection = messageNode.path("imagecollection");
+		
+		//Return if there no images will be sent
+		if(imageCollection == null || imageCollection.size() == 0) {
+			return;
+		}
+		ArrayNode content = MAPPER.createArrayNode();
+			
+		//set text content string as first element in array
+		ObjectNode textContent = MAPPER.createObjectNode();
+		textContent.put("type", "text");
+		textContent.put("text", messageNode.path("content").asText());
+		content.add(textContent);
+		
+		//add image content to array
+		for (JsonNode image : imageCollection) {
+			ObjectNode imageURL = MAPPER.createObjectNode();
+			imageURL.put("url", image.path("imagecontent").asText());
+			
+			if(image.path("detail") != null) {
+				imageURL.put("detail", image.path("detail").asText());
+			}
+			
+			ObjectNode imageContent = MAPPER.createObjectNode();
+			imageContent.put("type", "image_url");
+			imageContent.set("image_url", imageURL);
+			content.add(imageContent);
+		}
+			
+		//Remove imageCollection helper structure
+		((ObjectNode) messageNode).remove("imagecollection");
+		//Overwrite content node including images
+		((ObjectNode) messageNode).set("content", content);
 	}
 
 	private void setFunctionToolChoice(JsonNode rootNode) throws CoreException {
@@ -110,11 +154,11 @@ public class ChatCompletionsRequest_ManipulateJson extends CustomJavaAction<java
 		// Add ToolChoice Function if it has not yet been called in a previous iteration
 		} else {
 			ToolRequest toolRequest = ChatCompletionsRequest.getChatCompletionsRequest_ToolRequest_ToolChoice();
-			FunctionRequest functionRequest = toolRequest.getToolRequest_FunctionRequest();
+			FunctionRequest functionRequest = toolRequest == null ? null : toolRequest.getToolRequest_FunctionRequest();
 			
 			// Remove tool choice function, because it has already been called
 			// This prevents and infinite loop
-			if (isToolRecall(functionRequest.getName())) {
+			if (functionRequest == null || isToolRecall(functionRequest.getName())) {
 				LOGGER.debug("ToolChoice function " + functionRequest.getName() + " has already been called. Removing ToolChoice from Request.");
 				((ObjectNode)rootNode).remove("tool_choice");
 			
@@ -130,9 +174,9 @@ public class ChatCompletionsRequest_ManipulateJson extends CustomJavaAction<java
 	}
 	
 	private ObjectNode createFunctionToolChoiceNode(ToolRequest toolRequest, FunctionRequest functionRequest) {
-		ObjectNode toolChoiceNode = mapper.createObjectNode();
+		ObjectNode toolChoiceNode = MAPPER.createObjectNode();
         toolChoiceNode.put("type", toolRequest.getToolType().name());
-        ObjectNode functionNode = mapper.createObjectNode();
+        ObjectNode functionNode = MAPPER.createObjectNode();
         functionNode.put("name", functionRequest.getName());
         toolChoiceNode.set("function", functionNode);
         return toolChoiceNode;
@@ -160,30 +204,23 @@ public class ChatCompletionsRequest_ManipulateJson extends CustomJavaAction<java
 		// The map contains only those tool calls, where functionName equals the toolChoiceFunctionName
 		Map<String, String> toolChoiceToolCallMap = new HashMap<>();
 
-		for (int i = 0; i < messageListAssistant.size(); i++) {
+		for (ChatCompletionsMessageRequest message : messageListAssistant) {
 
 			// Get ToolCall list for each assistant message where the function name equals
 			// the function name from the tool choice (toolChoiceFunctionName)
-			List<ToolCall> toolCallList = Core.retrieveByPath(getContext(), messageListAssistant.get(i).getMendixObject(),
+			List<ToolCall> toolCallList = Core.retrieveByPath(getContext(), message.getMendixObject(),
 							ToolCall.MemberNames.ToolCall_AbstractChatCompletionsMessage.toString())
 					.stream()
 					.filter(mxObject -> {
-						String functionName = "";
-						try {
-							functionName = ToolCall.initialize(getContext(), mxObject).getToolCallFunction_ToolCall().getName();
-						} catch (CoreException e) {
-							LOGGER.error(e);
-						}
-						// Add if the functionName equals toolChoiceFunctionName
-						return functionName.equals(toolChoiceFunctionName);
+						return filterToolCallByFunctionName(toolChoiceFunctionName, mxObject);
 					})
 					.map(mxObject -> ToolCall.initialize(getContext(), mxObject))
 					.collect(Collectors.toList());
 
 			// Loop over toolCallList and add _id and functionName to a HashMap
-			for (int j = 0; j < toolCallList.size(); j++) {
-				String toolCallId = toolCallList.get(j).get_id();
-				String functionName = toolCallList.get(j).getToolCallFunction_ToolCall().getName();
+			for (ToolCall toolCall : toolCallList) {
+				String toolCallId = toolCall.get_id();
+				String functionName = toolCall.getToolCallFunction_ToolCall().getName();
 				toolChoiceToolCallMap.put(toolCallId, functionName);
 			}
 		}
@@ -191,13 +228,24 @@ public class ChatCompletionsRequest_ManipulateJson extends CustomJavaAction<java
 		// Loop over Tool messages and compare ToolCallId with Ids from Assistant
 		// messages in HashMap to see whether the function from the Tool Choice has
 		// already been called
-		for (int i = 0; i < messageListTool.size(); i++) {
-			String toolId = messageListTool.get(i).getToolCallId();
+		for (ChatCompletionsMessageRequest messageTool : messageListTool) {
+			String toolId = messageTool.getToolCallId();
 			if (toolChoiceToolCallMap.containsKey(toolId)) {
 				return true;
 			}
 		}
 		return false;
+	}
+
+	private boolean filterToolCallByFunctionName(String toolChoiceFunctionName, IMendixObject mxObject) {
+		String functionName = "";
+		try {
+			functionName = ToolCall.initialize(getContext(), mxObject).getToolCallFunction_ToolCall().getName();
+		} catch (CoreException e) {
+			LOGGER.error(e);
+		}
+		// Return true if the functionName equals toolChoiceFunctionName
+		return functionName.equals(toolChoiceFunctionName);
 	}
 	
 	private void mapFunctionParameters() throws CoreException {
@@ -218,12 +266,7 @@ public class ChatCompletionsRequest_ManipulateJson extends CustomJavaAction<java
 			String functionName = toolNode.path("function").path("name").asText();
 			Optional<ToolRequest> toolRequestMatch = toolRequestList.stream()
 					.filter(toolRequest -> {
-						try {
-							return toolRequest.getToolRequest_FunctionRequest().getName().equals(functionName);
-						} catch (CoreException e) {
-							LOGGER.error(e);
-						}
-						return false;
+						return filterToolRequestByFunctionName(functionName, toolRequest);
 					})
 					.findFirst();
 			if(toolRequestMatch.isPresent()) {
@@ -239,6 +282,15 @@ public class ChatCompletionsRequest_ManipulateJson extends CustomJavaAction<java
 		// Update tools within rootNode
 		((ObjectNode) rootNode).set("tools", toolsNode);
 	}
+
+	private boolean filterToolRequestByFunctionName(String functionName, ToolRequest toolRequest) {
+		try {
+			return toolRequest.getToolRequest_FunctionRequest().getName().equals(functionName);
+		} catch (CoreException e) {
+			LOGGER.error(e);
+		}
+		return false;
+	}
 	
 	private ObjectNode createFunctionParametersNode(String functionMicroflow) {
 		String inputParamName = FunctionImpl.getFirstInputParamName(functionMicroflow);
@@ -246,10 +298,10 @@ public class ChatCompletionsRequest_ManipulateJson extends CustomJavaAction<java
 			return null;
 		}
 
-		ObjectNode parametersNode = mapper.createObjectNode();
-		ObjectNode propertiesNode = mapper.createObjectNode();
-		ObjectNode propertyNode = mapper.createObjectNode(); 
-		ArrayNode requiredNode = mapper.createArrayNode();
+		ObjectNode parametersNode = MAPPER.createObjectNode();
+		ObjectNode propertiesNode = MAPPER.createObjectNode();
+		ObjectNode propertyNode = MAPPER.createObjectNode(); 
+		ArrayNode requiredNode = MAPPER.createArrayNode();
 		
 		propertyNode.put("type", "string");
 		
