@@ -1,3 +1,4 @@
+@import "../../../atlas_core/web/_variables.scss";
 .btn-primary.btn {
     background: $brand-gradient;
     background-origin: border-box;
@@ -5,4 +6,10 @@
     &:hover {
         background: $brand-gradient-dark;
     }
+}
+
+.inline-link.mx-link {
+    padding-left: $spacing-smaller;
+    line-height: $line-height-base * 1.25;
+
 }
