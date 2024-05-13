@@ -31510,6 +31510,11 @@ $callout-info-bg: $color-info-lighter;
   background: linear-gradient(64deg, #16518d, #3ca8b9);
 }
 
+.inline-link.mx-link {
+  padding-left: 4px;
+  line-height: 1.7857142863;
+}
+
 .card-small.card {
   margin-bottom: 8px;
   padding: 8px;
