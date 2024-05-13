@@ -112,7 +112,9 @@ public class ChatCompletionsRequest_ManipulateJson extends CustomJavaAction<java
 
 	private void updateImageMessages(JsonNode messageNode) {
 		JsonNode imageCollection = messageNode.path("imagecollection");
-		if(imageCollection == null) {
+		
+		//Return if there no images will be sent
+		if(imageCollection == null || imageCollection.size() == 0) {
 			return;
 		}
 		ArrayNode content = MAPPER.createArrayNode();
