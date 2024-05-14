@@ -1,5 +1,5 @@
 @import "./additional-variables";
-@import "../../atlas_core/web/variables";
+
 
 $brand-primary: #185a9d;
 $brand-gradient: linear-gradient(64deg, $brand-primary, $brand-secondary);
@@ -31,3 +31,4 @@ $wizard-step-number-size: 48px;
 $wizard-active-step-color: $brand-primary;
 
 $label-primary-bg: $brand-primary;
+@import "../../atlas_core/web/variables";
