@@ -11,12 +11,12 @@ package general.actions;
 
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.webui.CustomJavaAction;
+import genaicommons.impl.MxLogger;
+import genaicommons.impl.ToolCollectionImpl;
+import genaicommons.impl.ToolImpl;
+import genaicommons.proxies.Tool;
+import genaicommons.proxies.ToolCollection;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
-import openaiconnector.impl.MxLogger;
-import openaiconnector.impl.FunctionImpl;
-import openaiconnector.proxies.Function;
-import openaiconnector.proxies.FunctionCollection;
-import openaiconnector.impl.FunctionCollectionImpl;
 
 /**
  * Initialize a FunctionCollection and add a Function to it.
@@ -37,7 +37,7 @@ public class ToolCollection_CreateAndAddTool extends CustomJavaAction<IMendixObj
 	private java.lang.String FunctionName;
 	private java.lang.String FunctionMicroflow;
 	private java.lang.String FunctionDescription;
-	private openaiconnector.proxies.ENUM_ToolChoice ToolChoice;
+	private genaicommons.proxies.ENUM_ToolChoice ToolChoice;
 
 	public ToolCollection_CreateAndAddTool(IContext context, java.lang.String FunctionName, java.lang.String FunctionMicroflow, java.lang.String FunctionDescription, java.lang.String ToolChoice)
 	{
@@ -45,7 +45,7 @@ public class ToolCollection_CreateAndAddTool extends CustomJavaAction<IMendixObj
 		this.FunctionName = FunctionName;
 		this.FunctionMicroflow = FunctionMicroflow;
 		this.FunctionDescription = FunctionDescription;
-		this.ToolChoice = ToolChoice == null ? null : openaiconnector.proxies.ENUM_ToolChoice.valueOf(ToolChoice);
+		this.ToolChoice = ToolChoice == null ? null : genaicommons.proxies.ENUM_ToolChoice.valueOf(ToolChoice);
 	}
 
 	@java.lang.Override
@@ -53,15 +53,15 @@ public class ToolCollection_CreateAndAddTool extends CustomJavaAction<IMendixObj
 	{
 		// BEGIN USER CODE
 		try{
-			FunctionImpl.validateInput(FunctionMicroflow, FunctionName);
+			ToolImpl.validateInput(FunctionMicroflow, FunctionName);
 			
-			FunctionCollection functionCollection = new FunctionCollection(getContext());
+			ToolCollection toolCollection = new ToolCollection(getContext());
 			
-			Function function = FunctionImpl.createFunction(getContext(), FunctionMicroflow, FunctionName, FunctionDescription, functionCollection);		
+			Tool tool = ToolImpl.createTool(getContext(), FunctionMicroflow, FunctionName, FunctionDescription, toolCollection);		
 			
-			FunctionCollectionImpl.setToolChoice(functionCollection, ToolChoice, function);
+			ToolCollectionImpl.setToolChoice(toolCollection, ToolChoice, tool);
 			
-			return functionCollection.getMendixObject();
+			return toolCollection.getMendixObject();
 		
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
