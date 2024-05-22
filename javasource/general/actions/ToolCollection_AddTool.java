@@ -61,7 +61,7 @@ public class ToolCollection_AddTool extends CustomJavaAction<java.lang.Void>
 			Tool tool = ToolImpl.createTool(getContext(), FunctionMicroflow, FunctionName, FunctionDescription, ToolCollection);
 			
 			if(IsFunctionToolChoice) {
-				ToolCollectionImpl.setToolChoice(ToolCollection, ENUM_ToolChoice.function, tool);
+				ToolCollectionImpl.setToolChoice(ToolCollection, ENUM_ToolChoice.tool, tool);
 			}
 			
 			return null;
