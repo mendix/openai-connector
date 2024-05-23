@@ -18,8 +18,8 @@ import genaicommons.proxies.ToolCollection;
 public class FunctionImpl {
 	
 	public static void validateFunctionInput(String functionMicroflow, String toolName) throws Exception {
-		requireNonNull(functionMicroflow, "FunctionMicroflow is required.");
-		requireNonNull(toolName, "ToolName is required.");
+		requireNonNull(functionMicroflow, "Function Microflow is required.");
+		requireNonNull(toolName, "Tool Name is required.");
 		ToolImpl.validateToolName(toolName);
 		validateFunctionMicroflow(functionMicroflow);
 	}
@@ -48,22 +48,23 @@ public class FunctionImpl {
 	private static void validateFunctionMicroflow(String functionMicroflow) throws Exception {
 		Set<String> microflowNames = Core.getMicroflowNames();
 		if(!microflowNames.contains(functionMicroflow)) {
-			throw new IllegalArgumentException("FunctionMicroflow " + functionMicroflow + " does not exists.");
+			throw new IllegalArgumentException("Function Microflow " + functionMicroflow + " does not exists.");
 		}
 		
 		Map<String, IDataType> inputParameters = Core.getInputParameters(functionMicroflow);
 		if (inputParameters != null && inputParameters.size() > 1) {
-			throw new IllegalArgumentException("FunctionMicroflow " + functionMicroflow + " should only have one input parameter of type String.");
+			throw new IllegalArgumentException("Function Microflow " + functionMicroflow + " should only have one input parameter of type String.");
 		}
 		
 		if(inputParameters != null && !inputParameters.entrySet().isEmpty()
 				&& IDataType.DataTypeEnum.String.equals(inputParameters.entrySet().iterator().next().getValue().getType()) == false) {
-			throw new IllegalArgumentException("FunctionMicroflow " + functionMicroflow + " should have an input parameter of type String.");			
+			throw new IllegalArgumentException("Function Microflow " + functionMicroflow + " should have an input parameter of type String.");			
 		}
 
 		if(Core.getReturnType(functionMicroflow) == null || IDataType.DataTypeEnum.String.equals(Core.getReturnType(functionMicroflow).getType()) == false) {
-			throw new IllegalArgumentException("FunctionMicroflow " + functionMicroflow + " should have a String return value.");		
+			throw new IllegalArgumentException("Function Microflow " + functionMicroflow + " should have a String return value.");		
 		}
+		
 	}
 
 }
