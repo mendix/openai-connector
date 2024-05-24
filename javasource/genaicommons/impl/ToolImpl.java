@@ -14,6 +14,4 @@ public class ToolImpl {
 	    	throw new IllegalArgumentException("Tool Name is not valid. Name must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length of 64.");
 	    }
 	}
-	
-	
 }

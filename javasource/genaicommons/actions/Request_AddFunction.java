@@ -9,59 +9,66 @@
 
 package genaicommons.actions;
 
+import static java.util.Objects.requireNonNull;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.webui.CustomJavaAction;
 import genaicommons.impl.FunctionImpl;
 import genaicommons.impl.MxLogger;
 import genaicommons.impl.ToolCollectionImpl;
+import genaicommons.proxies.ENUM_ToolChoice;
 import genaicommons.proxies.Function;
+import genaicommons.proxies.Request;
 import genaicommons.proxies.ToolCollection;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 
 /**
- * Initialize a FunctionCollection and add a Function to it.
- * Returns the new FunctionCollection.
+ * Adds a new Function to an existing FunctionCollection.
  * 
  * Parameters: 
+ * - FunctionCollection: The FunctionCollection to which the new function should be added.
  * - FunctionName: The name of the function to call.
  * - FunctionMicroflow: The microflow that is called within this function.
  * - FunctionDescription (optional): A description of what the function does, used by the model to choose when and how to call the function.
- * - ToolChoice: Controls which (if any) function is called by the model.
- * `none` means the model will not call a function and instead generates a message.
- * `auto` means the model can pick between generating a message or calling a function.
- * `function` means that the new function will become the tool choice of the FunctionCollection. This will force the model to call that particular function.
- * `auto` is the default if functions are present.
+ * - IsToolChoiceFunction: If set to true, the new function will become the tool choice of the FunctionCollection. This will force the model to call that particular function.
  */
-public class ToolCollection_CreateAndAddFunction extends CustomJavaAction<IMendixObject>
+public class Request_AddFunction extends CustomJavaAction<java.lang.Void>
 {
+	private IMendixObject __Request;
+	private genaicommons.proxies.Request Request;
 	private java.lang.String ToolName;
 	private java.lang.String ToolDescription;
-	private genaicommons.proxies.ENUM_ToolChoice ToolChoice;
+	private java.lang.Boolean IsToolChoice;
 	private java.lang.String FunctionMicroflow;
 
-	public ToolCollection_CreateAndAddFunction(IContext context, java.lang.String ToolName, java.lang.String ToolDescription, java.lang.String ToolChoice, java.lang.String FunctionMicroflow)
+	public Request_AddFunction(IContext context, IMendixObject Request, java.lang.String ToolName, java.lang.String ToolDescription, java.lang.Boolean IsToolChoice, java.lang.String FunctionMicroflow)
 	{
 		super(context);
+		this.__Request = Request;
 		this.ToolName = ToolName;
 		this.ToolDescription = ToolDescription;
-		this.ToolChoice = ToolChoice == null ? null : genaicommons.proxies.ENUM_ToolChoice.valueOf(ToolChoice);
+		this.IsToolChoice = IsToolChoice;
 		this.FunctionMicroflow = FunctionMicroflow;
 	}
 
 	@java.lang.Override
-	public IMendixObject executeAction() throws Exception
+	public java.lang.Void executeAction() throws Exception
 	{
+		this.Request = this.__Request == null ? null : genaicommons.proxies.Request.initialize(getContext(), __Request);
+
 		// BEGIN USER CODE
 		try{
+			requireNonNull(Request, "Request is required.");
 			FunctionImpl.validateFunctionInput(FunctionMicroflow, ToolName);
 			
-			ToolCollection toolCollection = new ToolCollection(getContext());
+			ToolCollection toolCollection = ToolCollectionImpl.getOrCreateToolCollection(getContext(), Request);
 			
-			Function function = FunctionImpl.createFunction(getContext(), FunctionMicroflow, ToolName, ToolDescription, toolCollection);		
+			Function function = FunctionImpl.createFunction(getContext(), FunctionMicroflow, ToolName, ToolDescription, toolCollection);
 			
-			ToolCollectionImpl.setToolChoice(toolCollection, ToolChoice, function);
+			if(IsToolChoice) {
+				ToolCollectionImpl.setToolChoice(toolCollection, ENUM_ToolChoice.tool, function);
+			}
 			
-			return toolCollection.getMendixObject();
+			return null;
 		
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
@@ -77,10 +84,10 @@ public class ToolCollection_CreateAndAddFunction extends CustomJavaAction<IMendi
 	@java.lang.Override
 	public java.lang.String toString()
 	{
-		return "ToolCollection_CreateAndAddFunction";
+		return "Request_AddFunction";
 	}
 
 	// BEGIN EXTRA CODE
-	private static final MxLogger LOGGER = new MxLogger(ToolCollection_CreateAndAddFunction.class);
+	private static final MxLogger LOGGER = new MxLogger(Request_AddFunction.class);
 	// END EXTRA CODE
 }
