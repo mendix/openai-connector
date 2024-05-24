@@ -14,6 +14,7 @@ import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.webui.CustomJavaAction;
 import genaicommons.impl.FunctionImpl;
 import genaicommons.impl.MxLogger;
+import genaicommons.impl.RequestImpl;
 import genaicommons.impl.ToolCollectionImpl;
 import genaicommons.proxies.ENUM_ToolChoice;
 import genaicommons.proxies.Function;
@@ -37,16 +38,16 @@ public class Request_AddFunction extends CustomJavaAction<java.lang.Void>
 	private genaicommons.proxies.Request Request;
 	private java.lang.String ToolName;
 	private java.lang.String ToolDescription;
-	private java.lang.Boolean IsToolChoice;
+	private genaicommons.proxies.ENUM_ToolChoice ToolChoice;
 	private java.lang.String FunctionMicroflow;
 
-	public Request_AddFunction(IContext context, IMendixObject Request, java.lang.String ToolName, java.lang.String ToolDescription, java.lang.Boolean IsToolChoice, java.lang.String FunctionMicroflow)
+	public Request_AddFunction(IContext context, IMendixObject Request, java.lang.String ToolName, java.lang.String ToolDescription, java.lang.String ToolChoice, java.lang.String FunctionMicroflow)
 	{
 		super(context);
 		this.__Request = Request;
 		this.ToolName = ToolName;
 		this.ToolDescription = ToolDescription;
-		this.IsToolChoice = IsToolChoice;
+		this.ToolChoice = ToolChoice == null ? null : genaicommons.proxies.ENUM_ToolChoice.valueOf(ToolChoice);
 		this.FunctionMicroflow = FunctionMicroflow;
 	}
 
@@ -64,8 +65,8 @@ public class Request_AddFunction extends CustomJavaAction<java.lang.Void>
 			
 			Function function = FunctionImpl.createFunction(getContext(), FunctionMicroflow, ToolName, ToolDescription, toolCollection);
 			
-			if(IsToolChoice) {
-				ToolCollectionImpl.setToolChoice(toolCollection, ENUM_ToolChoice.tool, function);
+			if(ToolChoice != null) {
+				RequestImpl.setToolChoice(Request, toolCollection, ToolChoice, function);
 			}
 			
 			return null;
