@@ -1,0 +1,32 @@
+.accordion-sources {
+    .widget-accordion-group{
+        background: transparent;
+
+        .widget-accordion-group-header{
+            .widget-accordion-group-header-button {
+                display: inline-flex;
+                background: transparent;
+                padding: 0;
+
+                &.widget-accordion-group-header-button-clickable{
+                    &:hover {
+                        color: $font-color-default;
+                    }
+                }
+
+                .widget-accordion-group-header-button-icon {
+                    align-self: left;
+                    display: inline-flex;
+                    fill: $font-color-default;
+                }
+            }      
+        }
+
+        .widget-accordion-group-content-wrapper{
+            .widget-accordion-group-content {
+                padding-left: 0;
+                padding-bottom: 0;
+            }
+        }
+    }
+}

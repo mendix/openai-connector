@@ -1,0 +1,22 @@
+.layout-chat-sidebar {
+    right: 0 !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    left: unset !important;
+    height: unset !important;
+    width: $pop-up-chat-width;
+    .mx-window-content {
+        border-radius: 0;
+        .mx-window-header {
+            background: $brand-primary;
+        }
+        .mx-window-body {
+            overflow: hidden;
+            padding: $spacing-medium;
+            height: calc(100% - 50px);
+            .mx-placeholder {
+                height: 100%;
+            }
+        }
+    }
+}

@@ -1,0 +1,48 @@
+@font-face {
+    font-family: 'Rethink Sans';
+    font-style: normal;
+    font-weight: 700;
+    src: local('static'), url('./RethinkSans-Bold.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Rethink Sans';
+    font-style: italic;
+    font-weight: 700;
+    src: local('static'), url('./RethinkSans-BoldItalic.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Rethink Sans';
+    font-style: italic;
+    font-weight: 400;
+    src: local('static'), url('./RethinkSans-Italic.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Rethink Sans';
+    font-style: normal;
+    font-weight: 300;
+    src: local('static'), url('./RethinkSans-Regular.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Rethink Sans';
+    font-style: italic;
+    font-weight: 300;
+    src: local('static'), url('./RethinkSans-Italic.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Rethink Sans';
+    font-style: normal;
+    font-weight: 400;
+    src: local('static'), url('./RethinkSans-Regular.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Rethink Sans';
+    font-style: normal;
+    font-weight: 600;
+    src: local('static'), url('./RethinkSans-SemiBold.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Rethink Sans';
+    font-style: italic;
+    font-weight: 600;
+    src: local('static'), url('./RethinkSans-SemiBoldItalic.ttf') format('truetype');
+}

@@ -1,0 +1,63 @@
+//this file contains styling for a pop-up chatbox
+
+.btn-chat-popup {
+    position: fixed;
+    right: $pop-up-chat-right-position;
+    bottom: $pop-up-chat-bottom-position;
+    z-index: 10;
+    width: 60px;
+    height: 60px;
+    .glyphicon {
+        font-size: 24px;
+    }
+    img {
+        height: 32px;
+        width: 32px;
+        margin: 0;
+    }
+}
+
+.page-chat-popup.mx-window {
+    position: fixed;
+    right: $pop-up-chat-right-position !important;
+    bottom: $pop-up-chat-bottom-position !important;
+    left: unset !important;
+    top: unset !important;
+    width: $pop-up-chat-width !important;
+    height: $pop-up-chat-height !important;
+    z-index: 100;
+    .mx-window-header {
+        background: $brand-primary;
+    }
+    .modal-body {
+        height: calc(100% - 50px);
+        overflow: hidden;
+        padding: $spacing-medium;
+        .mx-placeholder {
+            height: 100%;
+        }
+    }
+}
+
+.synthia-chat-bubble {
+    max-width: 75%;
+    border-radius: 8px;
+    margin-bottom: $spacing-smaller;
+    padding: $spacing-small $spacing-medium;
+}
+.chat-bubble-wrapper {
+    &--user {
+        .synthia-chat-bubble {
+            background: mix($brand-primary, white, 10%); // $color-primary-lighter;
+            border-radius: 8px 8px 0 8px;
+            text-align: right;
+        }
+    }
+    &--assistant {
+        .synthia-chat-bubble {
+            background: mix($brand-success, white, 10%); // $color-success-lighter;
+            border-radius: 8px 8px 8px 0;
+            text-align: left;
+        }
+    }
+}

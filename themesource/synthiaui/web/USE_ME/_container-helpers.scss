@@ -1,0 +1,30 @@
+.chat-center {
+    max-width: $chat-width;
+    height: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    .mx-dataview {
+        display: contents;
+        .mx-dataview-content {
+            display: contents;
+        }
+    }
+}
+
+.history-sidebar {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+    max-width: $history-sidebar-width;
+    margin: 0 auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: calc(100vh - $layout-spacing-top - $layout-spacing-bottom);
+    .mx-listview {
+        height: 100%;
+        width: 100%;
+    }
+}

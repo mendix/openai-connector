@@ -1,0 +1,18 @@
+.listview-horizontal.mx-listview {
+    > ul {
+        display: contents;
+        margin-bottom: none;
+        > li {
+            display: inline-block;
+        }
+    }
+}
+
+.listview-hide-on-empty.mx-listview {
+    > ul > li.mx-listview-empty {
+        display: none;
+        * {
+            display: none;
+        }
+    }
+}
