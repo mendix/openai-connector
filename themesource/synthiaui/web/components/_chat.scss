@@ -58,8 +58,9 @@
         padding-right: 0px !important;
 
         .form-control {       
-            padding-right: $send-btn-size + 20px;
+            padding-right: $send-btn-size + 36px;
             max-height: $chat-input-max-height;
+            overflow: auto;
         }
     }
 
@@ -69,7 +70,7 @@
 
     .send-btn {
         position: absolute;
-        right: 10px;
+        right: 24px;
         margin: auto;
         display: flex;
         align-items: center;
@@ -84,6 +85,7 @@
         .glyphicon {
             top: 0;
             font-size: $send-btn-size / 2;
+            left: -1px;
         }
     }
 }

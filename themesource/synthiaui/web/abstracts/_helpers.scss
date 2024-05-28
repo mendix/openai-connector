@@ -1,8 +1,8 @@
 .border-primary {
-    border: 1px solid $brand-primary;
+  border: 1px solid $brand-primary;
 }
 
-.hover-trigger{
+.hover-trigger {
   .show-on-hover {
     visibility: hidden; // Initially hide the hover content
   }
@@ -19,4 +19,20 @@
 
 .spacing-inner-top-smaller {
   padding-top: $spacing-smaller;
+}
+
+.text-clamp--2-lines {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.line-height--1 {
+  line-height: 1;
+}
+
+.chat--max-width {
+  max-width: $chat-width;
 }
