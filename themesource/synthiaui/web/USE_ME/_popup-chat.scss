@@ -48,14 +48,14 @@
 .chat-bubble-wrapper {
     &--user {
         .synthia-chat-bubble {
-            background: mix($brand-primary, white, 10%); // $color-primary-lighter;
+            background: $chat-bubble-user-background;
             border-radius: 8px 8px 0 8px;
             text-align: right;
         }
     }
     &--assistant {
         .synthia-chat-bubble {
-            background: mix($brand-success, white, 10%); // $color-success-lighter;
+            background: $chat-bubble-assistant-background;
             border-radius: 8px 8px 8px 0;
             text-align: left;
         }
