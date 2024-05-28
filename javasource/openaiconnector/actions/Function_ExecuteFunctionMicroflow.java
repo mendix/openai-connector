@@ -22,27 +22,27 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Function_ExecuteFunctionMicroflow extends CustomJavaAction<java.lang.String>
 {
-	private IMendixObject __FunctionRequest;
-	private openaiconnector.proxies.FunctionRequest FunctionRequest;
+	private IMendixObject __Function;
+	private genaicommons.proxies.Function Function;
 	private java.lang.String Arguments;
 
-	public Function_ExecuteFunctionMicroflow(IContext context, IMendixObject FunctionRequest, java.lang.String Arguments)
+	public Function_ExecuteFunctionMicroflow(IContext context, IMendixObject Function, java.lang.String Arguments)
 	{
 		super(context);
-		this.__FunctionRequest = FunctionRequest;
+		this.__Function = Function;
 		this.Arguments = Arguments;
 	}
 
 	@java.lang.Override
 	public java.lang.String executeAction() throws Exception
 	{
-		this.FunctionRequest = this.__FunctionRequest == null ? null : openaiconnector.proxies.FunctionRequest.initialize(getContext(), __FunctionRequest);
+		this.Function = this.__Function == null ? null : genaicommons.proxies.Function.initialize(getContext(), __Function);
 
 		// BEGIN USER CODE
 		try {
-			requireNonNull(FunctionRequest, "Function is required.");
-			requireNonNull(FunctionRequest.getFunctionMicroflow(), "Function has no FunctionMicroflow.");
-			FunctionImpl.validateFunctionMicroflow(FunctionRequest.getFunctionMicroflow());
+			requireNonNull(Function, "Function is required.");
+			requireNonNull(Function.getMicroflow(), "Function has no FunctionMicroflow.");
+			FunctionImpl.validateFunctionMicroflow(Function.getMicroflow());
 			
 			return executeFunctionMicroflow();
 		
@@ -69,7 +69,7 @@ public class Function_ExecuteFunctionMicroflow extends CustomJavaAction<java.lan
 	private JsonNode rootNodeArguments;
 	
 	private String executeFunctionMicroflow() throws Exception {
-		String firstInputParamName = FunctionImpl.getFirstInputParamName(FunctionRequest.getFunctionMicroflow());
+		String firstInputParamName = FunctionImpl.getFirstInputParamName(Function.getMicroflow());
 		
 		if(firstInputParamName == null || firstInputParamName.isBlank()){
 			return executeAndLogFunctionMicroflow(null, null);
@@ -79,7 +79,7 @@ public class Function_ExecuteFunctionMicroflow extends CustomJavaAction<java.lan
 			JsonNode firstInputParamNode = rootNodeArguments.path(firstInputParamName);
 			
 			if (!firstInputParamNode.isTextual()) {
-				throw new IllegalArgumentException("Arguments " + Arguments + " does not match the expected input of the function microflow " + FunctionRequest.getFunctionMicroflow()+ ".");		
+				throw new IllegalArgumentException("Arguments " + Arguments + " does not match the expected input of the function microflow " + Function.getMicroflow()+ ".");		
 			}
 			return executeAndLogFunctionMicroflow(firstInputParamName, firstInputParamNode.asText());
 		}
@@ -87,15 +87,15 @@ public class Function_ExecuteFunctionMicroflow extends CustomJavaAction<java.lan
 	
 	private String executeAndLogFunctionMicroflow(String firstInputParamName, String firstInputParamValue) {
 		String response;
-		String logMessageInfo = "Finished calling microflow " + FunctionRequest.getFunctionMicroflow() + " with " + getContext();
+		String logMessageInfo = "Finished calling microflow " + Function.getMicroflow() + " with " + getContext();
 		String logMessageTrace = logMessageInfo;
 		long startTime = System.currentTimeMillis();
 		if(firstInputParamName == null || firstInputParamName.isBlank()) {
 			logMessageTrace = logMessageTrace + "\nwithout input parameters ";
-			response = Core.microflowCall(FunctionRequest.getFunctionMicroflow()).execute(getContext());
+			response = Core.microflowCall(Function.getMicroflow()).execute(getContext());
 		} else {
 			logMessageTrace = logMessageTrace +  "\n\nInput parameter [" + firstInputParamName + "]:\n" + firstInputParamValue;
-			response = Core.microflowCall(FunctionRequest.getFunctionMicroflow()).withParam(firstInputParamName, firstInputParamValue).execute(getContext());
+			response = Core.microflowCall(Function.getMicroflow()).withParam(firstInputParamName, firstInputParamValue).execute(getContext());
 		}
 		long endTime = System.currentTimeMillis();
 		long executionTime = endTime - startTime;

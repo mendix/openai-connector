@@ -36,34 +36,34 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
-public class ChatCompletionsRequest_ManipulateJson extends CustomJavaAction<java.lang.String>
+public class OpenAIRequest_ManipulateJson extends CustomJavaAction<java.lang.String>
 {
-	private IMendixObject __ChatCompletionsRequest;
-	private openaiconnector.proxies.ChatCompletionsRequest ChatCompletionsRequest;
-	private java.lang.String ChatCompletionsRequest_Json;
+	private IMendixObject __OpenAIRequest;
+	private openaiconnector.proxies.OpenAIRequest OpenAIRequest;
+	private java.lang.String OpenAIRequest_Json;
 
-	public ChatCompletionsRequest_ManipulateJson(IContext context, IMendixObject ChatCompletionsRequest, java.lang.String ChatCompletionsRequest_Json)
+	public OpenAIRequest_ManipulateJson(IContext context, IMendixObject OpenAIRequest, java.lang.String OpenAIRequest_Json)
 	{
 		super(context);
-		this.__ChatCompletionsRequest = ChatCompletionsRequest;
-		this.ChatCompletionsRequest_Json = ChatCompletionsRequest_Json;
+		this.__OpenAIRequest = OpenAIRequest;
+		this.OpenAIRequest_Json = OpenAIRequest_Json;
 	}
 
 	@java.lang.Override
 	public java.lang.String executeAction() throws Exception
 	{
-		this.ChatCompletionsRequest = this.__ChatCompletionsRequest == null ? null : openaiconnector.proxies.ChatCompletionsRequest.initialize(getContext(), __ChatCompletionsRequest);
+		this.OpenAIRequest = this.__OpenAIRequest == null ? null : openaiconnector.proxies.OpenAIRequest.initialize(getContext(), __OpenAIRequest);
 
 		// BEGIN USER CODE
 		try {
-			requireNonNull(ChatCompletionsRequest, "ChatCompletionsRequest is required.");
-			requireNonNull(ChatCompletionsRequest_Json, "ChatCompletionsRequest_Json is required.");
+			requireNonNull(OpenAIRequest, "ChatCompletionsRequest is required.");
+			requireNonNull(OpenAIRequest_Json, "ChatCompletionsRequest_Json is required.");
 
-			rootNode = MAPPER.readTree(ChatCompletionsRequest_Json);
+			rootNode = MAPPER.readTree(OpenAIRequest_Json);
 			
 			updateMessages(rootNode);
-			setFunctionToolChoice(rootNode);
-			mapFunctionParameters();
+			//setFunctionToolChoice(rootNode);
+			//mapFunctionParameters();
 
 			return MAPPER.writeValueAsString(rootNode);
 		} catch (Exception e) {
@@ -80,13 +80,15 @@ public class ChatCompletionsRequest_ManipulateJson extends CustomJavaAction<java
 	@java.lang.Override
 	public java.lang.String toString()
 	{
-		return "ChatCompletionsRequest_ManipulateJson";
+		return "OpenAIRequest_ManipulateJson";
 	}
 
 	// BEGIN EXTRA CODE
-	private static final MxLogger LOGGER = new MxLogger(ChatCompletionsRequest_ManipulateJson.class);
+	private static final MxLogger LOGGER = new MxLogger(OpenAIRequest_ManipulateJson.class);
 	private static final ObjectMapper MAPPER = new ObjectMapper();
 	private JsonNode rootNode;
+	
+	
 	
 	private void updateMessages(JsonNode rootNode) {
 		//Get messages node
@@ -97,7 +99,7 @@ public class ChatCompletionsRequest_ManipulateJson extends CustomJavaAction<java
             removeEmptyToolCalls(messageNode);
             
             //If an imageCollection has been added replace content node with array of text content and image content
-            updateImageMessages(messageNode);
+            //updateImageMessages(messageNode);
         }
 		//Update messages within rootNode
 		((ObjectNode) rootNode).set("messages", messagesNode);
@@ -110,6 +112,7 @@ public class ChatCompletionsRequest_ManipulateJson extends CustomJavaAction<java
 		}
 	}
 
+	/*
 	private void updateImageMessages(JsonNode messageNode) {
 		JsonNode imageCollection = messageNode.path("imagecollection");
 		
@@ -315,6 +318,7 @@ public class ChatCompletionsRequest_ManipulateJson extends CustomJavaAction<java
 		
 		return parametersNode;
 	}
+	*/
 	
 	// END EXTRA CODE
 }
