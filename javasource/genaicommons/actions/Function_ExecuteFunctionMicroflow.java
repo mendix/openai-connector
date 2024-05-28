@@ -7,16 +7,15 @@
 // Other code you write will be lost the next time you deploy the project.
 // Special characters, e.g., é, ö, à, etc. are supported in comments.
 
-package openaiconnector.actions;
+package genaicommons.actions;
 
 import static java.util.Objects.requireNonNull;
-import java.io.IOException;
 import com.mendix.core.Core;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 import com.mendix.webui.CustomJavaAction;
-import openaiconnector.impl.FunctionImpl;
-import openaiconnector.impl.MxLogger;
+import genaicommons.impl.FunctionImpl;
+import genaicommons.impl.MxLogger;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -42,7 +41,6 @@ public class Function_ExecuteFunctionMicroflow extends CustomJavaAction<java.lan
 		try {
 			requireNonNull(Function, "Function is required.");
 			requireNonNull(Function.getMicroflow(), "Function has no FunctionMicroflow.");
-			FunctionImpl.validateFunctionMicroflow(Function.getMicroflow());
 			
 			return executeFunctionMicroflow();
 		
