@@ -16,9 +16,7 @@ import genaicommons.impl.FunctionImpl;
 import genaicommons.impl.MxLogger;
 import genaicommons.impl.RequestImpl;
 import genaicommons.impl.ToolCollectionImpl;
-import genaicommons.proxies.ENUM_ToolChoice;
 import genaicommons.proxies.Function;
-import genaicommons.proxies.Request;
 import genaicommons.proxies.ToolCollection;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 
