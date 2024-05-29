@@ -1,3 +1,4 @@
+@import "../../../atlas_core/web/_variables.scss";
 //this file contains styling for a pop-up chatbox
 
 .btn-chat-popup {
@@ -26,8 +27,24 @@
     width: $pop-up-chat-width !important;
     height: $pop-up-chat-height !important;
     z-index: 100;
+
+    .mx-resizer-n, .mx-resizer-s, .mx-resizer-e, .mx-resizer-w, .mx-resizer-nw, .mx-resizer-ne, .mx-resizer-sw, .mx-resizer-se{
+        cursor: auto;
+    }
     .mx-window-header {
         background: $brand-primary;
+        cursor: auto;
+        h4 {
+            color: $header-text-color;
+        }
+    }
+    .mx-window-header button.close {
+        color: transparent;
+        &::after {
+            content: "-";
+            color: $header-text-color;
+        }
+        
     }
     .modal-body {
         height: calc(100% - 50px);
@@ -39,7 +56,7 @@
     }
 }
 
-.synthia-chat-bubble {
+.chat-message-card {
     max-width: 75%;
     border-radius: 8px;
     margin-bottom: $spacing-smaller;
@@ -47,14 +64,14 @@
 }
 .chat-bubble-wrapper {
     &--user {
-        .synthia-chat-bubble {
+        .chat-message-card {
             background: $chat-bubble-user-background;
             border-radius: 8px 8px 0 8px;
             text-align: right;
         }
     }
     &--assistant {
-        .synthia-chat-bubble {
+        .chat-message-card {
             background: $chat-bubble-assistant-background;
             border-radius: 8px 8px 8px 0;
             text-align: left;
