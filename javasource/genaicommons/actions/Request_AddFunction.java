@@ -11,14 +11,12 @@ package genaicommons.actions;
 
 import static java.util.Objects.requireNonNull;
 import com.mendix.systemwideinterfaces.core.IContext;
+import com.mendix.systemwideinterfaces.core.IMendixObject;
 import com.mendix.webui.CustomJavaAction;
 import genaicommons.impl.FunctionImpl;
 import genaicommons.impl.MxLogger;
-import genaicommons.impl.RequestImpl;
 import genaicommons.impl.ToolCollectionImpl;
-import genaicommons.proxies.Function;
 import genaicommons.proxies.ToolCollection;
-import com.mendix.systemwideinterfaces.core.IMendixObject;
 
 /**
  * Adds a new Function to a Request.
@@ -36,27 +34,25 @@ import com.mendix.systemwideinterfaces.core.IMendixObject;
  * 
  * Note: This setting might be overwritten, when adding more functions to the FunctionCollection at a later point and setting `IsFunctionToolChoice` to true.
  */
-public class Request_AddFunction extends CustomJavaAction<java.lang.Void>
+public class Request_AddFunction extends CustomJavaAction<IMendixObject>
 {
 	private IMendixObject __Request;
 	private genaicommons.proxies.Request Request;
 	private java.lang.String ToolName;
 	private java.lang.String ToolDescription;
-	private genaicommons.proxies.ENUM_ToolChoice ToolChoice;
 	private java.lang.String FunctionMicroflow;
 
-	public Request_AddFunction(IContext context, IMendixObject Request, java.lang.String ToolName, java.lang.String ToolDescription, java.lang.String ToolChoice, java.lang.String FunctionMicroflow)
+	public Request_AddFunction(IContext context, IMendixObject Request, java.lang.String ToolName, java.lang.String ToolDescription, java.lang.String FunctionMicroflow)
 	{
 		super(context);
 		this.__Request = Request;
 		this.ToolName = ToolName;
 		this.ToolDescription = ToolDescription;
-		this.ToolChoice = ToolChoice == null ? null : genaicommons.proxies.ENUM_ToolChoice.valueOf(ToolChoice);
 		this.FunctionMicroflow = FunctionMicroflow;
 	}
 
 	@java.lang.Override
-	public java.lang.Void executeAction() throws Exception
+	public IMendixObject executeAction() throws Exception
 	{
 		this.Request = this.__Request == null ? null : genaicommons.proxies.Request.initialize(getContext(), __Request);
 
@@ -67,14 +63,8 @@ public class Request_AddFunction extends CustomJavaAction<java.lang.Void>
 			
 			ToolCollection toolCollection = ToolCollectionImpl.getOrCreateToolCollection(getContext(), Request);
 			
-			Function function = FunctionImpl.createFunction(getContext(), FunctionMicroflow, ToolName, ToolDescription, toolCollection);
-			
-			if(ToolChoice != null) {
-				RequestImpl.setToolChoice(Request, toolCollection, ToolChoice, function);
-			}
-			
-			return null;
-		
+			return FunctionImpl.createFunction(getContext(), FunctionMicroflow, ToolName, ToolDescription, toolCollection).getMendixObject();
+
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
 			throw e;
