@@ -7,8 +7,17 @@
     width: $pop-up-chat-width;
     .mx-window-content {
         border-radius: 0;
+        border: none;
         .mx-window-header {
             background: $brand-primary;
+            cursor: auto;
+            border: none;
+            h4 {
+                color: $header-text-color;
+            }
+            .close {
+                color: $header-text-color;
+            }
         }
         .mx-window-body {
             overflow: hidden;
