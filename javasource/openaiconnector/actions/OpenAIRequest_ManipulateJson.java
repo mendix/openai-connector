@@ -15,13 +15,16 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.HashMap;
 import java.util.stream.Collectors;
+
 import com.mendix.core.Core;
 import com.mendix.core.CoreException;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 import com.mendix.webui.CustomJavaAction;
+
 import openaiconnector.impl.MxLogger;
 import openaiconnector.proxies.OpenAIRequest;
+
 import genaicommons.impl.MessageImpl;
 import genaicommons.impl.FunctionImpl;
 import genaicommons.proxies.ENUM_ToolChoice;
@@ -31,6 +34,7 @@ import genaicommons.proxies.Function;
 import genaicommons.proxies.ToolCall;
 import genaicommons.proxies.ToolCollection;
 import genaicommons.proxies.ENUM_MessageRole;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -98,9 +102,10 @@ public class OpenAIRequest_ManipulateJson extends CustomJavaAction<java.lang.Str
 			//find tool_calls node and remove if array is empty
             removeEmptyToolCalls(messageNode);
             
+            //find stop node and remove if array is empty
             removeEmptyStopSequence(rootNode);
             
-            //If an imageCollection has been added replace content node with array of text content and image content
+            //If a fileCollection has been added replace content node with array of text content and file content
             updateImageMessages(messageNode);
         }
 		//Update messages within rootNode
