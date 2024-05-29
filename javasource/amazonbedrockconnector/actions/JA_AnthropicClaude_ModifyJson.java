@@ -9,6 +9,7 @@
 
 package amazonbedrockconnector.actions;
 
+import static java.util.Objects.requireNonNull;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -17,7 +18,6 @@ import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.webui.CustomJavaAction;
 import amazonbedrockconnector.impl.MxLogger;
 import amazonbedrockconnector.proxies.ENUM_MessageType_AnthropicClaude;
-import com.mendix.systemwideinterfaces.core.IMendixObject;
 
 public class JA_AnthropicClaude_ModifyJson extends CustomJavaAction<java.lang.String>
 {
@@ -33,11 +33,13 @@ public class JA_AnthropicClaude_ModifyJson extends CustomJavaAction<java.lang.St
 	public java.lang.String executeAction() throws Exception
 	{
 		// BEGIN USER CODE
+		requireNonNull(this.AnthropicClaudeRequest_Json, "AnthropicClaudeRequest_Json is required");
 		
 		ObjectNode rootNode = (ObjectNode) MAPPER.readTree(AnthropicClaudeRequest_Json);
 		
 		modifyMessageNodes(rootNode);
 		
+		LOGGER.debug("modified Json: " + rootNode);
 		return MAPPER.writeValueAsString(rootNode);
 		
 		// END USER CODE
@@ -58,37 +60,46 @@ public class JA_AnthropicClaude_ModifyJson extends CustomJavaAction<java.lang.St
 	private static final ObjectMapper MAPPER = new ObjectMapper();
 	
 	private void modifyMessageNodes(ObjectNode rootNode) {
+		// messages Node
 		ArrayNode messagesNode = (ArrayNode) rootNode.get("messages");
 		
 		for (JsonNode messageNode : messagesNode) {
 			
+			// Message Object 
 			ObjectNode message = (ObjectNode) messageNode;
 			
+			// ImageCollection node to transform into format that is expected by Claude
 			ArrayNode imageCollectionsNode = (ArrayNode) message.get("imageCollection");
 			
+			// Transformation is only necessary if a ImageCollection was passed
 			if (imageCollectionsNode != null && imageCollectionsNode.size() > 0) {
 				
 				ArrayNode newContentNode = MAPPER.createArrayNode();
 				
 				for (JsonNode imageCollectionNode : imageCollectionsNode) {
 					
-					String textContent = imageCollectionNode.get("textContent").asText();
-					if (textContent != null && !textContent.isBlank()) {
+					// Add a the TextContent prior to the image
+					if (imageCollectionNode.get("textContent").asText() != null && !imageCollectionNode.get("textContent").asText().isBlank()) {
+						String textContent = imageCollectionNode.get("textContent").asText();
 						addTextNode(textContent, newContentNode);
 					}
 					
+					// transforming the ImageCollection into the correct format
 					addImageNode(imageCollectionNode, newContentNode);
 				}
 				
-				String messageContent = message.get("content").asText();
-				if (messageContent != null && !messageContent.isBlank()) {
+				// If present, add the text content from the Message.Content attribute.	
+				if (message.get("content").asText() != null && !message.get("content").asText().isBlank()) {
+					String messageContent = message.get("content").asText();
 					addTextNode(messageContent, newContentNode);
 				}
 				
+				// replacing the content attribute with the new Content node
 				message.remove("content");
 				message.set("content", newContentNode);
 			} 
-	
+				
+				// Always remove the ImageCollection Node at the end
 				message.remove("imageCollection");
 		}
 	}
