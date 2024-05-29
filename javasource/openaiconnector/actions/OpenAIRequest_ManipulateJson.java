@@ -102,8 +102,10 @@ public class OpenAIRequest_ManipulateJson extends CustomJavaAction<java.lang.Str
 			//find tool_calls node and remove if array is empty
             removeEmptyToolCalls(messageNode);
             
+            removeEmptyStopSequence(rootNode);
+            
             //If an imageCollection has been added replace content node with array of text content and image content
-            //updateImageMessages(messageNode);
+            updateImageMessages(messageNode);
         }
 		//Update messages within rootNode
 		((ObjectNode) rootNode).set("messages", messagesNode);
@@ -115,30 +117,37 @@ public class OpenAIRequest_ManipulateJson extends CustomJavaAction<java.lang.Str
 		    ((ObjectNode) messageNode).remove("tool_calls");
 		}
 	}
-
-	/*
+	
+	private void removeEmptyStopSequence(JsonNode rootNode) {
+		JsonNode stopNode = rootNode.path("stop");
+		if (stopNode != null && stopNode.isArray() && stopNode.size() == 0) {
+		    ((ObjectNode) rootNode).remove("stop");
+		}
+	}
+	
 	private void updateImageMessages(JsonNode messageNode) {
-		JsonNode imageCollection = messageNode.path("imagecollection");
+		JsonNode fileCollection = messageNode.path("filecollection");
 		
 		//Return if there no images will be sent
-		if(imageCollection == null || imageCollection.size() == 0) {
+		if(fileCollection == null || fileCollection.size() == 0) {
 			return;
 		}
 		ArrayNode content = MAPPER.createArrayNode();
 			
 		//set text content string as first element in array
-		ObjectNode textContent = MAPPER.createObjectNode();
-		textContent.put("type", "text");
-		textContent.put("text", messageNode.path("content").asText());
-		content.add(textContent);
+		addTextContentNode(content, messageNode.path("content").asText());
 		
 		//add image content to array
-		for (JsonNode image : imageCollection) {
+		for (JsonNode file : fileCollection) {
 			ObjectNode imageURL = MAPPER.createObjectNode();
-			imageURL.put("url", image.path("imagecontent").asText());
+			if(file.path("textcontent") != null && !file.path("textcontent").asText().isBlank()) {
+				addTextContentNode(content, file.path("textcontent").asText());
+			}
 			
-			if(image.path("detail") != null) {
-				imageURL.put("detail", image.path("detail").asText());
+			imageURL.put("url", file.path("filecontent").asText());
+			
+			if(file.path("detail") != null && !file.path("detail").asText().isBlank()) {
+				imageURL.put("detail", file.path("detail").asText());
 			}
 			
 			ObjectNode imageContent = MAPPER.createObjectNode();
@@ -148,11 +157,18 @@ public class OpenAIRequest_ManipulateJson extends CustomJavaAction<java.lang.Str
 		}
 			
 		//Remove imageCollection helper structure
-		((ObjectNode) messageNode).remove("imagecollection");
+		((ObjectNode) messageNode).remove("filecollection");
 		//Overwrite content node including images
 		((ObjectNode) messageNode).set("content", content);
 	}
-	*/
+
+	private void addTextContentNode(ArrayNode content, String text) {
+		ObjectNode textContent = MAPPER.createObjectNode();
+		textContent.put("type", "text");
+		textContent.put("text", text);
+		content.add(textContent);
+	}
+	
 
 	private void setFunctionToolChoice(JsonNode rootNode) throws CoreException {
 		// ToolChoice is not function and thus empty, auto or none
