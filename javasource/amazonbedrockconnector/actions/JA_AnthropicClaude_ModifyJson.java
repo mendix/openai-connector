@@ -79,20 +79,26 @@ public class JA_AnthropicClaude_ModifyJson extends CustomJavaAction<java.lang.St
 				for (JsonNode imageCollectionNode : imageCollectionsNode) {
 					
 					// Add a the TextContent prior to the image
-					if (imageCollectionNode.get("textContent").asText() != null && !imageCollectionNode.get("textContent").asText().isBlank()) {
+					if (imageCollectionNode.has("textContent")) {
 						String textContent = imageCollectionNode.get("textContent").asText();
-						addTextNode(textContent, newContentNode);
+						if (textContent != null && !textContent.isBlank()) {
+							addTextNode(textContent, newContentNode);
+						}
 					}
+					
 					
 					// transforming the ImageCollection into the correct format
 					addImageNode(imageCollectionNode, newContentNode);
 				}
 				
 				// If present, add the text content from the Message.Content attribute.	
-				if (message.get("content").asText() != null && !message.get("content").asText().isBlank()) {
+				if (message.has("content")) {
 					String messageContent = message.get("content").asText();
-					addTextNode(messageContent, newContentNode);
+					if (messageContent != null && !messageContent.isBlank()) {
+						addTextNode(messageContent, newContentNode);
+					}
 				}
+				
 				
 				// replacing the content attribute with the new Content node
 				message.remove("content");
