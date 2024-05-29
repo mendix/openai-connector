@@ -20,15 +20,19 @@ import com.mendix.core.CoreException;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.webui.CustomJavaAction;
 import openaiconnector.impl.MxLogger;
-import openaiconnector.proxies.ENUM_ToolChoice;
+import genaicommons.impl.MessageImpl;
+import genaicommons.proxies.ENUM_ToolChoice;
+import genaicommons.proxies.Message;
+import genaicommons.proxies.Tool;
+import openaiconnector.proxies.OpenAIRequest;
 import openaiconnector.proxies.ToolRequest;
-import openaiconnector.proxies.Tools;
 import openaiconnector.proxies.FunctionRequest;
-import openaiconnector.proxies.ToolCall;
+import genaicommons.proxies.Function;
+import genaicommons.proxies.ToolCall;
+import genaicommons.proxies.ToolCollection;
 import openaiconnector.proxies.ChatCompletionsMessageRequest;
 import openaiconnector.proxies.ChatCompletionsMessages;
-import openaiconnector.proxies.ENUM_Role;
-import openaiconnector.impl.ChatCompletionsMessageRequestImpl;
+import genaicommons.proxies.ENUM_MessageRole;
 import openaiconnector.impl.FunctionImpl;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -56,14 +60,14 @@ public class OpenAIRequest_ManipulateJson extends CustomJavaAction<java.lang.Str
 
 		// BEGIN USER CODE
 		try {
-			requireNonNull(OpenAIRequest, "ChatCompletionsRequest is required.");
-			requireNonNull(OpenAIRequest_Json, "ChatCompletionsRequest_Json is required.");
+			requireNonNull(OpenAIRequest, "OpenAIRequest is required.");
+			requireNonNull(OpenAIRequest_Json, "OpenAIRequest_Json is required.");
 
 			rootNode = MAPPER.readTree(OpenAIRequest_Json);
 			
 			updateMessages(rootNode);
-			//setFunctionToolChoice(rootNode);
-			//mapFunctionParameters();
+			setFunctionToolChoice(rootNode);
+			mapFunctionParameters();
 
 			return MAPPER.writeValueAsString(rootNode);
 		} catch (Exception e) {
@@ -148,26 +152,27 @@ public class OpenAIRequest_ManipulateJson extends CustomJavaAction<java.lang.Str
 		//Overwrite content node including images
 		((ObjectNode) messageNode).set("content", content);
 	}
+	*/
 
 	private void setFunctionToolChoice(JsonNode rootNode) throws CoreException {
 		// ToolChoice is not function and thus empty, auto or none
-		if (ChatCompletionsRequest.getToolChoice() == null || !ChatCompletionsRequest.getToolChoice().equals(ENUM_ToolChoice.function)) {
+		if (OpenAIRequest.getToolChoice() == null || !OpenAIRequest.getToolChoice().equals(ENUM_ToolChoice.tool)) {
 			return;
 
-		// Add ToolChoice Function if it has not yet been called in a previous iteration
-		} else {
-			ToolRequest toolRequest = ChatCompletionsRequest.getChatCompletionsRequest_ToolRequest_ToolChoice();
-			FunctionRequest functionRequest = toolRequest == null ? null : toolRequest.getToolRequest_FunctionRequest();
+		// Add ToolChoice Tool if it has not yet been called in a previous iteration
+		} else if (OpenAIRequest.getRequest_ToolCollection() != null) {
+			Tool toolChoiceTool = OpenAIRequest.getRequest_ToolCollection().getToolCollection_ToolChoice();
+			//FunctionRequest functionRequest = toolRequest == null ? null : toolRequest.getToolRequest_FunctionRequest();
 			
 			// Remove tool choice function, because it has already been called
 			// This prevents and infinite loop
-			if (functionRequest == null || isToolRecall(functionRequest.getName())) {
-				LOGGER.debug("ToolChoice function " + functionRequest.getName() + " has already been called. Removing ToolChoice from Request.");
+			if (toolChoiceTool == null || isToolRecall(toolChoiceTool)) {
+				LOGGER.debug("ToolChoice " + toolChoiceTool.getName() + " has already been called. Removing ToolChoice from Request.");
 				((ObjectNode)rootNode).remove("tool_choice");
 			
 			} else {
 				// Create a new tool_choice node
-		        ObjectNode toolChoiceNode = createFunctionToolChoiceNode(toolRequest, functionRequest);
+		        ObjectNode toolChoiceNode = createToolChoiceNode(toolChoiceTool, OpenAIRequest);
 		        LOGGER.debug("ToolChoice has not been called yet. Updating ToolChoice function placeholder with: " + toolChoiceNode);
 		        
 		        // Update the original JsonNode with the tool_choice object
@@ -176,22 +181,21 @@ public class OpenAIRequest_ManipulateJson extends CustomJavaAction<java.lang.Str
 		}
 	}
 	
-	private ObjectNode createFunctionToolChoiceNode(ToolRequest toolRequest, FunctionRequest functionRequest) {
+	private ObjectNode createToolChoiceNode(Tool toolChoiceTool, OpenAIRequest openAIRequest) {
 		ObjectNode toolChoiceNode = MAPPER.createObjectNode();
-        toolChoiceNode.put("type", toolRequest.getToolType().name());
+        toolChoiceNode.put("type", toolChoiceTool.getToolType() != null ? toolChoiceTool.getToolType() : "function"); //currently only "function" is supported
         ObjectNode functionNode = MAPPER.createObjectNode();
-        functionNode.put("name", functionRequest.getName());
+        functionNode.put("name", toolChoiceTool.getName());
         toolChoiceNode.set("function", functionNode);
         return toolChoiceNode;
 	}
 
-	private boolean isToolRecall(String toolChoiceFunctionName) throws CoreException {
-		ChatCompletionsMessages chatCompletionsMessages = ChatCompletionsRequest
-				.getChatCompletionsMessages_ChatCompletionsRequest();
+	private boolean isToolRecall(Tool toolChoiceTool) throws CoreException {
+		//ChatCompletionsMessages chatCompletionsMessages = ChatCompletionsRequest.getChatCompletionsMessages_ChatCompletionsRequest();
 
 		// Get all messages with role 'tool'
-		List<ChatCompletionsMessageRequest> messageListTool = ChatCompletionsMessageRequestImpl
-				.retrieveMessageListByRole(chatCompletionsMessages, ENUM_Role.tool, getContext());
+		List<Message> messageListTool = MessageImpl
+				.retrieveMessageListByRole(OpenAIRequest, ENUM_MessageRole.tool, getContext());
 
 		// No tool calls yet; thus no tool recall
 		if (messageListTool.size() == 0) {
@@ -200,38 +204,38 @@ public class OpenAIRequest_ManipulateJson extends CustomJavaAction<java.lang.Str
 
 		// Get all messages with role assistant
 		// Assistant messages optionally have an array of tool_calls that contain an id and the functionName
-		List<ChatCompletionsMessageRequest> messageListAssistant = ChatCompletionsMessageRequestImpl
-				.retrieveMessageListByRole(chatCompletionsMessages, ENUM_Role.assistant, getContext());
+		List<Message> messageListAssistant = MessageImpl
+				.retrieveMessageListByRole(OpenAIRequest, ENUM_MessageRole.assistant, getContext());
 
 		// HashMap with ToolCall._id and ToolCallFunction.Name created from the messageListAssistant
 		// The map contains only those tool calls, where functionName equals the toolChoiceFunctionName
 		Map<String, String> toolChoiceToolCallMap = new HashMap<>();
 
-		for (ChatCompletionsMessageRequest message : messageListAssistant) {
+		for (Message message : messageListAssistant) {
 
 			// Get ToolCall list for each assistant message where the function name equals
 			// the function name from the tool choice (toolChoiceFunctionName)
 			List<ToolCall> toolCallList = Core.retrieveByPath(getContext(), message.getMendixObject(),
-							ToolCall.MemberNames.ToolCall_AbstractChatCompletionsMessage.toString())
+							Message.MemberNames.Message_ToolCall.toString())
 					.stream()
 					.filter(mxObject -> {
-						return filterToolCallByFunctionName(toolChoiceFunctionName, mxObject);
+						return filterToolCallByFunctionName(toolChoiceTool.getName(), mxObject);
 					})
 					.map(mxObject -> ToolCall.initialize(getContext(), mxObject))
 					.collect(Collectors.toList());
 
 			// Loop over toolCallList and add _id and functionName to a HashMap
 			for (ToolCall toolCall : toolCallList) {
-				String toolCallId = toolCall.get_id();
-				String functionName = toolCall.getToolCallFunction_ToolCall().getName();
-				toolChoiceToolCallMap.put(toolCallId, functionName);
+				String toolCallId = toolCall.getToolCallId();
+				String toolName = toolCall.getName();
+				toolChoiceToolCallMap.put(toolCallId, toolName);
 			}
 		}
 
 		// Loop over Tool messages and compare ToolCallId with Ids from Assistant
 		// messages in HashMap to see whether the function from the Tool Choice has
 		// already been called
-		for (ChatCompletionsMessageRequest messageTool : messageListTool) {
+		for (Message messageTool : messageListTool) {
 			String toolId = messageTool.getToolCallId();
 			if (toolChoiceToolCallMap.containsKey(toolId)) {
 				return true;
@@ -242,57 +246,47 @@ public class OpenAIRequest_ManipulateJson extends CustomJavaAction<java.lang.Str
 
 	private boolean filterToolCallByFunctionName(String toolChoiceFunctionName, IMendixObject mxObject) {
 		String functionName = "";
-		try {
-			functionName = ToolCall.initialize(getContext(), mxObject).getToolCallFunction_ToolCall().getName();
-		} catch (CoreException e) {
-			LOGGER.error(e);
-		}
+		functionName = ToolCall.initialize(getContext(), mxObject).getName();
 		// Return true if the functionName equals toolChoiceFunctionName
 		return functionName.equals(toolChoiceFunctionName);
 	}
 	
 	private void mapFunctionParameters() throws CoreException {
-		Tools tools = ChatCompletionsRequest.getChatCompletionsRequest_Tools();
-		if(tools == null) {
+		ToolCollection toolCollection = OpenAIRequest.getRequest_ToolCollection();
+		if(toolCollection == null) {
 			return;
 		}
-		List<ToolRequest> toolRequestList = Core.retrieveByPath(getContext(),
-				tools.getMendixObject(), ToolRequest.MemberNames.ToolRequest_Tools.toString())
+		List<Tool> toolList = Core.retrieveByPath(getContext(),
+				toolCollection.getMendixObject(), ToolCollection.MemberNames.ToolCollection_Tool.toString())
 				.stream()
-				.map(mxObject -> ToolRequest.initialize(getContext(), mxObject))
+				.map(mxObject -> Tool.initialize(getContext(), mxObject))
 				.collect(Collectors.toList());
 		
 		// Loop through all tools, find FunctionRequest object by functionName that contains the FunctionMicroflow,
 		// get InputParameterName of the FunctionMicroflow, create parametersNode and add to toolNode
 		JsonNode toolsNode = rootNode.path("tools");
 		for (JsonNode toolNode : toolsNode) {
-			String functionName = toolNode.path("function").path("name").asText();
-			Optional<ToolRequest> toolRequestMatch = toolRequestList.stream()
-					.filter(toolRequest -> {
-						return filterToolRequestByFunctionName(functionName, toolRequest);
+			String toolName = toolNode.path("function").path("name").asText();
+			Optional<Tool> toolMatch = toolList.stream()
+					.filter(tool -> {
+						return tool.getName().equals(toolName);
 					})
 					.findFirst();
-			if(toolRequestMatch.isPresent()) {
-				ObjectNode parametersNode = createFunctionParametersNode(toolRequestMatch.get().getToolRequest_FunctionRequest().getFunctionMicroflow());
-				if(parametersNode != null) {
-					JsonNode functionNode = toolNode.path("function");
-					((ObjectNode) functionNode).set("parameters", parametersNode);
-					((ObjectNode) toolNode).set("function", functionNode);
+			if(toolMatch.isPresent()) {
+				Function functionMatch = Function.load(getContext(), toolMatch.get().getMendixObject().getId());
+				if(functionMatch != null) {
+				ObjectNode parametersNode = createFunctionParametersNode(functionMatch.getMicroflow());
+					if(parametersNode != null) {
+						JsonNode functionNode = toolNode.path("function");
+						((ObjectNode) functionNode).set("parameters", parametersNode);
+						((ObjectNode) toolNode).set("function", functionNode);
+					}
 				}
 			}
 		}
 		
 		// Update tools within rootNode
 		((ObjectNode) rootNode).set("tools", toolsNode);
-	}
-
-	private boolean filterToolRequestByFunctionName(String functionName, ToolRequest toolRequest) {
-		try {
-			return toolRequest.getToolRequest_FunctionRequest().getName().equals(functionName);
-		} catch (CoreException e) {
-			LOGGER.error(e);
-		}
-		return false;
 	}
 	
 	private ObjectNode createFunctionParametersNode(String functionMicroflow) {
@@ -318,7 +312,7 @@ public class OpenAIRequest_ManipulateJson extends CustomJavaAction<java.lang.Str
 		
 		return parametersNode;
 	}
-	*/
+	
 	
 	// END EXTRA CODE
 }

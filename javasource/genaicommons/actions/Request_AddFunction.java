@@ -21,14 +21,20 @@ import genaicommons.proxies.ToolCollection;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 
 /**
- * Adds a new Function to an existing FunctionCollection.
- * 
+ * Adds a new Function to a Request.
  * Parameters: 
- * - FunctionCollection: The FunctionCollection to which the new function should be added.
- * - FunctionName: The name of the function to call.
+ * - Request: The request to add the function to.
+ * - ToolName: The name of the tool to call.
  * - FunctionMicroflow: The microflow that is called within this function.
- * - FunctionDescription (optional): A description of what the function does, used by the model to choose when and how to call the function.
- * - IsToolChoiceFunction: If set to true, the new function will become the tool choice of the FunctionCollection. This will force the model to call that particular function.
+ * - ToolDescription (optional): A description of what the function does, used by the model to choose when and how to call the function.
+ * - ToolChoice: Controls which (if any) function is called by the model.
+ * `none` means the model will not call a function and instead generates a message.
+ * `auto` means the model can pick between generating a message or calling a function.
+ * `function` means that the new function will become the tool choice of the FunctionCollection. This will force the model to call that particular function.
+ * 
+ * `auto` is the default if functions are present.
+ * 
+ * Note: This setting might be overwritten, when adding more functions to the FunctionCollection at a later point and setting `IsFunctionToolChoice` to true.
  */
 public class Request_AddFunction extends CustomJavaAction<java.lang.Void>
 {
