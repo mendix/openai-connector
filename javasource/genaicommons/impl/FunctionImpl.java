@@ -20,7 +20,6 @@ public class FunctionImpl {
 	public static void validateFunctionInput(String functionMicroflow, String toolName) throws Exception {
 		requireNonNull(functionMicroflow, "Function Microflow is required.");
 		requireNonNull(toolName, "Tool Name is required.");
-		ToolImpl.validateToolName(toolName);
 		validateFunctionMicroflow(functionMicroflow);
 	}
 	

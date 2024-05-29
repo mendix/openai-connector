@@ -18,23 +18,19 @@ import java.util.stream.Collectors;
 import com.mendix.core.Core;
 import com.mendix.core.CoreException;
 import com.mendix.systemwideinterfaces.core.IContext;
+import com.mendix.systemwideinterfaces.core.IMendixObject;
 import com.mendix.webui.CustomJavaAction;
 import openaiconnector.impl.MxLogger;
+import openaiconnector.proxies.OpenAIRequest;
 import genaicommons.impl.MessageImpl;
+import genaicommons.impl.FunctionImpl;
 import genaicommons.proxies.ENUM_ToolChoice;
 import genaicommons.proxies.Message;
 import genaicommons.proxies.Tool;
-import openaiconnector.proxies.OpenAIRequest;
-import openaiconnector.proxies.ToolRequest;
-import openaiconnector.proxies.FunctionRequest;
 import genaicommons.proxies.Function;
 import genaicommons.proxies.ToolCall;
 import genaicommons.proxies.ToolCollection;
-import openaiconnector.proxies.ChatCompletionsMessageRequest;
-import openaiconnector.proxies.ChatCompletionsMessages;
 import genaicommons.proxies.ENUM_MessageRole;
-import openaiconnector.impl.FunctionImpl;
-import com.mendix.systemwideinterfaces.core.IMendixObject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -328,7 +324,6 @@ public class OpenAIRequest_ManipulateJson extends CustomJavaAction<java.lang.Str
 		
 		return parametersNode;
 	}
-	
 	
 	// END EXTRA CODE
 }

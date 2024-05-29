@@ -7,7 +7,7 @@
 // Other code you write will be lost the next time you deploy the project.
 // Special characters, e.g., é, ö, à, etc. are supported in comments.
 
-package genaicommons.actions;
+package openaiconnector.actions;
 
 import static java.util.Objects.requireNonNull;
 import com.mendix.core.Core;
@@ -15,7 +15,7 @@ import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 import com.mendix.webui.CustomJavaAction;
 import genaicommons.impl.FunctionImpl;
-import genaicommons.impl.MxLogger;
+import openaiconnector.impl.MxLogger;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
