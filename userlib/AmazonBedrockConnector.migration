@@ -2,6 +2,9 @@ dependency software.amazon.awssdk:bedrock:[2,3)
 dependency software.amazon.awssdk:bedrockruntime:[2,3)
 dependency software.amazon.awssdk:bedrockagent:[2,3)
 dependency software.amazon.awssdk:bedrockagentruntime:[2,3)
+dependency com.fasterxml.jackson.core:jackson-annotations:[2,3)
+dependency com.fasterxml.jackson.core:jackson-core:[2,3)
+dependency com.fasterxml.jackson.core:jackson-databind:[2,3)
 delete bedrock-2.22.1.jar
 delete bedrock-2.22.1.jar.AmazonBedrockConnector.RequiredLib
 delete bedrockruntime-2.22.1.jar
@@ -32,4 +35,11 @@ delete netty-transport-classes-epoll-4.1.100.Final.jar
 delete netty-transport-classes-epoll-4.1.100.Final.jar.AmazonBedrockConnector.RequiredLib
 delete netty-transport-native-unix-common-4.1.100.Final.jar
 delete netty-transport-native-unix-common-4.1.100.Final.jar.AmazonBedrockConnector.RequiredLib
-
+delete byte-buddy-1.14.9.jar
+delete byte-buddy-1.14.9.jar.AmazonBedrockConnector.RequiredLib
+delete jackson-annotations-2.17.0.jar
+delete jackson-annotations-2.17.0.jar.AmazonBedrockConnector.RequiredLib
+delete jackson-core-2.17.0.jar
+delete jackson-core-2.17.0.jar.AmazonBedrockConnector.RequiredLib
+delete jackson-databind-2.17.0.jar
+delete jackson-databind-2.17.0.jar.AmazonBedrockConnector.RequiredLib
