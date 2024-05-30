@@ -3,12 +3,9 @@
     background: $brand-gradient;
     background-origin: border-box;
     transition: background-color 2s;
-    &:hover {
-        background: $brand-gradient-dark;
-        border-color: transparent;
-    }
-    &:active,
+    &:hover,
     &:focus {
+        background: $brand-gradient-dark;
         border-color: transparent;
     }
 }

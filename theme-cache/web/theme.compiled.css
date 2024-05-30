@@ -33994,11 +33994,8 @@ $callout-info-bg: $color-info-lighter;
   background-origin: border-box;
   transition: background-color 2s;
 }
-.btn-primary.btn:hover {
+.btn-primary.btn:hover, .btn-primary.btn:focus {
   background: linear-gradient(64deg, #16518d, #3ca8b9);
-  border-color: transparent;
-}
-.btn-primary.btn:active, .btn-primary.btn:focus {
   border-color: transparent;
 }
 
