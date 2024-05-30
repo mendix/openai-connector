@@ -33046,6 +33046,9 @@ $callout-info-bg: $color-info-lighter;
 .chat-listview-horizontal.mx-listview > ul > li {
   display: inline-block;
 }
+.chat-listview-horizontal.mx-listview > ul > li:hover {
+  background-color: transparent;
+}
 
 .listview-hide-on-empty.mx-listview > ul > li.mx-listview-empty {
   display: none;

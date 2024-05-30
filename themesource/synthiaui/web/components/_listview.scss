@@ -4,6 +4,8 @@
         margin-bottom: none;
         > li {
             display: inline-block;
+            &:hover {
+                background-color: transparent;}
         }
     }
 }
