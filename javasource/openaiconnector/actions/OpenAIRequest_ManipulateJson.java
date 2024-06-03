@@ -94,6 +94,7 @@ public class OpenAIRequest_ManipulateJson extends CustomJavaAction<java.lang.Str
 		//Get messages node
 		JsonNode messagesNode = rootNode.path("messages");
 		//Loop over all messages
+
 		for (JsonNode messageNode : messagesNode) {
 			//find tool_calls node and remove if array is empty
             removeEmptyToolCalls(messageNode);
@@ -173,8 +174,8 @@ public class OpenAIRequest_ManipulateJson extends CustomJavaAction<java.lang.Str
 			return;
 
 		// Add ToolChoice Tool if it has not yet been called in a previous iteration
-		} else if (OpenAIRequest.getRequest_ToolCollection() != null) {
-			Tool toolChoiceTool = OpenAIRequest.getRequest_ToolCollection().getToolCollection_ToolChoice();
+		} else if (OpenAIRequest.getOpenAIRequest_OpenAIRequest_Extension().getOpenAIRequest_Extension_Request().getRequest_ToolCollection() != null) {
+			Tool toolChoiceTool = OpenAIRequest.getOpenAIRequest_OpenAIRequest_Extension().getOpenAIRequest_Extension_Request().getRequest_ToolCollection().getToolCollection_ToolChoice();
 			//FunctionRequest functionRequest = toolRequest == null ? null : toolRequest.getToolRequest_FunctionRequest();
 			
 			// Remove tool choice function, because it has already been called
@@ -208,7 +209,7 @@ public class OpenAIRequest_ManipulateJson extends CustomJavaAction<java.lang.Str
 
 		// Get all messages with role 'tool'
 		List<Message> messageListTool = MessageImpl
-				.retrieveMessageListByRole(OpenAIRequest, ENUM_MessageRole.tool, getContext());
+				.retrieveMessageListByRole(OpenAIRequest.getOpenAIRequest_OpenAIRequest_Extension().getOpenAIRequest_Extension_Request(), ENUM_MessageRole.tool, getContext());
 
 		// No tool calls yet; thus no tool recall
 		if (messageListTool.size() == 0) {
@@ -218,7 +219,7 @@ public class OpenAIRequest_ManipulateJson extends CustomJavaAction<java.lang.Str
 		// Get all messages with role assistant
 		// Assistant messages optionally have an array of tool_calls that contain an id and the functionName
 		List<Message> messageListAssistant = MessageImpl
-				.retrieveMessageListByRole(OpenAIRequest, ENUM_MessageRole.assistant, getContext());
+				.retrieveMessageListByRole(OpenAIRequest.getOpenAIRequest_OpenAIRequest_Extension().getOpenAIRequest_Extension_Request(), ENUM_MessageRole.assistant, getContext());
 
 		// HashMap with ToolCall._id and ToolCallFunction.Name created from the messageListAssistant
 		// The map contains only those tool calls, where functionName equals the toolChoiceFunctionName
@@ -265,7 +266,7 @@ public class OpenAIRequest_ManipulateJson extends CustomJavaAction<java.lang.Str
 	}
 	
 	private void mapFunctionParameters() throws CoreException {
-		ToolCollection toolCollection = OpenAIRequest.getRequest_ToolCollection();
+		ToolCollection toolCollection = OpenAIRequest.getOpenAIRequest_OpenAIRequest_Extension().getOpenAIRequest_Extension_Request().getRequest_ToolCollection();
 		if(toolCollection == null) {
 			return;
 		}
