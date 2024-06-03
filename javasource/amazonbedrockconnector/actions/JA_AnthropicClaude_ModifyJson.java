@@ -123,11 +123,25 @@ public class JA_AnthropicClaude_ModifyJson extends CustomJavaAction<java.lang.St
 		newImageNode.put("type", ENUM_MessageType_AnthropicClaude.image.toString());
 		ObjectNode sourceNode = MAPPER.createObjectNode();
 		sourceNode.put("type", "base64");
-		sourceNode.put("media_type", imageCollectionNode.get("mediaType").asText());
-		sourceNode.put("data", imageCollectionNode.get("fileContent").asText());
+		sourceNode.put("media_type", getAttributeFromNode(imageCollectionNode,"mediaType"));
+		sourceNode.put("data", getAttributeFromNode(imageCollectionNode,"fileContent"));
 		newImageNode.set("source", sourceNode);
 		
 		contentNode.add(newImageNode);
+	}
+	
+	private String getAttributeFromNode(JsonNode node, String attributeName) {
+		if(!node.has(attributeName)) {
+			LOGGER.error("Request FileContent is missing required attribute: " + attributeName);
+			throw new IllegalArgumentException("Request FileContent is missing required attribute: " + attributeName);
+		}
+		String value = node.get(attributeName).asText();
+		if (value == "image/jpg") {
+			value = "image/jpeg";
+		}
+		
+		return value;
+		
 	}
 	// END EXTRA CODE
 }
