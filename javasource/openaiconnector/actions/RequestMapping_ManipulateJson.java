@@ -21,11 +21,13 @@ import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 import com.mendix.webui.CustomJavaAction;
 import openaiconnector.impl.MxLogger;
-import openaiconnector.proxies.OpenAIRequest;
+import openaiconnector.proxies.OpenAIRequest_Extension;
+import openaiconnector.proxies.RequestMapping;
 import genaicommons.impl.MessageImpl;
 import genaicommons.impl.FunctionImpl;
 import genaicommons.proxies.ENUM_ToolChoice;
 import genaicommons.proxies.Message;
+import genaicommons.proxies.Request;
 import genaicommons.proxies.Tool;
 import genaicommons.proxies.Function;
 import genaicommons.proxies.ToolCall;
@@ -36,30 +38,32 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
-public class OpenAIRequest_ManipulateJson extends CustomJavaAction<java.lang.String>
+public class RequestMapping_ManipulateJson extends CustomJavaAction<java.lang.String>
 {
-	private IMendixObject __OpenAIRequest;
-	private openaiconnector.proxies.OpenAIRequest OpenAIRequest;
-	private java.lang.String OpenAIRequest_Json;
+	private IMendixObject __RequestMapping;
+	private openaiconnector.proxies.RequestMapping RequestMapping;
+	private java.lang.String Request_Json;
 
-	public OpenAIRequest_ManipulateJson(IContext context, IMendixObject OpenAIRequest, java.lang.String OpenAIRequest_Json)
+	public RequestMapping_ManipulateJson(IContext context, IMendixObject RequestMapping, java.lang.String Request_Json)
 	{
 		super(context);
-		this.__OpenAIRequest = OpenAIRequest;
-		this.OpenAIRequest_Json = OpenAIRequest_Json;
+		this.__RequestMapping = RequestMapping;
+		this.Request_Json = Request_Json;
 	}
 
 	@java.lang.Override
 	public java.lang.String executeAction() throws Exception
 	{
-		this.OpenAIRequest = this.__OpenAIRequest == null ? null : openaiconnector.proxies.OpenAIRequest.initialize(getContext(), __OpenAIRequest);
+		this.RequestMapping = this.__RequestMapping == null ? null : openaiconnector.proxies.RequestMapping.initialize(getContext(), __RequestMapping);
 
 		// BEGIN USER CODE
 		try {
-			requireNonNull(OpenAIRequest, "OpenAIRequest is required.");
-			requireNonNull(OpenAIRequest_Json, "OpenAIRequest_Json is required.");
+			requireNonNull(RequestMapping, "OpenAIRequest is required.");
+			requireNonNull(Request_Json, "OpenAIRequest_Json is required.");
+			
+			validateRequestMapping();
 
-			rootNode = MAPPER.readTree(OpenAIRequest_Json);
+			rootNode = MAPPER.readTree(Request_Json);
 			
 			updateMessages(rootNode);
 			setFunctionToolChoice(rootNode);
@@ -80,15 +84,20 @@ public class OpenAIRequest_ManipulateJson extends CustomJavaAction<java.lang.Str
 	@java.lang.Override
 	public java.lang.String toString()
 	{
-		return "OpenAIRequest_ManipulateJson";
+		return "RequestMapping_ManipulateJson";
 	}
 
 	// BEGIN EXTRA CODE
-	private static final MxLogger LOGGER = new MxLogger(OpenAIRequest_ManipulateJson.class);
+	private static final MxLogger LOGGER = new MxLogger(RequestMapping_ManipulateJson.class);
 	private static final ObjectMapper MAPPER = new ObjectMapper();
 	private JsonNode rootNode;
 	
-	
+	private boolean validateRequestMapping() throws CoreException {
+		Request request = getRequest(RequestMapping);
+		requireNonNull(request, "RequestMapping is not associated to a Request");
+		return request != null; 
+		
+	}
 	
 	private void updateMessages(JsonNode rootNode) {
 		//Get messages node
@@ -170,12 +179,12 @@ public class OpenAIRequest_ManipulateJson extends CustomJavaAction<java.lang.Str
 
 	private void setFunctionToolChoice(JsonNode rootNode) throws CoreException {
 		// ToolChoice is not function and thus empty, auto or none
-		if (OpenAIRequest.getToolChoice() == null || !OpenAIRequest.getToolChoice().equals(ENUM_ToolChoice.tool)) {
+		if (RequestMapping.getToolChoice() == null || !RequestMapping.getToolChoice().equals(ENUM_ToolChoice.tool)) {
 			return;
 
 		// Add ToolChoice Tool if it has not yet been called in a previous iteration
-		} else if (OpenAIRequest.getOpenAIRequest_OpenAIRequest_Extension().getOpenAIRequest_Extension_Request().getRequest_ToolCollection() != null) {
-			Tool toolChoiceTool = OpenAIRequest.getOpenAIRequest_OpenAIRequest_Extension().getOpenAIRequest_Extension_Request().getRequest_ToolCollection().getToolCollection_ToolChoice();
+		} else if (getToolCollection(RequestMapping) != null) {
+			Tool toolChoiceTool = getToolCollection(RequestMapping).getToolCollection_ToolChoice();
 			//FunctionRequest functionRequest = toolRequest == null ? null : toolRequest.getToolRequest_FunctionRequest();
 			
 			// Remove tool choice function, because it has already been called
@@ -186,7 +195,7 @@ public class OpenAIRequest_ManipulateJson extends CustomJavaAction<java.lang.Str
 			
 			} else {
 				// Create a new tool_choice node
-		        ObjectNode toolChoiceNode = createToolChoiceNode(toolChoiceTool, OpenAIRequest);
+		        ObjectNode toolChoiceNode = createToolChoiceNode(toolChoiceTool);
 		        LOGGER.debug("ToolChoice has not been called yet. Updating ToolChoice function placeholder with: " + toolChoiceNode);
 		        
 		        // Update the original JsonNode with the tool_choice object
@@ -195,7 +204,28 @@ public class OpenAIRequest_ManipulateJson extends CustomJavaAction<java.lang.Str
 		}
 	}
 	
-	private ObjectNode createToolChoiceNode(Tool toolChoiceTool, OpenAIRequest openAIRequest) {
+	private ToolCollection getToolCollection(RequestMapping requestMapping) throws CoreException {
+		Request request = getRequest(requestMapping);
+		if (request == null) {
+			return null;
+		}
+		return request.getRequest_ToolCollection();
+	}
+	
+	private Request getRequest(RequestMapping requestMapping) throws CoreException {
+		if (requestMapping.getRequestMapping_OpenAIRequest_Extension() == null) {
+			LOGGER.warn("RequestMapper is not associated to a OpenAI_Extension instance");
+			return null;
+		}
+		OpenAIRequest_Extension openAIRequestExtension = requestMapping.getRequestMapping_OpenAIRequest_Extension();
+		if (openAIRequestExtension.getOpenAIRequest_Extension_Request() == null) {
+			LOGGER.warn("OpenAIRequest_Extension is not associated to a Request instance");
+			return null;
+		}
+		return openAIRequestExtension.getOpenAIRequest_Extension_Request();
+	}
+	
+	private ObjectNode createToolChoiceNode(Tool toolChoiceTool) {
 		ObjectNode toolChoiceNode = MAPPER.createObjectNode();
         toolChoiceNode.put("type", toolChoiceTool.getToolType() != null ? toolChoiceTool.getToolType() : "function"); //currently only "function" is supported
         ObjectNode functionNode = MAPPER.createObjectNode();
@@ -209,7 +239,7 @@ public class OpenAIRequest_ManipulateJson extends CustomJavaAction<java.lang.Str
 
 		// Get all messages with role 'tool'
 		List<Message> messageListTool = MessageImpl
-				.retrieveMessageListByRole(OpenAIRequest.getOpenAIRequest_OpenAIRequest_Extension().getOpenAIRequest_Extension_Request(), ENUM_MessageRole.tool, getContext());
+				.retrieveMessageListByRole(getRequest(RequestMapping), ENUM_MessageRole.tool, getContext());
 
 		// No tool calls yet; thus no tool recall
 		if (messageListTool.size() == 0) {
@@ -219,7 +249,7 @@ public class OpenAIRequest_ManipulateJson extends CustomJavaAction<java.lang.Str
 		// Get all messages with role assistant
 		// Assistant messages optionally have an array of tool_calls that contain an id and the functionName
 		List<Message> messageListAssistant = MessageImpl
-				.retrieveMessageListByRole(OpenAIRequest.getOpenAIRequest_OpenAIRequest_Extension().getOpenAIRequest_Extension_Request(), ENUM_MessageRole.assistant, getContext());
+				.retrieveMessageListByRole(getRequest(RequestMapping), ENUM_MessageRole.assistant, getContext());
 
 		// HashMap with ToolCall._id and ToolCallFunction.Name created from the messageListAssistant
 		// The map contains only those tool calls, where functionName equals the toolChoiceFunctionName
@@ -266,7 +296,7 @@ public class OpenAIRequest_ManipulateJson extends CustomJavaAction<java.lang.Str
 	}
 	
 	private void mapFunctionParameters() throws CoreException {
-		ToolCollection toolCollection = OpenAIRequest.getOpenAIRequest_OpenAIRequest_Extension().getOpenAIRequest_Extension_Request().getRequest_ToolCollection();
+		ToolCollection toolCollection = getToolCollection(RequestMapping);
 		if(toolCollection == null) {
 			return;
 		}
