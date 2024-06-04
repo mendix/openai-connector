@@ -61,20 +61,21 @@
     border-radius: 8px;
     margin-bottom: $spacing-smaller;
     padding: $spacing-small $spacing-medium;
-}
-.chat-bubble-wrapper {
-    &--user {
-        .chat-message-card {
-            background: $chat-bubble-user-background;
-            border-radius: 8px 8px 0 8px;
-            text-align: right;
-        }
+    .chat-loading-wrapper{
+        margin: $spacing-medium $spacing-small;
     }
-    &--assistant {
-        .chat-message-card {
-            background: $chat-bubble-assistant-background;
-            border-radius: 8px 8px 8px 0;
-            text-align: left;
-        }
+}
+
+.chat-bubble-wrapper {
+    .chat-message-card {
+        background: $chat-bubble-assistant-background;
+        border-radius: 8px 8px 8px 0;
+        text-align: left;
+
+    }
+
+    &--user .chat-message-card {
+        background: $chat-bubble-user-background;
+
     }
 }

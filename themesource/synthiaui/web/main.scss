@@ -4,3 +4,11 @@
 @import "./abstracts/all";
 @import "./components/all";
 @import "./USE_ME/all";
+
+.conversational-ui-dataview-full-height {
+    display: contents;
+
+    &>div {
+        display: contents;
+    }
+}
