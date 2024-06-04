@@ -64,7 +64,10 @@ public class RequestMapping_ManipulateJson extends CustomJavaAction<java.lang.St
 			validateRequestMapping();
 
 			rootNode = MAPPER.readTree(Request_Json);
-			
+            
+            //find stop node and remove if array is empty
+            removeEmptyArrayNode(rootNode, "stop");
+            
 			updateMessages(rootNode);
 			setFunctionToolChoice(rootNode);
 			mapFunctionParameters();
@@ -106,10 +109,7 @@ public class RequestMapping_ManipulateJson extends CustomJavaAction<java.lang.St
 
 		for (JsonNode messageNode : messagesNode) {
 			//find tool_calls node and remove if array is empty
-            removeEmptyToolCalls(messageNode);
-            
-            //find stop node and remove if array is empty
-            removeEmptyStopSequence(rootNode);
+            removeEmptyArrayNode(messageNode, "tool_calls");
             
             //If a fileCollection has been added replace content node with array of text content and file content
             updateImageMessages(messageNode);
@@ -118,19 +118,13 @@ public class RequestMapping_ManipulateJson extends CustomJavaAction<java.lang.St
 		((ObjectNode) rootNode).set("messages", messagesNode);
 	}
 
-	private void removeEmptyToolCalls(JsonNode messageNode) {
-		JsonNode toolCallsNode = messageNode.path("tool_calls");
-		if (toolCallsNode != null && toolCallsNode.isArray() && toolCallsNode.size() == 0) {
-		    ((ObjectNode) messageNode).remove("tool_calls");
+	private void removeEmptyArrayNode(JsonNode jsonNode, String path) {
+		JsonNode arrayNode = jsonNode.path(path);
+		if (arrayNode != null && arrayNode.isArray() && arrayNode.size() == 0) {
+		    ((ObjectNode) jsonNode).remove(path);
 		}
 	}
 	
-	private void removeEmptyStopSequence(JsonNode rootNode) {
-		JsonNode stopNode = rootNode.path("stop");
-		if (stopNode != null && stopNode.isArray() && stopNode.size() == 0) {
-		    ((ObjectNode) rootNode).remove("stop");
-		}
-	}
 	
 	private void updateImageMessages(JsonNode messageNode) {
 		JsonNode fileCollection = messageNode.path("filecollection");
