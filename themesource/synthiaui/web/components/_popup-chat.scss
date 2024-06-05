@@ -1,0 +1,60 @@
+@import "../../../atlas_core/web/_variables.scss";
+//this file contains styling for a pop-up chatbox
+
+.btn-chat-popup {
+    position: fixed;
+    right: $pop-up-chat-right-position;
+    bottom: $pop-up-chat-bottom-position;
+    z-index: 10;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    .glyphicon {
+        font-size: 24px;
+    }
+    img {
+        height: 32px;
+        width: 32px;
+        margin: 0;
+    }
+}
+
+.page-chat-popup.mx-window {
+    position: fixed;
+    right: $pop-up-chat-right-position !important;
+    bottom: $pop-up-chat-bottom-position !important;
+    left: unset !important;
+    top: unset !important;
+    width: $pop-up-chat-width !important;
+    height: $pop-up-chat-height !important;
+    z-index: 100;
+
+    .mx-resizer-n, .mx-resizer-s, .mx-resizer-e, .mx-resizer-w, .mx-resizer-nw, .mx-resizer-ne, .mx-resizer-sw, .mx-resizer-se{
+        cursor: auto;
+    }
+    .mx-window-header {
+        background: $brand-primary;
+        cursor: auto;
+        h4 {
+            color: $header-text-color;
+        }
+    }
+    .mx-window-header button.close {
+        color: transparent;
+        &::after {
+            content: "-";
+            color: $header-text-color;
+        }
+        
+    }
+    .modal-body {
+        height: calc(100% - 50px);
+        overflow: hidden;
+        padding: $spacing-medium;
+        .mx-placeholder {
+            height: 100%;
+        }
+    }
+}
+
+

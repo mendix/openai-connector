@@ -77,15 +77,29 @@
         align-items: center;
         justify-content: center;
         text-decoration-line: none;
-        border-radius: $send-button-border-radius;
+        border-radius: 50%;
         width: $send-btn-size;
         height: $send-btn-size;
 
         .glyphicon {
             top: 0;
             font-size: $send-btn-size / 2;
-            left: -1px;
+            left: -2px;
         }
+    }
+}
+
+.chat-bubble-wrapper {
+    .chat-message-card {
+        background: $chat-bubble-assistant-background;
+        border-radius: 8px 8px 8px 0;
+        text-align: left;
+
+    }
+
+    &--user .chat-message-card {
+        background: $chat-bubble-user-background;
+
     }
 }
 
