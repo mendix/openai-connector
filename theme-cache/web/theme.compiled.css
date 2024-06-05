@@ -32890,10 +32890,6 @@ $callout-info-color: $brand-info;
 // Background Color
 $callout-info-bg: $color-info-lighter;
 */
-.border-primary {
-  border: 1px solid #264ae5;
-}
-
 .hover-trigger .show-on-hover {
   visibility: hidden;
 }
@@ -32922,10 +32918,6 @@ $callout-info-bg: $color-info-lighter;
   line-height: 1;
 }
 
-.chat--max-width {
-  max-width: 900px;
-}
-
 .accordion-chat-sources .widget-accordion-group {
   background: transparent;
 }
@@ -32934,8 +32926,9 @@ $callout-info-bg: $color-info-lighter;
   background: transparent;
   padding: 0;
 }
-.accordion-chat-sources .widget-accordion-group .widget-accordion-group-header .widget-accordion-group-header-button.widget-accordion-group-header-button-clickable:hover {
+.accordion-chat-sources .widget-accordion-group .widget-accordion-group-header .widget-accordion-group-header-button.widget-accordion-group-header-button-clickable:hover, .accordion-chat-sources .widget-accordion-group .widget-accordion-group-header .widget-accordion-group-header-button.widget-accordion-group-header-button-clickable:focus {
   color: #6c717e;
+  background: transparent;
 }
 .accordion-chat-sources .widget-accordion-group .widget-accordion-group-header .widget-accordion-group-header-button .widget-accordion-group-header-button-icon {
   align-self: left;
@@ -32945,11 +32938,6 @@ $callout-info-bg: $color-info-lighter;
 .accordion-chat-sources .widget-accordion-group .widget-accordion-group-content-wrapper .widget-accordion-group-content {
   padding-left: 0;
   padding-bottom: 0;
-}
-
-.chat-card-small.card {
-  margin-bottom: 8px;
-  padding: 8px;
 }
 
 .chat-card--full-height {
@@ -33037,12 +33025,38 @@ $callout-info-bg: $color-info-lighter;
 .chat-input-wrapper .send-btn .glyphicon {
   top: 0;
   font-size: 14px;
-  left: -1px;
+  left: -2px;
+}
+
+.chat-bubble-wrapper .chat-message-card {
+  background: #ecf7ec;
+  border-radius: 8px 8px 8px 0;
+  text-align: left;
+}
+.chat-bubble-wrapper--user .chat-message-card {
+  background: #e9edfc;
 }
 
 .chat-history-active {
   border-left: 3px solid #264ae5;
   font-weight: bold;
+}
+
+.chat-dataview--display-contents {
+  display: contents;
+}
+.chat-dataview--display-contents > div {
+  display: contents;
+}
+
+.layoutgrid--full-height {
+  height: 100%;
+}
+.layoutgrid--full-height .row {
+  height: 100%;
+}
+.layoutgrid--full-height .row > [class*=col] {
+  height: 100%;
 }
 
 .chat-listview-horizontal.mx-listview > ul {
@@ -33058,49 +33072,6 @@ $callout-info-bg: $color-info-lighter;
 
 .listview-hide-on-empty.mx-listview > ul > li.mx-listview-empty {
   display: none;
-}
-
-.layoutgrid--full-height {
-  height: 100%;
-}
-.layoutgrid--full-height .row {
-  height: 100%;
-}
-.layoutgrid--full-height .row > [class*=col] {
-  height: 100%;
-}
-
-.text-italic {
-  font-style: italic;
-}
-
-.chat-center {
-  max-width: 900px;
-  height: 100%;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-.chat-center .mx-dataview {
-  display: contents;
-}
-.chat-center .mx-dataview .mx-dataview-content {
-  display: contents;
-}
-
-.chat-flex-end {
-  max-width: 900px;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-}
-.chat-flex-end .mx-dataview {
-  display: contents;
-}
-.chat-flex-end .mx-dataview .mx-dataview-content {
-  display: contents;
 }
 
 .btn-chat-popup {
@@ -33157,25 +33128,6 @@ $callout-info-bg: $color-info-lighter;
   height: 100%;
 }
 
-.chat-message-card {
-  max-width: 75%;
-  border-radius: 8px;
-  margin-bottom: 4px;
-  padding: 8px 16px;
-}
-.chat-message-card .chat-loading-wrapper {
-  margin: 16px 8px;
-}
-
-.chat-bubble-wrapper .chat-message-card {
-  background: #ecf7ec;
-  border-radius: 8px 8px 8px 0;
-  text-align: left;
-}
-.chat-bubble-wrapper--user .chat-message-card {
-  background: #e9edfc;
-}
-
 .layout-chat-sidebar {
   right: 0 !important;
   top: 0 !important;
@@ -33208,11 +33160,8 @@ $callout-info-bg: $color-info-lighter;
   height: 100%;
 }
 
-.conversational-ui-dataview-full-height {
-  display: contents;
-}
-.conversational-ui-dataview-full-height > div {
-  display: contents;
+.text-italic {
+  font-style: italic;
 }
 
 /*
