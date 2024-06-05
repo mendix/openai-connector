@@ -1,0 +1,14 @@
+$chat-width: 900px !default;
+$send-btn-size: $form-input-font-size * 2 !default;
+$chat-input-max-height: 400px !default;
+
+//pop-up chat
+$pop-up-chat-bottom-position: 5vh !default;
+$pop-up-chat-right-position: 3vw !default;
+$pop-up-chat-width: 500px !default;
+$pop-up-chat-height: 65vh !default;
+
+//chat bubbles
+$chat-bubble-user-background: mix($brand-primary, white, 10%) !default;
+$chat-bubble-assistant-background: mix($brand-success, white, 10%) !default;
+$chat-bubble-margin: 10% !default;

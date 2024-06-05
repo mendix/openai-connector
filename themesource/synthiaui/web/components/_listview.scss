@@ -13,8 +13,5 @@
 .listview-hide-on-empty.mx-listview {
     > ul > li.mx-listview-empty {
         display: none;
-        * {
-            display: none;
-        }
     }
 }

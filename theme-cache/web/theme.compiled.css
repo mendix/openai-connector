@@ -20,7 +20,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: #264ae5;
+$brand-primary: gre;
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -742,7 +742,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: #264ae5;
+$brand-primary: gre;
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -1463,7 +1463,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: #264ae5;
+$brand-primary: gre;
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -2184,7 +2184,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: #264ae5;
+$brand-primary: gre;
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -2905,7 +2905,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: #264ae5;
+$brand-primary: gre;
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -3626,7 +3626,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: #264ae5;
+$brand-primary: gre;
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -4347,7 +4347,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: #264ae5;
+$brand-primary: gre;
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -5068,7 +5068,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: #264ae5;
+$brand-primary: gre;
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -5789,7 +5789,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: #264ae5;
+$brand-primary: gre;
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -6510,7 +6510,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: #264ae5;
+$brand-primary: gre;
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -28714,7 +28714,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: #264ae5;
+$brand-primary: gre;
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -30044,7 +30044,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: #264ae5;
+$brand-primary: gre;
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -32190,7 +32190,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: #264ae5;
+$brand-primary: gre;
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -32890,10 +32890,6 @@ $callout-info-color: $brand-info;
 // Background Color
 $callout-info-bg: $color-info-lighter;
 */
-.border-primary {
-  border: 1px solid #185a9d;
-}
-
 .hover-trigger .show-on-hover {
   visibility: hidden;
 }
@@ -32922,10 +32918,6 @@ $callout-info-bg: $color-info-lighter;
   line-height: 1;
 }
 
-.chat--max-width {
-  max-width: 800px;
-}
-
 .accordion-chat-sources .widget-accordion-group {
   background: transparent;
 }
@@ -32934,8 +32926,9 @@ $callout-info-bg: $color-info-lighter;
   background: transparent;
   padding: 0;
 }
-.accordion-chat-sources .widget-accordion-group .widget-accordion-group-header .widget-accordion-group-header-button.widget-accordion-group-header-button-clickable:hover {
+.accordion-chat-sources .widget-accordion-group .widget-accordion-group-header .widget-accordion-group-header-button.widget-accordion-group-header-button-clickable:hover, .accordion-chat-sources .widget-accordion-group .widget-accordion-group-header .widget-accordion-group-header-button.widget-accordion-group-header-button-clickable:focus {
   color: #1f2431;
+  background: transparent;
 }
 .accordion-chat-sources .widget-accordion-group .widget-accordion-group-header .widget-accordion-group-header-button .widget-accordion-group-header-button-icon {
   align-self: left;
@@ -32947,9 +32940,8 @@ $callout-info-bg: $color-info-lighter;
   padding-bottom: 0;
 }
 
-.chat-card-small.card {
-  margin-bottom: 8px;
-  padding: 8px;
+.chat-card--full-height {
+  height: 100%;
 }
 
 .chat-loading-wrapper {
@@ -32988,18 +32980,17 @@ $callout-info-bg: $color-info-lighter;
 .chat-container {
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
   width: 100%;
   height: 100%;
-  flex: 1 1 0%;
-  overflow-y: auto;
 }
 .chat-container .messages-container {
+  flex: 1 1 auto;
   overflow-y: auto;
   overflow-x: hidden;
-  flex: 1 1 0%;
-  display: flex;
-  flex-direction: column-reverse;
+}
+.chat-container--center {
+  max-width: 900px;
+  margin: 0 auto;
   height: 100%;
 }
 
@@ -33021,14 +33012,12 @@ $callout-info-bg: $color-info-lighter;
 }
 .chat-input-wrapper .send-btn {
   position: absolute;
-  right: 24px;
-  margin: auto;
+  right: 15px;
+  bottom: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
   text-decoration-line: none;
-  color: #fff;
-  background-color: #185a9d;
   border-radius: 50%;
   width: 28px;
   height: 28px;
@@ -33036,7 +33025,45 @@ $callout-info-bg: $color-info-lighter;
 .chat-input-wrapper .send-btn .glyphicon {
   top: 0;
   font-size: 14px;
-  left: -1px;
+  left: -2px;
+}
+
+.chat-bubble-wrapper {
+  margin-top: 8px;
+}
+.chat-bubble-wrapper .chat-message-card {
+  background: #ecf7ec;
+  border-radius: 8px 8px 8px 0;
+  margin: 0 10% 0 0;
+  text-align: left;
+  padding: 8px;
+}
+.chat-bubble-wrapper--user .chat-message-card {
+  background: #e8eff5;
+  border-radius: 8px 8px 0 8px;
+  margin: 0 0 0 10%;
+}
+
+.chat-history-active {
+  border-left: 3px solid #185a9d;
+  font-weight: bold;
+}
+
+.chat-dataview--display-contents {
+  display: contents;
+}
+.chat-dataview--display-contents > div {
+  display: contents;
+}
+
+.layoutgrid--full-height {
+  height: 100%;
+}
+.layoutgrid--full-height .row {
+  height: 100%;
+}
+.layoutgrid--full-height .row > [class*=col] {
+  height: 100%;
 }
 
 .chat-listview-horizontal.mx-listview > ul {
@@ -33053,64 +33080,6 @@ $callout-info-bg: $color-info-lighter;
 .listview-hide-on-empty.mx-listview > ul > li.mx-listview-empty {
   display: none;
 }
-.listview-hide-on-empty.mx-listview > ul > li.mx-listview-empty * {
-  display: none;
-}
-
-.layoutgrid--full-height {
-  height: 100%;
-}
-.layoutgrid--full-height .row {
-  height: 100%;
-}
-.layoutgrid--full-height .row > [class*=col] {
-  height: 100%;
-}
-
-.chat-center {
-  max-width: 800px;
-  height: 100%;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-.chat-center .mx-dataview {
-  display: contents;
-}
-.chat-center .mx-dataview .mx-dataview-content {
-  display: contents;
-}
-
-.chat-flex-end {
-  max-width: 800px;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-}
-.chat-flex-end .mx-dataview {
-  display: contents;
-}
-.chat-flex-end .mx-dataview .mx-dataview-content {
-  display: contents;
-}
-
-.history-sidebar {
-  display: flex;
-  align-items: flex-start;
-  flex-direction: column;
-  justify-content: center;
-  max-width: 300px;
-  margin: 0 auto;
-  overflow-y: auto;
-  overflow-x: hidden;
-  height: calc(100vh - 24px - 24px);
-}
-.history-sidebar .mx-listview {
-  height: 100%;
-  width: 100%;
-}
 
 .btn-chat-popup {
   position: fixed;
@@ -33119,6 +33088,7 @@ $callout-info-bg: $color-info-lighter;
   z-index: 10;
   width: 60px;
   height: 60px;
+  border-radius: 50%;
 }
 .btn-chat-popup .glyphicon {
   font-size: 24px;
@@ -33165,24 +33135,6 @@ $callout-info-bg: $color-info-lighter;
   height: 100%;
 }
 
-.chat-message-card {
-  max-width: 75%;
-  border-radius: 8px;
-  margin-bottom: 4px;
-  padding: 8px 16px;
-}
-
-.chat-bubble-wrapper--user .chat-message-card {
-  background: #e8eff5;
-  border-radius: 8px 8px 0 8px;
-  text-align: right;
-}
-.chat-bubble-wrapper--assistant .chat-message-card {
-  background: #ecf7ec;
-  border-radius: 8px 8px 8px 0;
-  text-align: left;
-}
-
 .layout-chat-sidebar {
   right: 0 !important;
   top: 0 !important;
@@ -33215,6 +33167,10 @@ $callout-info-bg: $color-info-lighter;
   height: 100%;
 }
 
+.text-italic {
+  font-style: italic;
+}
+
 /*
 //
 // ██████╗  █████╗ ███████╗██╗ ██████╗
@@ -33236,7 +33192,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: #264ae5;
+$brand-primary: gre;
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -34009,15 +33965,6 @@ $callout-info-bg: $color-info-lighter;
   padding: 8px;
 }
 
-.listview-hover-on-background.mx-listview > ul > li:hover {
-  background: rgba(24, 90, 157, 0.3) !important;
-}
-.listview-hover-on-background.mx-listview > ul > li.selected, .listview-hover-on-background.mx-listview > ul > li.selected:hover, .listview-hover-on-background.mx-listview > ul > li.selected:active, .listview-hover-on-background.mx-listview > ul > li.selected:focus {
-  background: rgba(24, 90, 157, 0.5) !important;
-  color: rgba(255, 255, 255, 0.9);
-  font-weight: 600;
-}
-
 .listview-horizontal.mx-listview > ul {
   display: inline-block;
   margin-bottom: 0;
@@ -34134,7 +34081,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: #264ae5;
+$brand-primary: gre;
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -34855,7 +34802,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: #264ae5;
+$brand-primary: gre;
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -35576,7 +35523,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: #264ae5;
+$brand-primary: gre;
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -36297,7 +36244,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: #264ae5;
+$brand-primary: gre;
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -37018,7 +36965,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: #264ae5;
+$brand-primary: gre;
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -37739,7 +37686,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: #264ae5;
+$brand-primary: gre;
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -38460,7 +38407,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: #264ae5;
+$brand-primary: gre;
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -39181,7 +39128,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: #264ae5;
+$brand-primary: gre;
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -39902,7 +39849,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: #264ae5;
+$brand-primary: gre;
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -40623,7 +40570,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: #264ae5;
+$brand-primary: gre;
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -41344,7 +41291,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: #264ae5;
+$brand-primary: gre;
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -42065,7 +42012,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: #264ae5;
+$brand-primary: gre;
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -42786,7 +42733,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: #264ae5;
+$brand-primary: gre;
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -43507,7 +43454,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: #264ae5;
+$brand-primary: gre;
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -44228,7 +44175,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: #264ae5;
+$brand-primary: gre;
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -44949,7 +44896,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: #264ae5;
+$brand-primary: gre;
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -45670,7 +45617,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: #264ae5;
+$brand-primary: gre;
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;

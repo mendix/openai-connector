@@ -33,31 +33,32 @@
 .chat-container {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
     width: 100%;
     height: 100%;
-    flex: 1 1 0%;
-    overflow-y: auto;
 
     .messages-container {
+        flex: 1 1 auto;
         overflow-y: auto;
         overflow-x: hidden;
-        flex: 1 1 0%;
-        display: flex;
-        flex-direction: column-reverse;
-        height: 100%;
+    }
+
+    &--center {
+        max-width: $chat-width;
+        margin: 0 auto;
+        height: 100%
     }
 }
+
 
 .chat-input-wrapper {
     position: relative;
 
     .form-group {
-        width:100%;
+        width: 100%;
         padding-left: 0px !important;
         padding-right: 0px !important;
 
-        .form-control {       
+        .form-control {
             padding-right: $send-btn-size + 36px;
             max-height: $chat-input-max-height;
             overflow: auto;
@@ -65,27 +66,47 @@
     }
 
     .has-error .alert {
-        display:none !important;
+        display: none !important;
     }
 
     .send-btn {
         position: absolute;
-        right: 24px;
-        margin: auto;
+        right: 58px / 2 - $send-btn-size / 2;
+        bottom: 58px / 2 - $send-btn-size / 2;
         display: flex;
         align-items: center;
         justify-content: center;
         text-decoration-line: none;
-        color: $btn-primary-color;
-        background-color: $brand-primary;
-        border-radius: $send-button-border-radius;
+        border-radius: 50%;
         width: $send-btn-size;
         height: $send-btn-size;
 
         .glyphicon {
             top: 0;
             font-size: $send-btn-size / 2;
-            left: -1px;
+            left: -2px;
         }
     }
+}
+
+.chat-bubble-wrapper {
+    margin-top: $spacing-small;
+    .chat-message-card {
+        background: $chat-bubble-assistant-background;
+        border-radius: 8px 8px 8px 0;
+        margin: 0 10% 0 0;
+        text-align: left;
+        padding: $spacing-small;
+    }
+
+    &--user .chat-message-card {
+        background: $chat-bubble-user-background;
+        border-radius: 8px 8px 0 8px;
+        margin: 0 0 0 10%;
+    }
+}
+
+.chat-history-active {
+    border-left: 3px solid $brand-primary;
+    font-weight: bold;
 }
