@@ -94,12 +94,12 @@
         background: $chat-bubble-assistant-background;
         border-radius: 8px 8px 8px 0;
         text-align: left;
-
+        padding: $spacing-small;
     }
 
     &--user .chat-message-card {
         background: $chat-bubble-user-background;
-
+        border-radius: 8px 8px 0 8px;
     }
 }
 
