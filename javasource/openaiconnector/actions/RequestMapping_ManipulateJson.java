@@ -58,8 +58,8 @@ public class RequestMapping_ManipulateJson extends CustomJavaAction<java.lang.St
 
 		// BEGIN USER CODE
 		try {
-			requireNonNull(RequestMapping, "OpenAIRequest is required.");
-			requireNonNull(Request_Json, "OpenAIRequest_Json is required.");
+			requireNonNull(RequestMapping, "RequestMapping is required.");
+			requireNonNull(Request_Json, "Request_JSON is required.");
 			
 			validateRequestMapping();
 
@@ -179,7 +179,6 @@ public class RequestMapping_ManipulateJson extends CustomJavaAction<java.lang.St
 		// Add ToolChoice Tool if it has not yet been called in a previous iteration
 		} else if (getToolCollection(RequestMapping) != null) {
 			Tool toolChoiceTool = getToolCollection(RequestMapping).getToolCollection_ToolChoice();
-			//FunctionRequest functionRequest = toolRequest == null ? null : toolRequest.getToolRequest_FunctionRequest();
 			
 			// Remove tool choice function, because it has already been called
 			// This prevents and infinite loop
@@ -229,8 +228,6 @@ public class RequestMapping_ManipulateJson extends CustomJavaAction<java.lang.St
 	}
 
 	private boolean isToolRecall(Tool toolChoiceTool) throws CoreException {
-		//ChatCompletionsMessages chatCompletionsMessages = ChatCompletionsRequest.getChatCompletionsMessages_ChatCompletionsRequest();
-
 		// Get all messages with role 'tool'
 		List<Message> messageListTool = MessageImpl
 				.retrieveMessageListByRole(getRequest(RequestMapping), ENUM_MessageRole.tool, getContext());
