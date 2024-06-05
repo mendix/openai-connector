@@ -33110,6 +33110,7 @@ $callout-info-bg: $color-info-lighter;
   z-index: 10;
   width: 60px;
   height: 60px;
+  border-radius: 50%;
 }
 .btn-chat-popup .glyphicon {
   font-size: 24px;
