@@ -41,7 +41,14 @@
         overflow-y: auto;
         overflow-x: hidden;
     }
+
+    &--center {
+        max-width: $chat-width;
+        margin: 0 auto;
+        height: 100%
+    }
 }
+
 
 .chat-input-wrapper {
     position: relative;

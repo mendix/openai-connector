@@ -32923,7 +32923,7 @@ $callout-info-bg: $color-info-lighter;
 }
 
 .chat--max-width {
-  max-width: 800px;
+  max-width: 900px;
 }
 
 .accordion-chat-sources .widget-accordion-group {
@@ -32950,6 +32950,10 @@ $callout-info-bg: $color-info-lighter;
 .chat-card-small.card {
   margin-bottom: 8px;
   padding: 8px;
+}
+
+.chat-card--full-height {
+  height: 100%;
 }
 
 .chat-loading-wrapper {
@@ -32995,6 +32999,11 @@ $callout-info-bg: $color-info-lighter;
   flex: 1 1 auto;
   overflow-y: auto;
   overflow-x: hidden;
+}
+.chat-container--center {
+  max-width: 900px;
+  margin: 0 auto;
+  height: 100%;
 }
 
 .chat-input-wrapper {
@@ -33066,7 +33075,7 @@ $callout-info-bg: $color-info-lighter;
 }
 
 .chat-center {
-  max-width: 800px;
+  max-width: 900px;
   height: 100%;
   margin: 0 auto;
   display: flex;
@@ -33081,7 +33090,7 @@ $callout-info-bg: $color-info-lighter;
 }
 
 .chat-flex-end {
-  max-width: 800px;
+  max-width: 900px;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -33092,22 +33101,6 @@ $callout-info-bg: $color-info-lighter;
 }
 .chat-flex-end .mx-dataview .mx-dataview-content {
   display: contents;
-}
-
-.history-sidebar {
-  display: flex;
-  align-items: flex-start;
-  flex-direction: column;
-  justify-content: center;
-  max-width: 300px;
-  margin: 0 auto;
-  overflow-y: auto;
-  overflow-x: hidden;
-  height: calc(100vh - 24px - 24px);
-}
-.history-sidebar .mx-listview {
-  height: 100%;
-  width: 100%;
 }
 
 .btn-chat-popup {
