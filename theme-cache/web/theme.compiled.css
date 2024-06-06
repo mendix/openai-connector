@@ -32947,7 +32947,7 @@ $callout-info-bg: $color-info-lighter;
 .chat-loading-wrapper {
   display: flex;
   justify-content: left;
-  padding-left: 2px;
+  padding: 8px;
 }
 .chat-loading-wrapper .loading-dot {
   border-radius: 100%;
