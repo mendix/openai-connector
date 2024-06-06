@@ -10,14 +10,22 @@
 package amazonbedrockconnector.actions;
 
 import static java.util.Objects.requireNonNull;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import com.mendix.core.CoreException;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 import com.mendix.webui.CustomJavaAction;
 import amazonbedrockconnector.impl.AmazonBedrockClient;
-import amazonbedrockconnector.impl.MxCitation;
 import amazonbedrockconnector.impl.MxLogger;
-import amazonbedrockconnector.proxies.RetrieveAndGenerateCitation;
-import amazonbedrockconnector.proxies.SessionConfiguration;
+import amazonbedrockconnector.proxies.KnowledgeBaseTool;
+import genaicommons.proxies.ENUM_SourceType;
+import genaicommons.proxies.Message;
+import genaicommons.proxies.Reference;
+import genaicommons.proxies.Request;
+import genaicommons.proxies.Tool;
+import genaicommons.proxies.ToolCollection;
 import software.amazon.awssdk.services.bedrockagentruntime.model.Citation;
 import software.amazon.awssdk.services.bedrockagentruntime.model.KnowledgeBaseRetrieveAndGenerateConfiguration;
 import software.amazon.awssdk.services.bedrockagentruntime.model.RetrieveAndGenerateConfiguration;
@@ -30,16 +38,17 @@ public class RetrieveAndGenerate extends CustomJavaAction<IMendixObject>
 {
 	private IMendixObject __Credentials;
 	private awsauthentication.proxies.Credentials Credentials;
-	private awsauthentication.proxies.ENUM_Region Region;
 	private IMendixObject __RetrieveAndGenerateRequest;
-	private amazonbedrockconnector.proxies.RetrieveAndGenerateRequest RetrieveAndGenerateRequest;
+	private amazonbedrockconnector.proxies.RetrieveAndGenerateRequest_Extension RetrieveAndGenerateRequest;
+	private IMendixObject __AmazonBedrockConnection;
+	private amazonbedrockconnector.proxies.AmazonBedrockConnection AmazonBedrockConnection;
 
-	public RetrieveAndGenerate(IContext context, IMendixObject Credentials, java.lang.String Region, IMendixObject RetrieveAndGenerateRequest)
+	public RetrieveAndGenerate(IContext context, IMendixObject Credentials, IMendixObject RetrieveAndGenerateRequest, IMendixObject AmazonBedrockConnection)
 	{
 		super(context);
 		this.__Credentials = Credentials;
-		this.Region = Region == null ? null : awsauthentication.proxies.ENUM_Region.valueOf(Region);
 		this.__RetrieveAndGenerateRequest = RetrieveAndGenerateRequest;
+		this.__AmazonBedrockConnection = AmazonBedrockConnection;
 	}
 
 	@java.lang.Override
@@ -47,17 +56,19 @@ public class RetrieveAndGenerate extends CustomJavaAction<IMendixObject>
 	{
 		this.Credentials = this.__Credentials == null ? null : awsauthentication.proxies.Credentials.initialize(getContext(), __Credentials);
 
-		this.RetrieveAndGenerateRequest = this.__RetrieveAndGenerateRequest == null ? null : amazonbedrockconnector.proxies.RetrieveAndGenerateRequest.initialize(getContext(), __RetrieveAndGenerateRequest);
+		this.RetrieveAndGenerateRequest = this.__RetrieveAndGenerateRequest == null ? null : amazonbedrockconnector.proxies.RetrieveAndGenerateRequest_Extension.initialize(getContext(), __RetrieveAndGenerateRequest);
+
+		this.AmazonBedrockConnection = this.__AmazonBedrockConnection == null ? null : amazonbedrockconnector.proxies.AmazonBedrockConnection.initialize(getContext(), __AmazonBedrockConnection);
 
 		// BEGIN USER CODE
 		try {
 			requireNonNull(Credentials, "AWS Credentials are required");
-			requireNonNull(RetrieveAndGenerateRequest, "RetrieveAndGenerateRequest is required");
-			requireNonNull(Region, "AWS Region is required");
+			requireNonNull(RetrieveAndGenerateRequest, "RetrieveAndGenerateRequest_Extension object is required");
+			requireNonNull(AmazonBedrockConnection, "AmazonBedrockConnection is required");
 			
 			validateRequest();
 			
-			var client = AmazonBedrockClient.getBedrockAgentRuntimeClient(Credentials, Region, RetrieveAndGenerateRequest);
+			var client = AmazonBedrockClient.getBedrockAgentRuntimeClient(Credentials, AmazonBedrockConnection.getRegion(), RetrieveAndGenerateRequest);
 			
 			software.amazon.awssdk.services.bedrockagentruntime.model.RetrieveAndGenerateRequest awsRequest = getAwsRequest();
 			LOGGER.info("AWS request: " + awsRequest);
@@ -89,79 +100,122 @@ public class RetrieveAndGenerate extends CustomJavaAction<IMendixObject>
 	// BEGIN EXTRA CODE
 	private static final MxLogger LOGGER = new MxLogger(RetrieveAndGenerate.class);
 	
+	private String getInputText(Request commonRequest) throws CoreException {
+		List<Message> messages = commonRequest.getRequest_Message();
+		
+		if (messages.size() == 0) {
+			throw new IllegalArgumentException("The request does not contain a Message object. It must contain exactly one Message object with the Content attribute set.");
+		}
+		
+		if (messages.size() > 1) {
+			throw new IllegalArgumentException("The request contains more than one Message object. This is not supported for this operation. Exactly one Message object is expected");
+		}
+		return commonRequest.getRequest_Message().get(0).getContent();
+	}
+	
+	private String getKnowledgeBaseId(Request commonRequest) throws CoreException {
+		ToolCollection toolCollection = commonRequest.getRequest_ToolCollection();
+		if (toolCollection == null) {
+			throw new IllegalArgumentException("The Request does not contain a ToolCollection object. A ToolCollection object pointing to a KnowledgeBaseTool object is required");
+		}
+		
+		List<Tool> tools = toolCollection.getToolCollection_Tool();
+		if (tools.size() == 0) {
+			throw new IllegalArgumentException("The Request does not contain any Tool objects. Exactly one KnowledgeBaseTool object is required");
+		}
+		
+		if (tools.size() > 1) {
+			throw new IllegalArgumentException("The Request contains more than one Tool object. Exactly one KnowledgeBaseTool object is required");
+		}
+		Tool tool = tools.get(0);
+		if (!(tool instanceof KnowledgeBaseTool)) {
+			throw new IllegalArgumentException("The provided Tool is not a KnowledgeBaseTool object. Exactly one KnowledgeBaseTool object is required");
+		}
+		KnowledgeBaseTool kbTool = (KnowledgeBaseTool) tool;
+		
+		return kbTool.getKnowledgeBaseId();
+	}
+	
 	private void validateRequest() throws Exception {
-		if (RetrieveAndGenerateRequest.getInputText() == null || RetrieveAndGenerateRequest.getInputText().isBlank()) {
+		
+		Request commonRequest = RetrieveAndGenerateRequest.getRetrieveAndGenerateRequest_Extension_Request();
+		if (commonRequest == null) {
+			throw new IllegalArgumentException("No GenAICommons.Request entity found. A GenAICommons.Request entity is required.");
+		}
+		
+		String inputText = getInputText(commonRequest);
+		if (inputText == null || inputText.isBlank()) {
 			throw new IllegalArgumentException("The InputText attribute of the RetrieveAndGenerateRequest object is required.");
 		}
 		
-		amazonbedrockconnector.proxies.RetrieveAndGenerateConfiguration mxRetrieveAndGenerateConfig = RetrieveAndGenerateRequest.getRetrieveAndGenerateRequest_RetrieveAndGenerateConfiguration(getContext());
-		if (mxRetrieveAndGenerateConfig == null) {
-			throw new IllegalArgumentException("A KnowledgeBaseConfiguration object is required as part of the RetrieveAndGenerateRequest.");
+		String knowledgeBaseId = getKnowledgeBaseId(commonRequest);
+		if (knowledgeBaseId == null || knowledgeBaseId.isBlank()) {
+			throw new IllegalArgumentException("The KnowledgeBaseId attribute of the KnowledgeBaseTool object is required.");
 		}
 		
-		if (mxRetrieveAndGenerateConfig.getKnowledgeBaseId() == null || mxRetrieveAndGenerateConfig.getKnowledgeBaseId().isBlank()) {
-			throw new IllegalArgumentException("The KnowledgeBaseId attribute of the KnowledgeBaseConfiguration object is required.");
+		if (RetrieveAndGenerateRequest.getRetrieveAndGenerateType() == null) {
+			throw new IllegalArgumentException("The RetrieveAndGenerateType attribute of the RetrieveAndGenerateRequest_Extension object is required.");
 		}
 		
-		if (mxRetrieveAndGenerateConfig.getModelARN() == null || mxRetrieveAndGenerateConfig.getModelARN().isBlank()) {
-			throw new IllegalArgumentException("The ModelARN attribute of the KnowledgeBaseConfiguration object is required.");
+		if (AmazonBedrockConnection.getModel() == null || AmazonBedrockConnection.getModel().isBlank()) {
+			throw new IllegalArgumentException("The Model attribute of the AmazonBedrockConnection is required.");
 		}
 		
-		if (mxRetrieveAndGenerateConfig.getRetrieveAndGenerateType() == null) {
-			throw new IllegalArgumentException("The RetrieveAndGenerate attribute of the KnowledgeBaseConfiguration object is required.");
+		if (AmazonBedrockConnection.getRegion()== null) {
+			throw new IllegalArgumentException("The Region attribute of the AmazonBedrockConnection is required.");
 		}
 		
 	}
 	
 	private software.amazon.awssdk.services.bedrockagentruntime.model.RetrieveAndGenerateRequest getAwsRequest() throws Exception {
+		Request commonRequest = RetrieveAndGenerateRequest.getRetrieveAndGenerateRequest_Extension_Request();
 		var awsRequestBuilder = software.amazon.awssdk.services.bedrockagentruntime.model.RetrieveAndGenerateRequest.builder();
 		
 		awsRequestBuilder
-			.input(getInput())
-			.retrieveAndGenerateConfiguration(getRetrieveAndGenerateConfiguration());
+			.input(getInput(commonRequest))
+			.retrieveAndGenerateConfiguration(getRetrieveAndGenerateConfiguration(commonRequest));
 		
 		String sessionId = RetrieveAndGenerateRequest.getSessionId();
 		if (sessionId != null && !sessionId.isBlank()) {
 			awsRequestBuilder.sessionId(sessionId);
 		}
 		
-		if (RetrieveAndGenerateRequest.getRetrieveAndGenerateRequest_SessionConfiguration() != null && RetrieveAndGenerateRequest.getRetrieveAndGenerateRequest_SessionConfiguration().getKmsKeyArn() != null && !RetrieveAndGenerateRequest.getRetrieveAndGenerateRequest_SessionConfiguration().getKmsKeyArn().isBlank()) {
+		String kmsKeyARN = RetrieveAndGenerateRequest.getKmsKeyARN();
+		if (kmsKeyARN != null && !kmsKeyARN.isBlank()) {
 			awsRequestBuilder.sessionConfiguration(getSessionConfiguration());
 		}
 		
 		return awsRequestBuilder.build();
 	}
 	
-	private RetrieveAndGenerateInput getInput() {
+	private RetrieveAndGenerateInput getInput(Request commonRequest) throws CoreException {
 		var builder = RetrieveAndGenerateInput.builder();
-		builder.text(RetrieveAndGenerateRequest.getInputText());
+		builder.text(getInputText(commonRequest));
 		
 		return builder.build();
 	}
 	
 	private RetrieveAndGenerateSessionConfiguration getSessionConfiguration() throws Exception {
 		var builder = RetrieveAndGenerateSessionConfiguration.builder();
-		SessionConfiguration mxSessionConfig = RetrieveAndGenerateRequest.getRetrieveAndGenerateRequest_SessionConfiguration(getContext());
-		builder.kmsKeyArn(mxSessionConfig.getKmsKeyArn());
+		builder.kmsKeyArn(RetrieveAndGenerateRequest.getKmsKeyARN());
 		
 		return builder.build();
 	}
 	
-	private RetrieveAndGenerateConfiguration getRetrieveAndGenerateConfiguration() throws Exception {
+	private RetrieveAndGenerateConfiguration getRetrieveAndGenerateConfiguration(Request commonRequest) throws Exception {
 		var builder = RetrieveAndGenerateConfiguration.builder();
-		amazonbedrockconnector.proxies.RetrieveAndGenerateConfiguration mxRetrieveAndGenerateConfig = RetrieveAndGenerateRequest.getRetrieveAndGenerateRequest_RetrieveAndGenerateConfiguration(getContext());
 		
-		builder.type(RetrieveAndGenerateType.valueOf(mxRetrieveAndGenerateConfig.getRetrieveAndGenerateType().toString()))
-			.knowledgeBaseConfiguration(getKnowledgeBaseRetrieveAndGenerateConfiguration(mxRetrieveAndGenerateConfig));
+		builder.type(RetrieveAndGenerateType.valueOf(RetrieveAndGenerateRequest.getRetrieveAndGenerateType().toString()))
+			.knowledgeBaseConfiguration(getKnowledgeBaseRetrieveAndGenerateConfiguration(commonRequest));
 		
 		return builder.build();				
 	}
 	
-	private KnowledgeBaseRetrieveAndGenerateConfiguration getKnowledgeBaseRetrieveAndGenerateConfiguration(amazonbedrockconnector.proxies.RetrieveAndGenerateConfiguration mxRetrieveAndGenerateConfig) throws Exception {
+	private KnowledgeBaseRetrieveAndGenerateConfiguration getKnowledgeBaseRetrieveAndGenerateConfiguration(Request commonRequest) throws Exception {
 		var builder = KnowledgeBaseRetrieveAndGenerateConfiguration.builder();
 		
-		builder.knowledgeBaseId(mxRetrieveAndGenerateConfig.getKnowledgeBaseId())
-			.modelArn(mxRetrieveAndGenerateConfig.getModelARN());
+		builder.knowledgeBaseId(getKnowledgeBaseId(commonRequest))
+			.modelArn(AmazonBedrockConnection.getModel());
 		
 		return builder.build();
 	}
@@ -170,20 +224,40 @@ public class RetrieveAndGenerate extends CustomJavaAction<IMendixObject>
 		amazonbedrockconnector.proxies.RetrieveAndGenerateResponse mxResponse = new amazonbedrockconnector.proxies.RetrieveAndGenerateResponse(getContext());
 		
 		mxResponse.setSessionId(awsResponse.sessionId());
-		mxResponse.setOutputText(awsResponse.output().text());
 		
-		awsResponse.citations().forEach(awsCitation -> {
-			RetrieveAndGenerateCitation mxCitation = createMxCitation(awsCitation);
-			mxCitation.setRetrieveAndGenerateCitation_RetrieveAndGenerateResponse(mxResponse);
-		});
+		Message responseMsg = new Message(getContext());
+		responseMsg.setContent(awsResponse.output().text());
 		
+		List<Reference> mxReferences = getMxReferences(awsResponse.citations());
+		responseMsg.setMessage_Reference(mxReferences);
+		
+		mxResponse.setResponse_Message(responseMsg);
 		return mxResponse;
 	}
 	
-	private RetrieveAndGenerateCitation createMxCitation(Citation awsCitation) {
-		amazonbedrockconnector.proxies.RetrieveAndGenerateCitation mxCitation = new amazonbedrockconnector.proxies.RetrieveAndGenerateCitation(getContext());
-		MxCitation.setMxCitations(awsCitation, mxCitation, getContext());
-		return mxCitation;
+	private List<Reference> getMxReferences(List<Citation> awsCitations) {
+			
+		List<Reference> mxReferences = new ArrayList<>();
+		
+		awsCitations.forEach(awsCitation -> {
+			genaicommons.proxies.Citation mxCitation = new genaicommons.proxies.Citation(getContext());
+			mxCitation.setStartIndex(awsCitation.generatedResponsePart().textResponsePart().span().start());
+			mxCitation.setEndIndex(awsCitation.generatedResponsePart().textResponsePart().span().end());
+			mxCitation.setText(awsCitation.generatedResponsePart().textResponsePart().text());
+			
+			List<genaicommons.proxies.Citation> singleCitationList = Arrays.asList(mxCitation);
+			awsCitation.retrievedReferences().forEach(awsReference -> {
+				Reference mxReference = new Reference(getContext());
+				mxReference.setContent(awsReference.content().text());
+				mxReference.setSource(awsReference.location().s3Location().uri());
+				mxReference.setSourceType(ENUM_SourceType.Url);
+				mxReference.setReference_Citation(singleCitationList);
+				mxReferences.add(mxReference);
+			});
+			
+		});
+		
+		return mxReferences;
 	}
 	
 	
