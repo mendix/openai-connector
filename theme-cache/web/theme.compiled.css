@@ -33044,6 +33044,10 @@ $callout-info-bg: $color-info-lighter;
   margin: 0 0 0 10%;
 }
 
+.chat-history-sidebar {
+  overflow-y: auto;
+}
+
 .chat-history-active {
   border-left: 3px solid #185a9d;
   font-weight: bold;
