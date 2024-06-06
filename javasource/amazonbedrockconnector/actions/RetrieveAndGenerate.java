@@ -251,6 +251,7 @@ public class RetrieveAndGenerate extends CustomJavaAction<IMendixObject>
 				mxReference.setContent(awsReference.content().text());
 				mxReference.setSource(awsReference.location().s3Location().uri());
 				mxReference.setSourceType(ENUM_SourceType.Url);
+				mxReference.setTitle("S3 File");
 				mxReference.setReference_Citation(singleCitationList);
 				mxReferences.add(mxReference);
 			});
