@@ -25,14 +25,6 @@ import genaicommons.proxies.ToolCollection;
  * - ToolName: The name of the tool to call.
  * - FunctionMicroflow: The microflow that is called within this function.
  * - ToolDescription (optional): A description of what the function does, used by the model to choose when and how to call the function.
- * - ToolChoice: Controls which (if any) function is called by the model.
- * `none` means the model will not call a function and instead generates a message.
- * `auto` means the model can pick between generating a message or calling a function.
- * `function` means that the new function will become the tool choice of the FunctionCollection. This will force the model to call that particular function.
- * 
- * `auto` is the default if functions are present.
- * 
- * Note: This setting might be overwritten, when adding more functions to the FunctionCollection at a later point and setting `IsFunctionToolChoice` to true.
  */
 public class Request_AddFunction extends CustomJavaAction<IMendixObject>
 {
