@@ -7,23 +7,23 @@
 // Other code you write will be lost the next time you deploy the project.
 // Special characters, e.g., é, ö, à, etc. are supported in comments.
 
-package synthiaui.actions;
+package conversationalui.actions;
 
 import static java.util.Objects.requireNonNull;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.webui.CustomJavaAction;
-import synthiaui.impl.MxLogger;
-import synthiaui.impl.ProviderConfigImpl;
+import conversationalui.impl.MxLogger;
+import conversationalui.impl.ProviderConfigImpl;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 
 /**
  * ProviderConfig_SetActionMicroflow can be used to set a custom ActionMircoflow for your ProviderConfig that will be executed once a new message is sent.
- * The ActionMicroflow is expected to have an Input of SynthiaUI.ChatContext and returns a Boolean.
+ * The ActionMicroflow is expected to have an Input of ConversationalUI.ChatContext and returns a Boolean.
  */
 public class ProviderConfig_SetActionMicroflow extends CustomJavaAction<java.lang.Void>
 {
 	private IMendixObject __ProviderConfig;
-	private synthiaui.proxies.ProviderConfig ProviderConfig;
+	private conversationalui.proxies.ProviderConfig ProviderConfig;
 	private java.lang.String ActionMicroflow;
 
 	public ProviderConfig_SetActionMicroflow(IContext context, IMendixObject ProviderConfig, java.lang.String ActionMicroflow)
@@ -36,7 +36,7 @@ public class ProviderConfig_SetActionMicroflow extends CustomJavaAction<java.lan
 	@java.lang.Override
 	public java.lang.Void executeAction() throws Exception
 	{
-		this.ProviderConfig = this.__ProviderConfig == null ? null : synthiaui.proxies.ProviderConfig.initialize(getContext(), __ProviderConfig);
+		this.ProviderConfig = this.__ProviderConfig == null ? null : conversationalui.proxies.ProviderConfig.initialize(getContext(), __ProviderConfig);
 
 		// BEGIN USER CODE
 

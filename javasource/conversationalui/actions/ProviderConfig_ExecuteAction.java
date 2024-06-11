@@ -7,22 +7,22 @@
 // Other code you write will be lost the next time you deploy the project.
 // Special characters, e.g., é, ö, à, etc. are supported in comments.
 
-package synthiaui.actions;
+package conversationalui.actions;
 
 import static java.util.Objects.requireNonNull;
 import com.mendix.core.Core;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.webui.CustomJavaAction;
-import synthiaui.impl.MxLogger;
-import synthiaui.impl.ProviderConfigImpl;
+import conversationalui.impl.MxLogger;
+import conversationalui.impl.ProviderConfigImpl;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 
 public class ProviderConfig_ExecuteAction extends CustomJavaAction<java.lang.Boolean>
 {
 	private IMendixObject __ProviderConfig;
-	private synthiaui.proxies.ProviderConfig ProviderConfig;
+	private conversationalui.proxies.ProviderConfig ProviderConfig;
 	private IMendixObject __ChatContext;
-	private synthiaui.proxies.ChatContext ChatContext;
+	private conversationalui.proxies.ChatContext ChatContext;
 
 	public ProviderConfig_ExecuteAction(IContext context, IMendixObject ProviderConfig, IMendixObject ChatContext)
 	{
@@ -34,9 +34,9 @@ public class ProviderConfig_ExecuteAction extends CustomJavaAction<java.lang.Boo
 	@java.lang.Override
 	public java.lang.Boolean executeAction() throws Exception
 	{
-		this.ProviderConfig = this.__ProviderConfig == null ? null : synthiaui.proxies.ProviderConfig.initialize(getContext(), __ProviderConfig);
+		this.ProviderConfig = this.__ProviderConfig == null ? null : conversationalui.proxies.ProviderConfig.initialize(getContext(), __ProviderConfig);
 
-		this.ChatContext = this.__ChatContext == null ? null : synthiaui.proxies.ChatContext.initialize(getContext(), __ChatContext);
+		this.ChatContext = this.__ChatContext == null ? null : conversationalui.proxies.ChatContext.initialize(getContext(), __ChatContext);
 
 		// BEGIN USER CODE
 		try {

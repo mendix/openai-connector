@@ -1,4 +1,4 @@
-package synthiaui.impl;
+package conversationalui.impl;
 
 import com.mendix.core.Core;
 import com.mendix.logging.ILogNode;

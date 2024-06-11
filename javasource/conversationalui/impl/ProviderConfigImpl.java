@@ -1,9 +1,9 @@
-package synthiaui.impl;
+package conversationalui.impl;
 
 import java.util.Map;
 import com.mendix.core.Core;
 import com.mendix.systemwideinterfaces.core.IDataType;
-import synthiaui.proxies.ChatContext;
+import conversationalui.proxies.ChatContext;
 
 public class ProviderConfigImpl{
 	
