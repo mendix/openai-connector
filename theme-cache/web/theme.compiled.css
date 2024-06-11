@@ -34003,13 +34003,6 @@ $callout-info-bg: $color-info-lighter;
   background: rgba(67, 187, 206, 0.1) !important;
 }
 
-.as-control-label {
-  color: #24276c;
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 4px;
-}
-
 .wizard-step-number {
   padding: 0;
 }
