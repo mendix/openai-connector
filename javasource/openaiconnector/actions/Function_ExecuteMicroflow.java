@@ -14,10 +14,10 @@ import com.mendix.core.Core;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 import com.mendix.webui.CustomJavaAction;
-import genaicommons.impl.FunctionImpl;
-import openaiconnector.impl.MxLogger;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import openaiconnector.genaicommonsimpl.FunctionImpl;
+import openaiconnector.impl.MxLogger;
 
 public class Function_ExecuteMicroflow extends CustomJavaAction<java.lang.String>
 {

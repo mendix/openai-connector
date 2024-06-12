@@ -20,11 +20,15 @@ import com.mendix.core.CoreException;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 import com.mendix.webui.CustomJavaAction;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import openaiconnector.genaicommonsimpl.MessageImpl;
+import openaiconnector.genaicommonsimpl.FunctionImpl;
 import openaiconnector.impl.MxLogger;
 import openaiconnector.proxies.OpenAIRequest_Extension;
 import openaiconnector.proxies.RequestMapping;
-import genaicommons.impl.MessageImpl;
-import genaicommons.impl.FunctionImpl;
 import genaicommons.proxies.ENUM_ToolChoice;
 import genaicommons.proxies.Message;
 import genaicommons.proxies.Request;
@@ -33,10 +37,6 @@ import genaicommons.proxies.Function;
 import genaicommons.proxies.ToolCall;
 import genaicommons.proxies.ToolCollection;
 import genaicommons.proxies.ENUM_MessageRole;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 
 public class RequestMapping_ManipulateJson extends CustomJavaAction<java.lang.String>
 {
