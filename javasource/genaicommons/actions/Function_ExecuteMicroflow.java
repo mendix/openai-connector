@@ -14,7 +14,7 @@ import com.mendix.core.Core;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 import com.mendix.webui.CustomJavaAction;
-import genaicommons.impl.FunctionImpl;
+import genaicommons.impl.FunctionMappingImpl;
 import genaicommons.impl.MxLogger;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -67,7 +67,7 @@ public class Function_ExecuteMicroflow extends CustomJavaAction<java.lang.String
 	private JsonNode rootNodeArguments;
 	
 	private String executeFunctionMicroflow() throws Exception {
-		String firstInputParamName = FunctionImpl.getFirstInputParamName(Function.getMicroflow());
+		String firstInputParamName = FunctionMappingImpl.getFirstInputParamName(Function.getMicroflow());
 		
 		if(firstInputParamName == null || firstInputParamName.isBlank()){
 			return executeAndLogFunctionMicroflow(null, null);

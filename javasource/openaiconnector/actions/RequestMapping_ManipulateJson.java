@@ -24,9 +24,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import openaiconnector.genaicommonsimpl.MappingUtilsImpl;
 import openaiconnector.genaicommonsimpl.MessageImpl;
-import openaiconnector.genaicommonsimpl.FunctionImpl;
+import openaiconnector.genaicommonsimpl.FunctionMappingImpl;
 import openaiconnector.impl.MxLogger;
 import openaiconnector.proxies.OpenAIRequest_Extension;
 import openaiconnector.proxies.RequestMapping;
@@ -311,7 +310,7 @@ public class RequestMapping_ManipulateJson extends CustomJavaAction<java.lang.St
 			if(toolMatch.isPresent()) {
 				Function functionMatch = Function.load(getContext(), toolMatch.get().getMendixObject().getId());
 				if(functionMatch != null) {
-				ObjectNode parametersNode = MappingUtilsImpl.createFunctionParametersNode(functionMatch.getMicroflow(), MAPPER);
+				ObjectNode parametersNode = createFunctionParametersNode(functionMatch.getMicroflow(), MAPPER);
 					if(parametersNode != null) {
 						JsonNode functionNode = toolNode.path("function");
 						((ObjectNode) functionNode).set("parameters", parametersNode);
@@ -323,6 +322,31 @@ public class RequestMapping_ManipulateJson extends CustomJavaAction<java.lang.St
 		
 		// Update tools within rootNode
 		((ObjectNode) rootNode).set("tools", toolsNode);
+	}
+	
+	private ObjectNode createFunctionParametersNode(String functionMicroflow, ObjectMapper MAPPER) {
+		String inputParamName = FunctionMappingImpl.getFirstInputParamName(functionMicroflow);
+		// FunctionImpl.getFirstInputParamName(functionMicroflow);
+		if (inputParamName == null || inputParamName.isBlank()) {
+			return null;
+		}
+
+		ObjectNode parametersNode = MAPPER.createObjectNode();
+		ObjectNode propertiesNode = MAPPER.createObjectNode();
+		ObjectNode propertyNode = MAPPER.createObjectNode(); 
+		ArrayNode requiredNode = MAPPER.createArrayNode();
+		
+		propertyNode.put("type", "string");
+		
+		propertiesNode.set(inputParamName, propertyNode);
+		
+		requiredNode.add(inputParamName);
+		
+		parametersNode.put("type", "object");
+		parametersNode.set("properties", propertiesNode);
+		parametersNode.set("required", requiredNode);
+		
+		return parametersNode;
 	}
 		
 	// END EXTRA CODE
