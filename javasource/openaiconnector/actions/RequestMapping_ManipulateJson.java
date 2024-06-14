@@ -310,7 +310,7 @@ public class RequestMapping_ManipulateJson extends CustomJavaAction<java.lang.St
 			if(toolMatch.isPresent()) {
 				Function functionMatch = Function.load(getContext(), toolMatch.get().getMendixObject().getId());
 				if(functionMatch != null) {
-				ObjectNode parametersNode = createFunctionParametersNode(functionMatch.getMicroflow(), MAPPER);
+				ObjectNode parametersNode = createFunctionParametersNode(functionMatch.getMicroflow());
 					if(parametersNode != null) {
 						JsonNode functionNode = toolNode.path("function");
 						((ObjectNode) functionNode).set("parameters", parametersNode);
@@ -324,7 +324,7 @@ public class RequestMapping_ManipulateJson extends CustomJavaAction<java.lang.St
 		((ObjectNode) rootNode).set("tools", toolsNode);
 	}
 	
-	private ObjectNode createFunctionParametersNode(String functionMicroflow, ObjectMapper MAPPER) {
+	private ObjectNode createFunctionParametersNode(String functionMicroflow) {
 		String inputParamName = FunctionMappingImpl.getFirstInputParamName(functionMicroflow);
 		// FunctionImpl.getFirstInputParamName(functionMicroflow);
 		if (inputParamName == null || inputParamName.isBlank()) {
