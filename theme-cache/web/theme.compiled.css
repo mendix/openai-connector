@@ -33904,6 +33904,14 @@ $callout-info-bg: $color-info-lighter;
   background: #43bbce !important;
 }
 
+.bg-aws {
+  background-color: #EC7211 !important;
+}
+
+.bg-info {
+  background-color: #0086d9 !important;
+}
+
 .border-primary {
   border: 1px solid #185a9d;
 }
