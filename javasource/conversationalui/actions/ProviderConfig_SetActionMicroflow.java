@@ -17,7 +17,7 @@ import conversationalui.impl.ProviderConfigImpl;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 
 /**
- * ProviderConfig_SetActionMicroflow can be used to set a custom ActionMircoflow for your ProviderConfig that will be executed once a new message is sent.
+ * ProviderConfig_SetActionMicroflow can be used to set a custom ActionMicroflow for your ProviderConfig that will be executed once a new message is sent.
  * The ActionMicroflow is expected to have an Input of ConversationalUI.ChatContext and returns a Boolean.
  */
 public class ProviderConfig_SetActionMicroflow extends CustomJavaAction<java.lang.Void>
