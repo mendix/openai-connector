@@ -9,6 +9,6 @@ $pop-up-chat-width: 500px !default;
 $pop-up-chat-height: 65vh !default;
 
 //chat bubbles
-$chat-bubble-user-background: mix($brand-primary, white, 10%) !default;
-$chat-bubble-assistant-background: mix($brand-success, white, 10%) !default;
+$chat-bubble-user-background: $color-primary-lighter !default;
+$chat-bubble-assistant-background: $color-success-lighter !default;
 $chat-bubble-margin: 10% !default;
