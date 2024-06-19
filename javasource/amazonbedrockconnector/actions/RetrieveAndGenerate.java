@@ -247,11 +247,12 @@ public class RetrieveAndGenerate extends CustomJavaAction<IMendixObject>
 			
 			List<genaicommons.proxies.Citation> singleCitationList = Arrays.asList(mxCitation);
 			awsCitation.retrievedReferences().forEach(awsReference -> {
+				String sourceUrl = awsReference.location().s3Location().uri();
 				Reference mxReference = new Reference(getContext());
 				mxReference.setContent(awsReference.content().text());
-				mxReference.setSource(awsReference.location().s3Location().uri());
+				mxReference.setSource(sourceUrl);
 				mxReference.setSourceType(ENUM_SourceType.Url);
-				mxReference.setTitle("S3 File");
+				mxReference.setTitle(getReferenceTitle(sourceUrl));
 				mxReference.setReference_Citation(singleCitationList);
 				mxReferences.add(mxReference);
 			});
@@ -259,6 +260,19 @@ public class RetrieveAndGenerate extends CustomJavaAction<IMendixObject>
 		});
 		
 		return mxReferences;
+	}
+	
+	private String getReferenceTitle(String url) {
+		if (url == null || url.isBlank()) {
+			return null;
+		}
+		
+		if (url.contains("/")) {
+			int last = url.lastIndexOf("/");
+			return url.substring(last + 1);
+			
+		} else return url;
+		
 	}
 	
 	

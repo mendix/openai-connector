@@ -2,9 +2,9 @@ dependency software.amazon.awssdk:bedrock:[2,3)
 dependency software.amazon.awssdk:bedrockruntime:[2,3)
 dependency software.amazon.awssdk:bedrockagent:[2,3)
 dependency software.amazon.awssdk:bedrockagentruntime:[2,3)
-dependency com.fasterxml.jackson.core:jackson-annotations:[2,3)
-dependency com.fasterxml.jackson.core:jackson-core:[2,3)
-dependency com.fasterxml.jackson.core:jackson-databind:[2,3)
+dependency com.fasterxml.jackson.core:jackson-databind:[2,3]
+dependency com.fasterxml.jackson.core:jackson-core:[2,3]
+dependency com.fasterxml.jackson.core:jackson-annotations:[2,3]
 delete bedrock-2.22.1.jar
 delete bedrock-2.22.1.jar.AmazonBedrockConnector.RequiredLib
 delete bedrockruntime-2.22.1.jar
