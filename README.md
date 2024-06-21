@@ -1,3 +1,3 @@
-Repository of the [OpenAI Connector](https://marketplace.mendix.com/link/component/220472), the [OpenAI Showcase App](https://marketplace.mendix.com/link/component/220475) and [PgVector Knowledge Base](https://marketplace.mendix.com/link/component/225063).
+Repository of the [OpenAI Connector](https://marketplace.mendix.com/link/component/220472), the [OpenAI Showcase App](https://marketplace.mendix.com/link/component/220475), [PgVector Knowledge Base](https://marketplace.mendix.com/link/component/225063) and [Conversational UI]() module.
 
 Technical documentation is available on Mendix Docs for [OpenAI Connector](https://docs.mendix.com/appstore/connectors/openai-connector/) and [PgVector Knowledge Base](https://docs.mendix.com/appstore/modules/pgvector-knowledge-base/).
