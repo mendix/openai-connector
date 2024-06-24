@@ -27,7 +27,7 @@ public class MxLogger {
 	private static final String MX_LOG_NODE_NAME;
 	private static final ILogNode LOGGER;
 	static {
-		MX_LOG_NODE_NAME = "Synthia UI"; //log node name, e.g. name of your module
+		MX_LOG_NODE_NAME = "Conversational UI"; //log node name, e.g. name of your module
 		LOGGER = Core.getLogger(MX_LOG_NODE_NAME);
 		//init log message, so the Mendix Log Node is added to the Log Level Settings table, as soon a class that uses this ASWSLogger, is used.
 		LOGGER.info("MxLogger initialized");
