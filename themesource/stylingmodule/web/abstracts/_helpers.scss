@@ -1,9 +1,20 @@
+@import "../../../atlas_core/web/_variables.scss";
+@import "../_custom-variables.scss";
+
 .bg-brand-gradient-vertical {
     background: $brand-gradient-vertical !important;
 }
 
 .bg-brand-secondary {
     background: $brand-secondary !important;
+}
+
+.bg-aws{
+    background-color: $brand-aws !important;
+}
+
+.bg-info{
+    background-color: $brand-info !important;
 }
 
 .border-primary {
@@ -27,4 +38,12 @@
 .card_scroll-to
 {
     //only needed to use in JS-Action for scrolling to element
+}
+
+.height--85{
+    height: 85%;
+}
+
+.word-break{
+    word-break: break-word; 
 }

@@ -9,12 +9,9 @@
 
 package pgvectorknowledgebase.actions;
 
-import java.lang.System.Logger;
 import java.util.ArrayList;
-import com.mendix.core.Core;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.webui.CustomJavaAction;
-import communitycommons.StringUtils;
 import pgvectorknowledgebase.impl.ChunkUtils;
 import pgvectorknowledgebase.impl.MxLogger;
 import pgvectorknowledgebase.proxies.Chunk;

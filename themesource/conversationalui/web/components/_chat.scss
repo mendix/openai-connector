@@ -1,0 +1,116 @@
+.chat-loading-wrapper {
+    display: flex;
+    justify-content: left;
+    padding: $spacing-small;
+
+    .loading-dot {
+        border-radius: 100%;
+        background-color: $font-color-default;
+        width: $font-size-default / 3;
+        height: $font-size-default / 3;
+
+        &:nth-child(1) {
+            animation: preloader 0.9s ease-in-out alternate infinite;
+        }
+
+        &:nth-child(2) {
+            margin: 0 14px;
+            animation: preloader 0.9s ease-in-out alternate 0.2s infinite;
+        }
+
+        &:nth-child(3) {
+            animation: preloader 0.9s ease-in-out alternate 0.4s infinite;
+        }
+    }
+
+    @keyframes preloader {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.5); }
+        100% { transform: scale(1); }
+    }
+}
+
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+
+    .messages-container {
+        flex: 1 1 auto;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    &--center {
+        max-width: $chat-width;
+        margin: 0 auto;
+        height: 100%
+    }
+}
+
+
+.chat-input-wrapper {
+    position: relative;
+
+    .form-group {
+        width: 100%;
+        padding-left: 0px !important;
+        padding-right: 0px !important;
+
+        .form-control {
+            padding-right: $send-btn-size + 36px;
+            max-height: $chat-input-max-height;
+            overflow: auto;
+        }
+    }
+
+    .has-error .alert {
+        display: none !important;
+    }
+
+    .send-btn {
+        position: absolute;
+        right: 58px / 2 - $send-btn-size / 2;
+        bottom: 58px / 2 - $send-btn-size / 2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration-line: none;
+        border-radius: 50%;
+        width: $send-btn-size;
+        height: $send-btn-size;
+
+        .glyphicon {
+            top: 0;
+            font-size: $send-btn-size / 2;
+            left: -2px;
+        }
+    }
+}
+
+.chat-bubble-wrapper {
+    margin-top: $spacing-small;
+    .chat-message-card {
+        background: $chat-bubble-assistant-background;
+        border-radius: 8px 8px 8px 0;
+        margin: 0 10% 0 0;
+        text-align: left;
+        padding: $spacing-small;
+    }
+
+    &--user .chat-message-card {
+        background: $chat-bubble-user-background;
+        border-radius: 8px 8px 0 8px;
+        margin: 0 0 0 10%;
+    }
+}
+
+.chat-history-sidebar{
+    overflow-y: auto;
+}
+
+.chat-history-active {
+    border-left: 3px solid $brand-primary;
+    font-weight: bold;
+}

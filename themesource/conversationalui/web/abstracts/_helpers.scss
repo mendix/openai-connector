@@ -1,0 +1,30 @@
+.hover-trigger {
+  .show-on-hover {
+    visibility: hidden; // Initially hide the hover content
+  }
+
+  &:hover .show-on-hover {
+    display: inline;
+    visibility: visible; // Show hover content, when hovering over the hover trigger
+  }
+}
+
+.text-break-word {
+  word-break: break-word;
+}
+
+.spacing-inner-top-smaller {
+  padding-top: $spacing-smaller;
+}
+
+.text-clamp--2-lines {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.line-height--1 {
+  line-height: 1;
+}
