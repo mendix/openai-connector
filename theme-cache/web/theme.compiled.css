@@ -33928,6 +33928,14 @@ $callout-info-bg: $color-info-lighter;
   margin-bottom: 4px !important;
 }
 
+.height--85 {
+  height: 85%;
+}
+
+.word-break {
+  word-break: break-word;
+}
+
 .product-tag {
   border-radius: 24px;
 }
@@ -33944,6 +33952,12 @@ $callout-info-bg: $color-info-lighter;
 .product-tag .form-control:focus {
   background: rgba(255, 255, 255, 0.4);
   color: #1f2431;
+}
+
+.arrow-position {
+  position: fixed;
+  bottom: 5vh;
+  right: 8vw;
 }
 
 .anychart-extension__container .widget-charts-playground .widget-charts-playground-toggle .btn {
