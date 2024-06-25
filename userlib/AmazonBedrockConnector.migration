@@ -19,8 +19,8 @@ delete netty-codec-4.1.100.Final.jar
 delete netty-codec-4.1.100.Final.jar.AmazonBedrockConnector.RequiredLib
 delete netty-codec-http2-4.1.100.Final.jar
 delete netty-codec-http2-4.1.100.Final.jar.AmazonBedrockConnector.RequiredLib
-delete netty-codec-http-4.1.100.Final.jar
-delete netty-codec-http-4.1.100.Final.jar.AmazonBedrockConnector.RequiredLib
+delete netty-codec-http-4.1.111.Final.jar
+delete netty-codec-http-4.1.111.Final.jar.AmazonBedrockConnector.RequiredLib
 delete netty-common-4.1.100.Final.jar
 delete netty-common-4.1.100.Final.jar.AmazonBedrockConnector.RequiredLib
 delete netty-handler-4.1.100.Final.jar
