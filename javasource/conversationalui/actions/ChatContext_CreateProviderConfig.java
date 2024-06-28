@@ -10,46 +10,54 @@
 package conversationalui.actions;
 
 import static java.util.Objects.requireNonNull;
-import java.util.LinkedList;
 import java.util.List;
+import com.mendix.core.CoreException;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.webui.CustomJavaAction;
 import conversationalui.impl.MxLogger;
 import conversationalui.impl.ProviderConfigImpl;
-import conversationalui.proxies.ChatContext;
-import conversationalui.proxies.ENUM_ChatContextStatus;
 import conversationalui.proxies.ProviderConfig;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 
 /**
- * Creates a new chat context and a new provider config (or a specialization of such depending on the input). The provider config is added to the chat context and set to active. Additionally the action microflow of the new provider config is set.
+ * Adds a new provider config (or a specialization of such depending on the input) to a chat context The provider config is added to the chat context and set to active if IsActive is set to true. Additionally the action microflow of the new provider config is set.
  */
-public class ChatContext_Create_SetActionMicroflow extends CustomJavaAction<IMendixObject>
+public class ChatContext_CreateProviderConfig extends CustomJavaAction<IMendixObject>
 {
+	private IMendixObject __ChatContext;
+	private conversationalui.proxies.ChatContext ChatContext;
 	private java.lang.String ProviderConfigSpecialization;
 	private java.lang.String ActionMicroflow;
+	private java.lang.Boolean IsActive;
 	private java.lang.String ProviderName;
 
-	public ChatContext_Create_SetActionMicroflow(IContext context, java.lang.String ProviderConfigSpecialization, java.lang.String ActionMicroflow, java.lang.String ProviderName)
+	public ChatContext_CreateProviderConfig(IContext context, IMendixObject ChatContext, java.lang.String ProviderConfigSpecialization, java.lang.String ActionMicroflow, java.lang.Boolean IsActive, java.lang.String ProviderName)
 	{
 		super(context);
+		this.__ChatContext = ChatContext;
 		this.ProviderConfigSpecialization = ProviderConfigSpecialization;
 		this.ActionMicroflow = ActionMicroflow;
+		this.IsActive = IsActive;
 		this.ProviderName = ProviderName;
 	}
 
 	@java.lang.Override
 	public IMendixObject executeAction() throws Exception
 	{
+		this.ChatContext = this.__ChatContext == null ? null : conversationalui.proxies.ChatContext.initialize(getContext(), __ChatContext);
+
 		// BEGIN USER CODE
 		
 		try {
 		    requireNonNull(ActionMicroflow, "ActionMicroflow is required.");
+		    requireNonNull(ChatContext, "ChatContext is required.");
 		    ProviderConfigImpl.validateActionMicroflow(ActionMicroflow);
 
 		    ProviderConfig providerConfig = ProviderConfigImpl.createAndSetProviderConfigSpecialization(getContext(), ProviderConfigSpecialization, ActionMicroflow, ProviderName);
 
-		    return createAndSetChatContext(providerConfig).getMendixObject();
+		    updateProviderConfigOnChatContext(providerConfig);
+		    
+		    return providerConfig.getMendixObject();
 
 		} catch (Exception e) {
 		    LOGGER.error(e.getMessage());
@@ -66,24 +74,20 @@ public class ChatContext_Create_SetActionMicroflow extends CustomJavaAction<IMen
 	@java.lang.Override
 	public java.lang.String toString()
 	{
-		return "ChatContext_Create_SetActionMicroflow";
+		return "ChatContext_CreateProviderConfig";
 	}
 
 	// BEGIN EXTRA CODE
 	
-	private static final MxLogger LOGGER = new MxLogger(ChatContext_Create_SetActionMicroflow.class);
+	private static final MxLogger LOGGER = new MxLogger(ChatContext_CreateProviderConfig.class);
 	
-	private ChatContext createAndSetChatContext(ProviderConfig providerConfig) {
-		// Create ChatContext and set attributes and associations
-		ChatContext chatContext = new ChatContext(getContext());
-		chatContext.setStatus(ENUM_ChatContextStatus.Ready);
-		chatContext.setChatContext_ProviderConfig_Active(providerConfig);
-
-		//Add to ProviderConfigList
-		List<ProviderConfig> providerConfigList = new LinkedList<>();
+	private void updateProviderConfigOnChatContext(ProviderConfig providerConfig) throws CoreException {
+		List <ProviderConfig> providerConfigList = ChatContext.getChatContext_ProviderConfig();
 		providerConfigList.add(providerConfig);
-		chatContext.setChatContext_ProviderConfig(providerConfigList);
-		return chatContext;
+		ChatContext.setChatContext_ProviderConfig(providerConfigList);
+		if (IsActive) {
+			ChatContext.setChatContext_ProviderConfig_Active(providerConfig);
+		}
 	}
 	
 	// END EXTRA CODE
