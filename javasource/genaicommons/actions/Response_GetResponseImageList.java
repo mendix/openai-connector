@@ -42,6 +42,7 @@ public class Response_GetResponseImageList extends CustomJavaAction<java.util.Li
 		try {
 			requireNonNull(Response, "Response is required.");
 			requireNonNull(ResponseImageEntity, "ResponseImageEntity is required");
+			ImageGenImpl.validateTargetEntity(ResponseImageEntity);
 			
 			List<FileContent> fileContentList = FileContentImpl.getFileContentList(Response);
 			List<IMendixObject> returnList = createGeneratedImageList(fileContentList);

@@ -41,6 +41,7 @@ public class Response_GetSingleResponseImage extends CustomJavaAction<IMendixObj
 		try {
 			requireNonNull(Response, "Response is required.");
 			requireNonNull(ResponseImageEntity, "ResponseImageEntity is required");
+			ImageGenImpl.validateTargetEntity(ResponseImageEntity);
 			
 			List<FileContent> fileContentList = FileContentImpl.getFileContentList(Response);
 			FileContent fileContent = fileContentList.get(0);
