@@ -42,7 +42,7 @@ public class ProviderConfig_ExecuteAction extends CustomJavaAction<java.lang.Boo
 		try {
 			requireNonNull(ProviderConfig, "ProviderConfig is required.");
 			requireNonNull(ChatContext, "ChatContext is required.");
-			ProviderConfigImpl.validate(ProviderConfig.getActionMicroflow());
+			ProviderConfigImpl.validateActionMicroflow(ProviderConfig.getActionMicroflow());
 			
 			return Core.microflowCall(ProviderConfig.getActionMicroflow()).withParam("ChatContext", ChatContext.getMendixObject()).execute(this.getContext());
 		
