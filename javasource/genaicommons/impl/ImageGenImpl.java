@@ -22,11 +22,11 @@ public class ImageGenImpl {
 		IMetaObject target = Core.getMetaObject(type);
 		if (!target.isSubClassOf(Image.entityName)) {
 			throw new IllegalArgumentException("The provided ResponseImageEntity must be a specialization of System.Image");
-		};
+		}
 	}
 	
 	private static void decodeToFile(IMendixObject imageToUse, FileContent fileContent, IContext ctx) {
-		Microflows.image_DecodeToFile_Single(ctx, (Image) imageToUse, fileContent);
+		Microflows.image_DecodeToFile_Single(ctx, Image.initialize(ctx, imageToUse), fileContent);
 	}
 	
 	private static IMendixObject createGeneratedImage(String type, IContext ctx) {
