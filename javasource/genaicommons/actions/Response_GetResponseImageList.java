@@ -9,9 +9,19 @@
 
 package genaicommons.actions;
 
+import static java.util.Objects.requireNonNull;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import com.mendix.systemwideinterfaces.core.IContext;
-import com.mendix.webui.CustomJavaAction;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
+import com.mendix.webui.CustomJavaAction;
+
+import genaicommons.impl.FileContentImpl;
+import genaicommons.impl.ImageGenImpl;
+import genaicommons.impl.MxLogger;
+import genaicommons.proxies.FileContent;
 
 public class Response_GetResponseImageList extends CustomJavaAction<java.util.List<IMendixObject>>
 {
@@ -32,7 +42,19 @@ public class Response_GetResponseImageList extends CustomJavaAction<java.util.Li
 		this.Response = this.__Response == null ? null : genaicommons.proxies.Response.initialize(getContext(), __Response);
 
 		// BEGIN USER CODE
-		throw new com.mendix.systemwideinterfaces.MendixRuntimeException("Java action was not implemented");
+		try {
+			requireNonNull(Response, "Response is required.");
+			requireNonNull(ResponseImageType, "ResponseImageEntity is required");
+			
+			List<FileContent> fileContentList = FileContentImpl.getFileContentList(Response);
+			List<IMendixObject> returnList = createGeneratedImageList(fileContentList);
+			
+			return returnList;
+			
+		} catch (Exception e) {
+			LOGGER.error("An error ocurred while creating the response image list: " + e.getMessage());
+			throw e;
+		}
 		// END USER CODE
 	}
 
@@ -47,5 +69,23 @@ public class Response_GetResponseImageList extends CustomJavaAction<java.util.Li
 	}
 
 	// BEGIN EXTRA CODE
+	private static final MxLogger LOGGER = new MxLogger(Response_GetResponseImageList.class);
+	
+	private List<IMendixObject> createGeneratedImageList(List<FileContent> fileContentList) {
+		List<IMendixObject> imageList = new ArrayList<>();
+		
+		for (FileContent fileContent : fileContentList) {
+			if (fileContent == null || fileContent.getFileContent().isBlank()) {
+				LOGGER.warn("Empty FileContent found as part of the response.");
+				continue;
+			}
+			IMendixObject generatedImage = ImageGenImpl.createGeneratedImage(ResponseImageType, getContext());
+			ImageGenImpl.decodeToFile(generatedImage, fileContent, getContext());
+			imageList.add(generatedImage);
+		}
+		
+		return imageList;
+	}
+	
 	// END EXTRA CODE
 }

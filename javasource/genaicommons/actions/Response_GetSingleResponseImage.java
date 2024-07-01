@@ -11,15 +11,15 @@ package genaicommons.actions;
 
 import java.util.List;
 
-import com.mendix.core.Core;
 import com.mendix.systemwideinterfaces.core.IContext;
+import com.mendix.systemwideinterfaces.core.IMendixObject;
 import com.mendix.webui.CustomJavaAction;
 
 import genaicommons.impl.FileContentImpl;
+import genaicommons.impl.ImageGenImpl;
 import genaicommons.impl.MxLogger;
 import genaicommons.proxies.FileContent;
-
-import com.mendix.systemwideinterfaces.core.IMendixObject;
+import static java.util.Objects.requireNonNull;
 
 public class Response_GetSingleResponseImage extends CustomJavaAction<IMendixObject>
 {
@@ -41,14 +41,12 @@ public class Response_GetSingleResponseImage extends CustomJavaAction<IMendixObj
 
 		// BEGIN USER CODE
 		try {
-			
-			IMendixObject generatedImage = Core.instantiate(getContext(), this.ResponseImageType);
+			requireNonNull(Response, "Response is required.");
+			requireNonNull(ResponseImageType, "ResponseImageEntity is required");
 			
 			List<FileContent> fileContentList = FileContentImpl.getFileContentList(Response);
-			
 			FileContent fileContent = fileContentList.get(0);
-			
-			FileContentImpl.decodeToFile(generatedImage, fileContent, getContext());
+			IMendixObject generatedImage = getGeneratedImage(fileContent);
 			
 			return generatedImage;
 			
@@ -71,5 +69,12 @@ public class Response_GetSingleResponseImage extends CustomJavaAction<IMendixObj
 
 	// BEGIN EXTRA CODE
 	private static final MxLogger LOGGER = new MxLogger(Response_GetSingleResponseImage.class);
+	
+	private IMendixObject getGeneratedImage(FileContent fileContent) {
+		IMendixObject generatedImage = ImageGenImpl.createGeneratedImage(ResponseImageType, getContext());
+		ImageGenImpl.decodeToFile(generatedImage, fileContent, getContext());
+		
+		return generatedImage;
+	}
 	// END EXTRA CODE
 }
