@@ -5,11 +5,11 @@
 // - the code between BEGIN USER CODE and END USER CODE
 // - the code between BEGIN EXTRA CODE and END EXTRA CODE
 // Other code you write will be lost the next time you deploy the project.
-import "mx-global";
 import { Big } from "big.js";
+import "mx-global";
 
 // BEGIN EXTRA CODE
-function clickButton(buttonElement, textAreaElement){
+function clickButton(buttonElement){
 	buttonElement.click();
 }
 // END EXTRA CODE
@@ -54,11 +54,11 @@ export async function Textarea_ExecuteButtonAction(textAreaName, buttonName, sub
     		if (event.key === 'Enter') {
       			if (event.shiftKey) {
         			if (submitOnShiftEnter) {
-						clickButton(buttonElement,textAreaElement);			
+						clickButton(buttonElement);			
         			}
       			} else if (!event.ctrlKey && !event.altKey && !event.metaKey) {
         			if (submitOnEnter) {
-						clickButton(buttonElement,textAreaElement);
+						clickButton(buttonElement);
         			}
       			}
     		}
