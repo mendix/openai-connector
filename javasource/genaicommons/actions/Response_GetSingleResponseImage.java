@@ -10,11 +10,9 @@
 package genaicommons.actions;
 
 import java.util.List;
-
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 import com.mendix.webui.CustomJavaAction;
-
 import genaicommons.impl.FileContentImpl;
 import genaicommons.impl.ImageGenImpl;
 import genaicommons.impl.MxLogger;
@@ -23,14 +21,14 @@ import static java.util.Objects.requireNonNull;
 
 public class Response_GetSingleResponseImage extends CustomJavaAction<IMendixObject>
 {
-	private java.lang.String ResponseImageType;
+	private java.lang.String ResponseImageEntity;
 	private IMendixObject __Response;
 	private genaicommons.proxies.Response Response;
 
-	public Response_GetSingleResponseImage(IContext context, java.lang.String ResponseImageType, IMendixObject Response)
+	public Response_GetSingleResponseImage(IContext context, java.lang.String ResponseImageEntity, IMendixObject Response)
 	{
 		super(context);
-		this.ResponseImageType = ResponseImageType;
+		this.ResponseImageEntity = ResponseImageEntity;
 		this.__Response = Response;
 	}
 
@@ -42,11 +40,11 @@ public class Response_GetSingleResponseImage extends CustomJavaAction<IMendixObj
 		// BEGIN USER CODE
 		try {
 			requireNonNull(Response, "Response is required.");
-			requireNonNull(ResponseImageType, "ResponseImageEntity is required");
+			requireNonNull(ResponseImageEntity, "ResponseImageEntity is required");
 			
 			List<FileContent> fileContentList = FileContentImpl.getFileContentList(Response);
 			FileContent fileContent = fileContentList.get(0);
-			IMendixObject generatedImage = getGeneratedImage(fileContent);
+			IMendixObject generatedImage = ImageGenImpl.getSingleGeneratedImage(fileContent, ResponseImageEntity, getContext());
 			
 			return generatedImage;
 			
@@ -70,11 +68,6 @@ public class Response_GetSingleResponseImage extends CustomJavaAction<IMendixObj
 	// BEGIN EXTRA CODE
 	private static final MxLogger LOGGER = new MxLogger(Response_GetSingleResponseImage.class);
 	
-	private IMendixObject getGeneratedImage(FileContent fileContent) {
-		IMendixObject generatedImage = ImageGenImpl.createGeneratedImage(ResponseImageType, getContext());
-		ImageGenImpl.decodeToFile(generatedImage, fileContent, getContext());
-		
-		return generatedImage;
-	}
+	
 	// END EXTRA CODE
 }

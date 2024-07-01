@@ -10,11 +10,18 @@ import system.proxies.Image;
 
 public class ImageGenImpl {
 	
-	public static void decodeToFile(IMendixObject imageToUse, FileContent fileContent, IContext ctx) {
+	public static IMendixObject getSingleGeneratedImage(FileContent fileContent, String type, IContext ctx) {
+		IMendixObject generatedImage = createGeneratedImage(type, ctx);
+		ImageGenImpl.decodeToFile(generatedImage, fileContent, ctx);
+		
+		return generatedImage;
+	}
+	
+	private static void decodeToFile(IMendixObject imageToUse, FileContent fileContent, IContext ctx) {
 		Microflows.image_DecodeToFile_Single(ctx, (Image) imageToUse, fileContent);
 	}
 	
-	public static IMendixObject createGeneratedImage(String type, IContext ctx) {
+	private static IMendixObject createGeneratedImage(String type, IContext ctx) {
 		IMendixObject generatedImage = Core.instantiate(ctx, type);
 		
 		if (!(generatedImage instanceof system.proxies.Image)) {
