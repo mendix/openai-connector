@@ -11,6 +11,7 @@ package genaicommons.actions;
 
 import static java.util.Objects.requireNonNull;
 import java.util.List;
+import com.mendix.core.CoreException;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 import com.mendix.webui.CustomJavaAction;
@@ -54,22 +55,12 @@ public class ChunkCollection_AddKnowledgeBaseChunk extends CustomJavaAction<IMen
 
 		// BEGIN USER CODE
 		try {
-			
 			requireNonNull(ChunkCollection, "ChunkCollection is required.");
 			requireNonNull(InputText, "InputText is required.");
-			KnowledgeBaseChunk kbChunk = new KnowledgeBaseChunk(getContext());
-			kbChunk.setChunkID(getContext(), StringUtils.randomHash());
-			kbChunk.setHumanReadableID(getContext(), HumanReadableID);
-			kbChunk.setInputText(getContext(), InputText);
-			kbChunk.setMxObjectID(getContext(), MxObject == null ? null : String.valueOf(MxObject.getId().toLong()));
-			kbChunk.setMxEntity(getContext(), MxObject == null ? null : MxObject.getType());
 			
-			kbChunk.setKnowledgeBaseChunk_MetadataCollection(getContext(), MetadataCollection);
+			KnowledgeBaseChunk kbChunk = createKnowledgeBaseChunkAndSetAttributes();
 			
-			List<Chunk> chunkList = ChunkCollection.getChunkCollection_Chunk();
-			chunkList.add(kbChunk);
-			
-			ChunkCollection.setChunkCollection_Chunk(chunkList);
+			addKnowledgeBaseChunkToChunkCollection(kbChunk);
 			
 			return kbChunk.getMendixObject();
 			
@@ -92,5 +83,22 @@ public class ChunkCollection_AddKnowledgeBaseChunk extends CustomJavaAction<IMen
 
 	// BEGIN EXTRA CODE
 	private static final MxLogger LOGGER = new MxLogger(ChunkCollection_AddKnowledgeBaseChunk.class);
+	
+	private KnowledgeBaseChunk createKnowledgeBaseChunkAndSetAttributes() {
+		KnowledgeBaseChunk kbChunk = new KnowledgeBaseChunk(getContext());
+		kbChunk.setChunkID(getContext(), StringUtils.randomHash());
+		kbChunk.setHumanReadableID(getContext(), HumanReadableID);
+		kbChunk.setInputText(getContext(), InputText);
+		kbChunk.setMxObjectID(getContext(), MxObject == null ? null : String.valueOf(MxObject.getId().toLong()));
+		kbChunk.setMxEntity(getContext(), MxObject == null ? null : MxObject.getType());
+		kbChunk.setKnowledgeBaseChunk_MetadataCollection(getContext(), MetadataCollection);
+		return kbChunk;
+	}
+	
+	private void addKnowledgeBaseChunkToChunkCollection(KnowledgeBaseChunk kbChunk) throws CoreException {
+		List<Chunk> chunkList = ChunkCollection.getChunkCollection_Chunk();
+		chunkList.add(kbChunk);
+		ChunkCollection.setChunkCollection_Chunk(chunkList);
+	}
 	// END EXTRA CODE
 }
