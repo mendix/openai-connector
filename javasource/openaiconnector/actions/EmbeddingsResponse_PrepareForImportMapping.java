@@ -36,7 +36,7 @@ public class EmbeddingsResponse_PrepareForImportMapping extends CustomJavaAction
 			requireNonNull(EmbeddingsResponse, "EmbeddingsResponse is required.");
 			
 			rootNode = MAPPER.readTree(EmbeddingsResponse);
-			updateEmbeddingVector();
+			setEmbeddingVectorAsString();
 			
 			return MAPPER.writeValueAsString(rootNode);
 			
@@ -62,7 +62,7 @@ public class EmbeddingsResponse_PrepareForImportMapping extends CustomJavaAction
 	private static final ObjectMapper MAPPER = new ObjectMapper();
 	private JsonNode rootNode;
 	
-	private void updateEmbeddingVector() throws JsonProcessingException {
+	private void setEmbeddingVectorAsString() throws JsonProcessingException {
 		JsonNode dataArray = rootNode.path("data");
 		for(JsonNode data : dataArray) {
 			JsonNode embedding = data.path("embedding");
