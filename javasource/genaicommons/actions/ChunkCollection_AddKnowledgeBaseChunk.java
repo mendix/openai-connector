@@ -25,7 +25,7 @@ import genaicommons.proxies.KnowledgeBaseChunk;
  * 
  * Please check the documentation for each parameter for more detailed information on how to use this operation in your project.
  */
-public class ChunkCollection_AddKnowledgeBaseChunk extends CustomJavaAction<java.lang.Void>
+public class ChunkCollection_AddKnowledgeBaseChunk extends CustomJavaAction<IMendixObject>
 {
 	private IMendixObject __ChunkCollection;
 	private genaicommons.proxies.ChunkCollection ChunkCollection;
@@ -46,7 +46,7 @@ public class ChunkCollection_AddKnowledgeBaseChunk extends CustomJavaAction<java
 	}
 
 	@java.lang.Override
-	public java.lang.Void executeAction() throws Exception
+	public IMendixObject executeAction() throws Exception
 	{
 		this.ChunkCollection = this.__ChunkCollection == null ? null : genaicommons.proxies.ChunkCollection.initialize(getContext(), __ChunkCollection);
 
@@ -71,7 +71,7 @@ public class ChunkCollection_AddKnowledgeBaseChunk extends CustomJavaAction<java
 			
 			ChunkCollection.setChunkCollection_Chunk(chunkList);
 			
-			return null;
+			return kbChunk.getMendixObject();
 			
 			} catch (Exception e) {
 				LOGGER.error(e.getMessage());
