@@ -14,9 +14,10 @@ import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 import com.mendix.systemwideinterfaces.core.meta.IMetaObject;
 import com.mendix.webui.CustomJavaAction;
+import genaicommons.proxies.KnowledgeBaseChunk;
+import genaicommons.proxies.Metadata;
 import pgvectorknowledgebase.impl.ChunkUtils;
 import pgvectorknowledgebase.impl.MxLogger;
-import pgvectorknowledgebase.proxies.Chunk;
 
 /**
  * Use this operation to retrieve chunks from the knowledge base and set associations to the related mendix objects (if applicable). The retrieval is based on similarity with respect to the input vector provided.  This operation returns a list of the same type of the TargetChunk input variable. The returned list is sorted on similarity.
@@ -65,8 +66,8 @@ public class KnowledgeBaseChunkList_RetrieveNearestNeighbors_SetAssociation exte
 			ChunkUtils.validateTargetChunk(targetChunk);
 			
 			// call a microflow to retrieve chunks
-			java.util.List<Chunk> chunkList = pgvectorknowledgebase.proxies.microflows.Microflows.chunkList_RetrieveNearestNeighbors(
-					getContext(), DatabaseConfiguration, KnowledgeBaseName, Vector, MinimumSimilarity, MaxNumberOfResults, LabelList);
+			java.util.List<KnowledgeBaseChunk> chunkList = pgvectorknowledgebase.proxies.microflows.Microflows.knowledgeBaseChunkList_RetrieveNearestNeighbors(
+					getContext(), Vector, MinimumSimilarity, MaxNumberOfResults, Connection, MetadataCollection);
 			
 			//map to target chunks to return
 			return ChunkUtils.getTargetChunkList(getContext(), chunkList, targetChunk);
@@ -89,6 +90,6 @@ public class KnowledgeBaseChunkList_RetrieveNearestNeighbors_SetAssociation exte
 	}
 
 	// BEGIN EXTRA CODE
-	private static final MxLogger LOGGER = new MxLogger(ChunkList_RetrieveNearestNeighbors_SetAssociation.class);
+	private static final MxLogger LOGGER = new MxLogger(KnowledgeBaseChunkList_RetrieveNearestNeighbors_SetAssociation.class);
 	// END EXTRA CODE
 }

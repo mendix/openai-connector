@@ -14,9 +14,9 @@ import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 import com.mendix.systemwideinterfaces.core.meta.IMetaObject;
 import com.mendix.webui.CustomJavaAction;
+import genaicommons.proxies.KnowledgeBaseChunk;
 import pgvectorknowledgebase.impl.ChunkUtils;
 import pgvectorknowledgebase.impl.MxLogger;
-import pgvectorknowledgebase.proxies.Chunk;
 
 /**
  * Use this operation to retrieve chunks from the knowledge base and set associations to the related mendix objects (if applicable). This operation returns a list of the same type of the TargetChunk input variable. 
@@ -63,8 +63,8 @@ public class KnowledgeBaseChunkList_Retrieve_SetAssociation extends CustomJavaAc
 			ChunkUtils.validateTargetChunk(targetChunk);
 			
 			// call a microflow to retrieve chunks
-			java.util.List<Chunk> chunkList = pgvectorknowledgebase.proxies.microflows.Microflows.chunkList_Retrieve(
-					getContext(), DatabaseConfiguration, KnowledgeBaseName, MaxNumberOfResults, LabelList, Offset);
+			java.util.List<KnowledgeBaseChunk> chunkList = pgvectorknowledgebase.proxies.microflows.Microflows.knowledgeBaseChunkList_Retrieve(
+					getContext(), MaxNumberOfResults, Offset, MetadataCollection, Connection);
 			
 			//map to target chunks to return
 			return ChunkUtils.getTargetChunkList(getContext(), chunkList, targetChunk);
@@ -87,6 +87,6 @@ public class KnowledgeBaseChunkList_Retrieve_SetAssociation extends CustomJavaAc
 	}
 
 	// BEGIN EXTRA CODE
-	private static final MxLogger LOGGER = new MxLogger(ChunkList_Retrieve_SetAssociation.class);
+	private static final MxLogger LOGGER = new MxLogger(KnowledgeBaseChunkList_Retrieve_SetAssociation.class);
 	// END EXTRA CODE
 }

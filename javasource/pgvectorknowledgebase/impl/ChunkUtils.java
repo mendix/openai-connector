@@ -12,7 +12,7 @@ import com.mendix.systemwideinterfaces.core.meta.IMetaAssociation;
 import com.mendix.systemwideinterfaces.core.meta.IMetaObject;
 
 import communitycommons.ORM;
-import pgvectorknowledgebase.proxies.Chunk;
+import genaicommons.proxies.KnowledgeBaseChunk;
 
 public class ChunkUtils {
 	
@@ -20,8 +20,8 @@ public class ChunkUtils {
 	public static void validateTargetChunk(IMetaObject TargetChunk) throws Exception {
 		// verify target chunk on non-null, subclass of chunk, 
 		requireNonNull(TargetChunk, "Target Chunk must be specified");
-		if (! TargetChunk.isSubClassOf(Chunk.entityName)){
-			throw new IllegalArgumentException("Target Chunk must be a specialization of " + Chunk.entityName);
+		if (! TargetChunk.isSubClassOf(KnowledgeBaseChunk.entityName)){
+			throw new IllegalArgumentException("Target Chunk must be a specialization of " + KnowledgeBaseChunk.entityName);
 		}		
 	};
 
@@ -29,7 +29,7 @@ public class ChunkUtils {
 
 
 	public static java.util.List<IMendixObject> getTargetChunkList(
-			IContext context, java.util.List<Chunk> chunkList, IMetaObject targetChunk) {
+			IContext context, java.util.List<KnowledgeBaseChunk> chunkList, IMetaObject targetChunk) {
 		// create list to return
 		java.util.List<IMendixObject> targetChunkList = new ArrayList<IMendixObject>();
 		
@@ -74,8 +74,8 @@ public class ChunkUtils {
 
 	
 	
-	public static void addChunkWithMxObjectID(IContext context, IMendixObject MxObject, java.util.List<Chunk> chunkList) {
-		Chunk chunk = new Chunk(context);
+	public static void addChunkWithMxObjectID(IContext context, IMendixObject MxObject, java.util.List<KnowledgeBaseChunk> chunkList) {
+		KnowledgeBaseChunk chunk = new KnowledgeBaseChunk(context);
 		chunk.setMxObjectID(context, String.valueOf(MxObject.getId().toLong()));
 		chunkList.add(chunk);
 	}

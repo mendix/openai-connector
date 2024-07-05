@@ -12,9 +12,9 @@ package pgvectorknowledgebase.actions;
 import java.util.ArrayList;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.webui.CustomJavaAction;
+import genaicommons.proxies.KnowledgeBaseChunk;
 import pgvectorknowledgebase.impl.ChunkUtils;
 import pgvectorknowledgebase.impl.MxLogger;
-import pgvectorknowledgebase.proxies.Chunk;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 
 /**
@@ -25,34 +25,32 @@ import com.mendix.systemwideinterfaces.core.IMendixObject;
  */
 public class KnowledgeBaseChunkList_Delete_ByMxObject extends CustomJavaAction<java.lang.Boolean>
 {
-	private IMendixObject __DatabaseConfiguration;
-	private pgvectorknowledgebase.proxies.DatabaseConfiguration DatabaseConfiguration;
-	private java.lang.String KnowledgeBaseName;
+	private IMendixObject __Connection;
+	private genaicommons.proxies.Connection Connection;
 	private IMendixObject MxObject;
 
-	public KnowledgeBaseChunkList_Delete_ByMxObject(IContext context, IMendixObject DatabaseConfiguration, java.lang.String KnowledgeBaseName, IMendixObject MxObject)
+	public KnowledgeBaseChunkList_Delete_ByMxObject(IContext context, IMendixObject Connection, IMendixObject MxObject)
 	{
 		super(context);
-		this.__DatabaseConfiguration = DatabaseConfiguration;
-		this.KnowledgeBaseName = KnowledgeBaseName;
+		this.__Connection = Connection;
 		this.MxObject = MxObject;
 	}
 
 	@java.lang.Override
 	public java.lang.Boolean executeAction() throws Exception
 	{
-		this.DatabaseConfiguration = this.__DatabaseConfiguration == null ? null : pgvectorknowledgebase.proxies.DatabaseConfiguration.initialize(getContext(), __DatabaseConfiguration);
+		this.Connection = this.__Connection == null ? null : genaicommons.proxies.Connection.initialize(getContext(), __Connection);
 
 		// BEGIN USER CODE
 		try {
-			java.util.List<Chunk> chunkList = new ArrayList<>();
+			java.util.List<KnowledgeBaseChunk> chunkList = new ArrayList<>();
 			if (MxObject == null) {
 				LOGGER.warn("No MxObject was passed, nothing was deleted");
 			}
 			else {
 				ChunkUtils.addChunkWithMxObjectID(getContext(), MxObject, chunkList);
 			}
-			return pgvectorknowledgebase.proxies.microflows.Microflows.chunkList_Delete_FromKnowledgeBase(getContext(), DatabaseConfiguration, KnowledgeBaseName, chunkList);
+			return pgvectorknowledgebase.proxies.microflows.Microflows.knowledgeBaseChunkList_Delete_FromKnowledgeBase(getContext(), chunkList, Connection);
 		} catch (Error e) {
 			LOGGER.error(e.getMessage());
 			return false;
