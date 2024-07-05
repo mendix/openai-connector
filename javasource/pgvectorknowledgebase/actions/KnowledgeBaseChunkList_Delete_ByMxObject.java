@@ -19,23 +19,23 @@ import com.mendix.systemwideinterfaces.core.IMendixObject;
 
 /**
  * Use this operation to delete existing chunks and corresponding labels in a knowledge base based on the MxObjectID. 
- * MxObjectList is the list of (original) Mendix objects that the chunks in the knowledge base represent. Only chunks related to these Mendix objects are to be deleted.
+ * MxObject is the (original) Mendix object that the chunks in the knowledge base represent. Only chunks related to this Mendix object are to be deleted.
  * By providing the KnowledgeBaseName parameter, you determine the knowledge base.
  * The DatabaseConfiguration that is passed must contain the connection details to a PostgreSQL database server with the PgVector extension installed. This entity is typically configured at runtime or in after-startup logic.
  */
-public class ChunkList_Delete_ByMxObjectList extends CustomJavaAction<java.lang.Boolean>
+public class KnowledgeBaseChunkList_Delete_ByMxObject extends CustomJavaAction<java.lang.Boolean>
 {
 	private IMendixObject __DatabaseConfiguration;
 	private pgvectorknowledgebase.proxies.DatabaseConfiguration DatabaseConfiguration;
 	private java.lang.String KnowledgeBaseName;
-	private java.util.List<IMendixObject> MxObjectList;
+	private IMendixObject MxObject;
 
-	public ChunkList_Delete_ByMxObjectList(IContext context, IMendixObject DatabaseConfiguration, java.lang.String KnowledgeBaseName, java.util.List<IMendixObject> MxObjectList)
+	public KnowledgeBaseChunkList_Delete_ByMxObject(IContext context, IMendixObject DatabaseConfiguration, java.lang.String KnowledgeBaseName, IMendixObject MxObject)
 	{
 		super(context);
 		this.__DatabaseConfiguration = DatabaseConfiguration;
 		this.KnowledgeBaseName = KnowledgeBaseName;
-		this.MxObjectList = MxObjectList;
+		this.MxObject = MxObject;
 	}
 
 	@java.lang.Override
@@ -45,13 +45,14 @@ public class ChunkList_Delete_ByMxObjectList extends CustomJavaAction<java.lang.
 
 		// BEGIN USER CODE
 		try {
-			if (MxObjectList.isEmpty()) {
-				LOGGER.warn("Empty list was passed, nothing was deleted");
-			}
 			java.util.List<Chunk> chunkList = new ArrayList<>();
-			MxObjectList.forEach(o -> ChunkUtils.addChunkWithMxObjectID(getContext(), o, chunkList));
-			return pgvectorknowledgebase.proxies.microflows.Microflows.chunkList_Delete_FromKnowledgeBase(
-					getContext(), DatabaseConfiguration, KnowledgeBaseName, chunkList);
+			if (MxObject == null) {
+				LOGGER.warn("No MxObject was passed, nothing was deleted");
+			}
+			else {
+				ChunkUtils.addChunkWithMxObjectID(getContext(), MxObject, chunkList);
+			}
+			return pgvectorknowledgebase.proxies.microflows.Microflows.chunkList_Delete_FromKnowledgeBase(getContext(), DatabaseConfiguration, KnowledgeBaseName, chunkList);
 		} catch (Error e) {
 			LOGGER.error(e.getMessage());
 			return false;
@@ -67,7 +68,7 @@ public class ChunkList_Delete_ByMxObjectList extends CustomJavaAction<java.lang.
 	@java.lang.Override
 	public java.lang.String toString()
 	{
-		return "ChunkList_Delete_ByMxObjectList";
+		return "KnowledgeBaseChunkList_Delete_ByMxObject";
 	}
 
 	// BEGIN EXTRA CODE

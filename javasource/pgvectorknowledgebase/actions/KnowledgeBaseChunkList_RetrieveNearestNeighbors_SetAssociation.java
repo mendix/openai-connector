@@ -19,48 +19,44 @@ import pgvectorknowledgebase.impl.MxLogger;
 import pgvectorknowledgebase.proxies.Chunk;
 
 /**
- * Use this operation to retrieve chunks from the knowledge base and set associations to the related mendix objects (if applicable). This operation returns a list of the same type of the TargetChunk input variable. 
- * Additional selection and filtering can be done by specifying the optional input parameters:
- * -Offset: number of records to skip (for batching purposes)
- * -MaxNumberOfResults: limit of the amount of records returned
+ * Use this operation to retrieve chunks from the knowledge base and set associations to the related mendix objects (if applicable). The retrieval is based on similarity with respect to the input vector provided.  This operation returns a list of the same type of the TargetChunk input variable. The returned list is sorted on similarity.
+ * Additional filtering can be done by specifying the optional input parameters:
+ * -MinimumSimilarity (in the range 0-1.0): acts as a cut-off: chunks are not retrieved if they have a similarity below this value.
+ * -MaxNumberOfResults: determines the max number of similar chunks that are returned.
  * -LabelList: when provided, this operation only returns chunks that are conform with all of the labels in the list.
  * 
  * The DatabaseConfiguration that is passed must contain the connection details to a PostgreSQL database server with the PgVector extension installed. This entity is typically configured at runtime or in after-startup logic.
  * By providing the KnowledgeBaseName parameter, you determine the knowledge base that was used for population earlier. 
  * The TargetChunk entity (type parameter) must be a specialization of the Chunk entity from this module. If it contains associations to (specializations of) the related mendix object for which the chunk was created, this will be set by this operation for easy processing afterwards.
  */
-public class ChunkList_Retrieve_SetAssociation extends CustomJavaAction<java.util.List<IMendixObject>>
+public class KnowledgeBaseChunkList_RetrieveNearestNeighbors_SetAssociation extends CustomJavaAction<java.util.List<IMendixObject>>
 {
-	private IMendixObject __DatabaseConfiguration;
-	private pgvectorknowledgebase.proxies.DatabaseConfiguration DatabaseConfiguration;
-	private java.lang.String KnowledgeBaseName;
+	private IMendixObject __Connection;
+	private genaicommons.proxies.Connection Connection;
 	private java.lang.String TargetChunk;
-	private java.util.List<IMendixObject> __LabelList;
-	private java.util.List<pgvectorknowledgebase.proxies.Label> LabelList;
+	private java.lang.String Vector;
+	private IMendixObject __MetadataCollection;
+	private genaicommons.proxies.MetadataCollection MetadataCollection;
 	private java.lang.Long MaxNumberOfResults;
-	private java.lang.Long Offset;
+	private java.math.BigDecimal MinimumSimilarity;
 
-	public ChunkList_Retrieve_SetAssociation(IContext context, IMendixObject DatabaseConfiguration, java.lang.String KnowledgeBaseName, java.lang.String TargetChunk, java.util.List<IMendixObject> LabelList, java.lang.Long MaxNumberOfResults, java.lang.Long Offset)
+	public KnowledgeBaseChunkList_RetrieveNearestNeighbors_SetAssociation(IContext context, IMendixObject Connection, java.lang.String TargetChunk, java.lang.String Vector, IMendixObject MetadataCollection, java.lang.Long MaxNumberOfResults, java.math.BigDecimal MinimumSimilarity)
 	{
 		super(context);
-		this.__DatabaseConfiguration = DatabaseConfiguration;
-		this.KnowledgeBaseName = KnowledgeBaseName;
+		this.__Connection = Connection;
 		this.TargetChunk = TargetChunk;
-		this.__LabelList = LabelList;
+		this.Vector = Vector;
+		this.__MetadataCollection = MetadataCollection;
 		this.MaxNumberOfResults = MaxNumberOfResults;
-		this.Offset = Offset;
+		this.MinimumSimilarity = MinimumSimilarity;
 	}
 
 	@java.lang.Override
 	public java.util.List<IMendixObject> executeAction() throws Exception
 	{
-		this.DatabaseConfiguration = this.__DatabaseConfiguration == null ? null : pgvectorknowledgebase.proxies.DatabaseConfiguration.initialize(getContext(), __DatabaseConfiguration);
+		this.Connection = this.__Connection == null ? null : genaicommons.proxies.Connection.initialize(getContext(), __Connection);
 
-		this.LabelList = java.util.Optional.ofNullable(this.__LabelList)
-			.orElse(java.util.Collections.emptyList())
-			.stream()
-			.map(__LabelListElement -> pgvectorknowledgebase.proxies.Label.initialize(getContext(), __LabelListElement))
-			.collect(java.util.stream.Collectors.toList());
+		this.MetadataCollection = this.__MetadataCollection == null ? null : genaicommons.proxies.MetadataCollection.initialize(getContext(), __MetadataCollection);
 
 		// BEGIN USER CODE
 		
@@ -69,8 +65,8 @@ public class ChunkList_Retrieve_SetAssociation extends CustomJavaAction<java.uti
 			ChunkUtils.validateTargetChunk(targetChunk);
 			
 			// call a microflow to retrieve chunks
-			java.util.List<Chunk> chunkList = pgvectorknowledgebase.proxies.microflows.Microflows.chunkList_Retrieve(
-					getContext(), DatabaseConfiguration, KnowledgeBaseName, MaxNumberOfResults, LabelList, Offset);
+			java.util.List<Chunk> chunkList = pgvectorknowledgebase.proxies.microflows.Microflows.chunkList_RetrieveNearestNeighbors(
+					getContext(), DatabaseConfiguration, KnowledgeBaseName, Vector, MinimumSimilarity, MaxNumberOfResults, LabelList);
 			
 			//map to target chunks to return
 			return ChunkUtils.getTargetChunkList(getContext(), chunkList, targetChunk);
@@ -89,10 +85,10 @@ public class ChunkList_Retrieve_SetAssociation extends CustomJavaAction<java.uti
 	@java.lang.Override
 	public java.lang.String toString()
 	{
-		return "ChunkList_Retrieve_SetAssociation";
+		return "KnowledgeBaseChunkList_RetrieveNearestNeighbors_SetAssociation";
 	}
 
 	// BEGIN EXTRA CODE
-	private static final MxLogger LOGGER = new MxLogger(ChunkList_Retrieve_SetAssociation.class);
+	private static final MxLogger LOGGER = new MxLogger(ChunkList_RetrieveNearestNeighbors_SetAssociation.class);
 	// END EXTRA CODE
 }
