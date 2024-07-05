@@ -14,8 +14,7 @@ import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 import com.mendix.webui.CustomJavaAction;
 import communitycommons.StringUtils;
-import pgvectorknowledgebase.impl.MxLogger;
-import pgvectorknowledgebase.proxies.Chunk;
+import genaicommons.impl.MxLogger;
 
 /**
  * Adds a new KnowledgeBaseChunk to the ChunkCollection to create the input for embeddings or knowledge base operations.
