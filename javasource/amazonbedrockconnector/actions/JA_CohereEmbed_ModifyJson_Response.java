@@ -62,29 +62,23 @@ public class JA_CohereEmbed_ModifyJson_Response extends CustomJavaAction<java.la
 
 				// Get input embeddings and texts arrays
 				ArrayNode inputEmbeddingsArray = (ArrayNode) root.get("embeddings");
-				ArrayNode inputTextsArray = (ArrayNode) root.get("texts");
 
 				// Iterate over the embeddings and texts
-				for (int i = 0; i < inputEmbeddingsArray.size(); i++) {
-					ObjectNode embeddingObject = mapper.createObjectNode();
+				for (JsonNode embeddingArray : inputEmbeddingsArray) {
+                    ObjectNode embeddingObject = mapper.createObjectNode();
 
-					// Convert embedding array to comma-separated string
-					StringBuilder vectorStringBuilder = new StringBuilder();
-					ArrayNode embeddingArray = (ArrayNode) inputEmbeddingsArray.get(i);
-					for (int j = 0; j < embeddingArray.size(); j++) {
-						if (j > 0) {
-							vectorStringBuilder.append(",");
-						}
-						vectorStringBuilder.append(embeddingArray.get(j).asText());
-					}
+                    // Convert embedding array to string
+                    String embeddingString = (embeddingArray != null ? mapper.writeValueAsString(embeddingArray) : "");
 
-					// Populate the embedding object with vector and text
-					embeddingObject.put("vector", vectorStringBuilder.toString());
-					embeddingObject.put("text", inputTextsArray.get(i).asText());
+                    // Populate the embedding object with vector and index
+                    embeddingObject.put("vector", embeddingString);
+                    embeddingObject.put("_index", outputEmbeddingsArray.size());
 
-					// Add the object to the output array
-					outputEmbeddingsArray.add(embeddingObject);
-				}
+                    // Add the object to the output array
+                    outputEmbeddingsArray.add(embeddingObject);
+                }
+
+
 
             // Add embeddings array to output
             outputNode.set("embeddings", outputEmbeddingsArray);
