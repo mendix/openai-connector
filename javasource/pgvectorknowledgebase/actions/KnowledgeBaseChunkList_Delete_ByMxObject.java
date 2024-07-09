@@ -70,6 +70,6 @@ public class KnowledgeBaseChunkList_Delete_ByMxObject extends CustomJavaAction<j
 	}
 
 	// BEGIN EXTRA CODE
-	private static final MxLogger LOGGER = new MxLogger(Chunk_Create.class);
+	private static final MxLogger LOGGER = new MxLogger(KnowledgeBaseChunkList_Delete_ByMxObject.class);
 	// END EXTRA CODE
 }
