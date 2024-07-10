@@ -10,7 +10,6 @@
 package amazonbedrockconnector.actions;
 
 import static java.util.Objects.requireNonNull;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -22,9 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import org.apache.commons.io.IOUtils;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -34,7 +31,6 @@ import com.mendix.core.CoreException;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 import com.mendix.webui.CustomJavaAction;
-
 import amazonbedrockconnector.genaicommons_impl.FunctionMappingImpl;
 import amazonbedrockconnector.genaicommons_impl.MessageImpl;
 import amazonbedrockconnector.impl.AmazonBedrockClient;
