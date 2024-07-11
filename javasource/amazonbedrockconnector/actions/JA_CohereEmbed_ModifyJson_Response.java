@@ -109,13 +109,12 @@ public class JA_CohereEmbed_ModifyJson_Response extends CustomJavaAction<java.la
 
 	// BEGIN EXTRA CODE
 
-	private static final MxLogger LOGGER = new MxLogger(JA_AnthropicClaude_ModifyJson_Response.class);
+	private static final MxLogger LOGGER = new MxLogger(JA_CohereEmbed_ModifyJson_Response.class);
 
 	private boolean isRootEmpty(ObjectNode root) {
 		return root == null || !root.hasNonNull("id") || !root.hasNonNull("response_type") ||
-		       !root.hasNonNull("texts") || !root.hasNonNull("embeddings") ||
-		       !root.get("texts").isArray() || !root.get("embeddings").isArray() ||
-		       ((ArrayNode) root.get("texts")).size() == 0 || ((ArrayNode) root.get("embeddings")).size() == 0;
+		       !root.hasNonNull("embeddings") || !root.get("embeddings").isArray() ||
+		       ((ArrayNode) root.get("embeddings")).size() == 0;
 	}
 
 	// END EXTRA CODE
