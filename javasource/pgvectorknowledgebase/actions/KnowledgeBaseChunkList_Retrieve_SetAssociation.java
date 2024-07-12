@@ -23,10 +23,9 @@ import pgvectorknowledgebase.impl.MxLogger;
  * Additional selection and filtering can be done by specifying the optional input parameters:
  * -Offset: number of records to skip (for batching purposes)
  * -MaxNumberOfResults: limit of the amount of records returned
- * -LabelList: when provided, this operation only returns chunks that are conform with all of the labels in the list.
+ * -MetadataCollection: when provided, this operation only returns chunks that are conform with all of the labels in the collection.
  * 
- * The DatabaseConfiguration that is passed must contain the connection details to a PostgreSQL database server with the PgVector extension installed. This entity is typically configured at runtime or in after-startup logic.
- * By providing the KnowledgeBaseName parameter, you determine the knowledge base that was used for population earlier. 
+ * The Connection entity passed must be of type PgVectorKnowledgebaseConnection and mus contain the KnowledgeBaseName string attribute filled and a DatabaseConfiguration associatied with the connection details to a PostgreSQL database server with the PgVector extension installed. This DatabaseConfiguration entity is typically configured at runtime or in after-startup logic. By providing the KnowledgeBaseName on the Connection, you determine the knowledge base. 
  * The TargetChunk entity (type parameter) must be a specialization of the Chunk entity from this module. If it contains associations to (specializations of) the related mendix object for which the chunk was created, this will be set by this operation for easy processing afterwards.
  */
 public class KnowledgeBaseChunkList_Retrieve_SetAssociation extends CustomJavaAction<java.util.List<IMendixObject>>
@@ -63,8 +62,8 @@ public class KnowledgeBaseChunkList_Retrieve_SetAssociation extends CustomJavaAc
 			ChunkUtils.validateTargetChunk(targetChunk);
 			
 			// call a microflow to retrieve chunks
-			java.util.List<KnowledgeBaseChunk> chunkList = pgvectorknowledgebase.proxies.microflows.Microflows.knowledgeBaseChunkList_Retrieve(
-					getContext(), MaxNumberOfResults, Offset, MetadataCollection, Connection);
+			java.util.List<KnowledgeBaseChunk> chunkList = pgvectorknowledgebase.proxies.microflows.Microflows.knowledgeBaseChunkList_Retrieve_ByMxObjectIDs(
+					getContext(), MaxNumberOfResults, Offset, MetadataCollection, Connection, null);
 			
 			//map to target chunks to return
 			return ChunkUtils.getTargetChunkList(getContext(), chunkList, targetChunk);
