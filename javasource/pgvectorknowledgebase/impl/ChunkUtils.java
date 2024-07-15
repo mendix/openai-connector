@@ -16,6 +16,7 @@ import genaicommons.proxies.KnowledgeBaseChunk;
 
 public class ChunkUtils {
 	
+	private static final MxLogger LOGGER = new MxLogger(ChunkUtils.class);
 	
 	public static void validateTargetChunk(IMetaObject TargetChunk) throws Exception {
 		// verify target chunk on non-null, subclass of chunk, 
@@ -24,9 +25,6 @@ public class ChunkUtils {
 			throw new IllegalArgumentException("Target Chunk must be a specialization of " + KnowledgeBaseChunk.entityName);
 		}		
 	};
-
-
-
 
 	public static java.util.List<IMendixObject> getTargetChunkList(
 			IContext context, java.util.List<KnowledgeBaseChunk> chunkList, IMetaObject targetChunk) {
@@ -80,22 +78,13 @@ public class ChunkUtils {
 		chunkList.add(chunk);
 	}
 
-	
-	
 	private static void setAssociationToTarget(IContext context, IMendixObject chunk,IMendixObject targetObject, IMetaAssociation association){
 		if (targetObject != null) {
 			chunk.setValue(context, association.getName(), targetObject.getId());
 		}
 	}
 
-	
-	
 	private static boolean assocationMatchesTarget(IMetaAssociation asssociation, IMendixObject targetObject){
 		return targetObject == null ? false : targetObject.getMetaObject().isSubClassOf(asssociation.getChild());
 	}
-	
-	
-	
-	private static final MxLogger LOGGER = new MxLogger(ChunkUtils.class);
-	
 }
