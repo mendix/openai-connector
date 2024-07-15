@@ -39,7 +39,6 @@ public class JA_CohereEmbed_ModifyJson_Response extends CustomJavaAction<java.la
 		try {
 			requireNonNull(this.ResponseBody_ToBeModified, "ResponseBody String is required");
         // Initialize ObjectMapper with full response body as received from Cohere Embed
-			ObjectMapper mapper = new ObjectMapper();
 			ObjectNode root = (ObjectNode) mapper.readTree(ResponseBody_ToBeModified);
 			ObjectNode outputNode = null;
 			
@@ -61,22 +60,45 @@ public class JA_CohereEmbed_ModifyJson_Response extends CustomJavaAction<java.la
 				ArrayNode outputEmbeddingsArray = mapper.createArrayNode();
 
 				// Get input embeddings and texts arrays
-				ArrayNode inputEmbeddingsArray = (ArrayNode) root.get("embeddings");
+				JsonNode embeddingsNode = root.get("embeddings");
 
-				// Iterate over the embeddings and texts
-				for (JsonNode embeddingArray : inputEmbeddingsArray) {
-                    ObjectNode embeddingObject = mapper.createObjectNode();
 
-                    // Convert embedding array to string
-                    String embeddingString = (embeddingArray != null ? mapper.writeValueAsString(embeddingArray) : "");
-
-                    // Populate the embedding object with vector and index
-                    embeddingObject.put("vector", embeddingString);
-                    embeddingObject.put("_index", outputEmbeddingsArray.size());
-
-                    // Add the object to the output array
-                    outputEmbeddingsArray.add(embeddingObject);
+            // Check if embeddingsNode is an array or an object
+            if (embeddingsNode.isArray()) {
+                // Handle case where embeddings is an array
+                ArrayNode inputEmbeddingsArray = (ArrayNode) embeddingsNode;
+                for (JsonNode embeddingArray : inputEmbeddingsArray) {
+                    try {
+                        String embeddingString = (embeddingArray != null ? mapper.writeValueAsString(embeddingArray) : "");
+                        ObjectNode embeddingObject = mapper.createObjectNode();
+                        embeddingObject.put("vector", embeddingString);
+                        embeddingObject.put("_index", outputEmbeddingsArray.size());
+                        outputEmbeddingsArray.add(embeddingObject);
+                    } catch (Exception e) {
+                        LOGGER.error("Error processing embedding array: " + e.getMessage());
+                        throw e;
+                    }
                 }
+            } else if (embeddingsNode.isObject()) {
+                // Handle case where embeddings is an object with nested arrays
+                ObjectNode embeddingsObject = (ObjectNode) embeddingsNode;
+                embeddingsObject.fields().forEachRemaining(entry -> {
+                    ArrayNode inputEmbeddingsArray = (ArrayNode) entry.getValue();
+                    for (JsonNode embeddingArray : inputEmbeddingsArray) {
+                        try {
+                            String embeddingString = (embeddingArray != null ? mapper.writeValueAsString(embeddingArray) : "");
+                            ObjectNode embeddingObject = mapper.createObjectNode();
+                            embeddingObject.put("vector", embeddingString);
+                            embeddingObject.put("_index", outputEmbeddingsArray.size());
+                            outputEmbeddingsArray.add(embeddingObject);
+                        } catch (Exception e) {
+                            LOGGER.error("Error processing embedding array: " + e.getMessage());
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
+            }
+
 
 
 
@@ -110,12 +132,14 @@ public class JA_CohereEmbed_ModifyJson_Response extends CustomJavaAction<java.la
 	// BEGIN EXTRA CODE
 
 	private static final MxLogger LOGGER = new MxLogger(JA_CohereEmbed_ModifyJson_Response.class);
+	private static final ObjectMapper mapper = new ObjectMapper();
 
 	private boolean isRootEmpty(ObjectNode root) {
-		return root == null || !root.hasNonNull("id") || !root.hasNonNull("response_type") ||
-		       !root.hasNonNull("embeddings") || !root.get("embeddings").isArray() ||
-		       ((ArrayNode) root.get("embeddings")).size() == 0;
-	}
+        return root == null || !root.hasNonNull("id") || !root.hasNonNull("response_type") ||
+               !root.hasNonNull("embeddings") ||
+               ((root.get("embeddings").isArray() && ((ArrayNode) root.get("embeddings")).size() == 0) ||
+                (root.get("embeddings").isObject() && root.get("embeddings").size() == 0));
+    }
 
 	// END EXTRA CODE
 }
