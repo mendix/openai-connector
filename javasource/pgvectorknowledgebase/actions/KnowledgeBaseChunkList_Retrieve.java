@@ -26,7 +26,7 @@ import com.mendix.systemwideinterfaces.core.IMendixObject;
  * -MetadataCollection: when provided, this operation only returns chunks that are conform with all of the metadata key/value pairs in the list.
  * -MxObject: This is the (original) Mendix object that the chunks in the knowledge base represent. Only chunks related to this Mendix object are retrieved.
  * 
- * The Connection entity passed must be of type PgVectorKnowledgebaseConnection and mus contain the KnowledgeBaseName string attribute filled and a DatabaseConfiguration associatied with the connection details to a PostgreSQL database server with the PgVector extension installed. This DatabaseConfiguration entity is typically configured at runtime or in after-startup logic. By providing the KnowledgeBaseName on the Connection, you determine the knowledge base. 
+ * The Connection entity passed must be of type PgVectorKnowledgebaseConnection and must contain the KnowledgeBaseName string attribute filled and a DatabaseConfiguration associated with the connection details to a PostgreSQL database server with the PgVector extension installed. This DatabaseConfiguration entity is typically configured at runtime or in after-startup logic. By providing the KnowledgeBaseName on the Connection, you determine the knowledge base. 
  */
 public class KnowledgeBaseChunkList_Retrieve extends CustomJavaAction<java.util.List<IMendixObject>>
 {
