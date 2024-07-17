@@ -13,7 +13,7 @@ public class ImageGenImpl {
 	
 	public static IMendixObject getSingleGeneratedImage(FileContent fileContent, String type, IContext ctx) {
 		IMendixObject generatedImage = createGeneratedImage(type, ctx);
-		ImageGenImpl.decodeToFile(generatedImage, fileContent, ctx);
+		ImageGenImpl.convertToFile(generatedImage, fileContent, ctx);
 		
 		return generatedImage;
 	}
@@ -25,8 +25,8 @@ public class ImageGenImpl {
 		}
 	}
 	
-	private static void decodeToFile(IMendixObject imageToUse, FileContent fileContent, IContext ctx) {
-		Microflows.image_DecodeToFile_Single(ctx, Image.initialize(ctx, imageToUse), fileContent);
+	private static void convertToFile(IMendixObject imageToUse, FileContent fileContent, IContext ctx) {
+		Microflows.image_ConvertToFile_Single(ctx, Image.initialize(ctx, imageToUse), fileContent);
 	}
 	
 	private static IMendixObject createGeneratedImage(String type, IContext ctx) {
