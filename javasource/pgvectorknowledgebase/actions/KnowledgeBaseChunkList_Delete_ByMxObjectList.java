@@ -44,14 +44,14 @@ public class KnowledgeBaseChunkList_Delete_ByMxObjectList extends CustomJavaActi
 		// BEGIN USER CODE
 		try {
 			if (MxObjectList.isEmpty()) {
-				LOGGER.warn("Empty list was passed, nothing was deleted");
+				LOGGER.warn("Empty list was passed, nothing was deleted.");
 			}
 			java.util.List<KnowledgeBaseChunk> chunkList = new ArrayList<>();
 			MxObjectList.forEach(o -> ChunkUtils.addChunkWithMxObjectID(getContext(), o, chunkList));
 			return pgvectorknowledgebase.proxies.microflows.Microflows.knowledgeBaseChunkList_Delete_FromKnowledgeBase(
 					getContext(), chunkList, Connection);
 		} catch (Error e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error(e, "Something went wrong while deleting chunks from the knowledge base.");
 			return false;
 		}
 		

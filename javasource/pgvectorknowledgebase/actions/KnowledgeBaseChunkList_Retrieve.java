@@ -59,7 +59,7 @@ public class KnowledgeBaseChunkList_Retrieve extends CustomJavaAction<java.util.
 		try {
 			java.util.List<KnowledgeBaseChunk> chunkList = new ArrayList<>();
 			if (MxObject == null) {
-				LOGGER.info("No MxObject was passed, retrieve will be executed without MendixIDs specified");
+				LOGGER.info("No MxObject was passed, retrieve will be executed without MendixIDs specified.");
 			}
 			else {
 				ChunkUtils.addChunkWithMxObjectID(getContext(), MxObject, chunkList);
@@ -68,7 +68,7 @@ public class KnowledgeBaseChunkList_Retrieve extends CustomJavaAction<java.util.
 			java.util.List<IMendixObject> returnList = knowledgeBaseChunkList.stream().map(o -> o.getMendixObject()).collect(Collectors.toList());
 			return returnList;
 		} catch (Error e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error(e, "Something went wrong while retrieving chunks from the knowledge base.");
 			return null;
 		}
 		// END USER CODE

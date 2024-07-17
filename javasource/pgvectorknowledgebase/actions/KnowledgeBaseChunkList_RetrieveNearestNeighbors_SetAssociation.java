@@ -71,8 +71,8 @@ public class KnowledgeBaseChunkList_RetrieveNearestNeighbors_SetAssociation exte
 			return ChunkUtils.getTargetChunkList(getContext(), chunkList, targetChunk);
 			
 		} catch (Exception e) {
-			LOGGER.error(e.getMessage());
-			throw e;
+			LOGGER.error(e, "Something went wrong while retrieving chunks from the knowledge base and associating the mendix objects to the target chunks.");
+			return null;
 		}
 		// END USER CODE
 	}
