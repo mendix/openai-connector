@@ -36,9 +36,10 @@ import amazonbedrockconnector.genaicommons_impl.MessageImpl;
 import amazonbedrockconnector.impl.AmazonBedrockClient;
 import amazonbedrockconnector.impl.MxLogger;
 import amazonbedrockconnector.proxies.AbstractRequestParameter;
-import amazonbedrockconnector.proxies.ChatCompletionsResponse_Extension;
+import amazonbedrockconnector.proxies.ChatCompletionsResponse;
 import amazonbedrockconnector.proxies.DecimalRequestParameter;
 import amazonbedrockconnector.proxies.IntegerRequestParameter;
+import amazonbedrockconnector.proxies.RequestedResponseField;
 import amazonbedrockconnector.proxies.ResponseFieldRequest;
 import amazonbedrockconnector.proxies.StringRequestParameter;
 import genaicommons.proxies.ENUM_FileType;
@@ -117,7 +118,7 @@ public class Converse extends CustomJavaAction<IMendixObject>
 			return mxResponse.getMendixObject();
 			
 		} catch (Exception e) {
-			LOGGER.error("An error ocurred while during Converse operation " + e.getMessage());
+			LOGGER.error("An error ocurred during Converse operation " + e.getMessage());
 			throw e;
 		}
 		
@@ -734,12 +735,13 @@ public class Converse extends CustomJavaAction<IMendixObject>
 	
 	// Method to map aws response to mendix response
 	private Response getMxResponse(ConverseResponse awsResponse) throws JsonProcessingException {
-		Response mxResponse = new Response(getContext());
+		ChatCompletionsResponse mxResponse = new ChatCompletionsResponse(getContext());
 		
 		mxResponse.setRequestTokens(awsResponse.usage().inputTokens());
 		mxResponse.setResponseTokens(awsResponse.usage().outputTokens());
 		mxResponse.setTotalTokens(awsResponse.usage().totalTokens());
 		mxResponse.setStopReason(awsResponse.stopReasonAsString());
+		mxResponse.setLatencyMs(awsResponse.metrics().latencyMs().intValue());
 		
 		mxResponse.setResponse_Message(getMxResponseMessage(awsResponse.output()));
 		
@@ -805,7 +807,7 @@ public class Converse extends CustomJavaAction<IMendixObject>
 		if (mxMessage.getContent() == null || mxMessage.getContent().isBlank()) {
 			mxMessage.setContent(textContent);
 		} else {
-			mxMessage.setContent(mxMessage.getContent() + " /n" + textContent); // TODO: Review if this makes sense
+			mxMessage.setContent(mxMessage.getContent() + " \n " + textContent);
 		}
 	}
 	
@@ -820,7 +822,7 @@ public class Converse extends CustomJavaAction<IMendixObject>
 		toolCallList.add(mxToolCall);
 	}
 	
-	// Getting requested input parameters and storing them as Jspm string
+	// Getting requested input parameters and storing them as Json string
 	private String getInputParamsJson(Document awsDoc) throws JsonProcessingException {
 		if (!awsDoc.isMap() || awsDoc.asMap().isEmpty()) {
 			LOGGER.error("No Input Schema for Tool Use received.");
@@ -837,15 +839,15 @@ public class Converse extends CustomJavaAction<IMendixObject>
 		return MAPPER.writeValueAsString(stringMap);
 	}
 	
-	private void setMxResponseExtension(Document awsDoc, Response mxResponse) {
+	private void setMxResponseExtension(Document awsDoc, ChatCompletionsResponse mxResponse) {
 		
 		Map<String, Document> map = awsDoc.asMap();
 		
 		for (Map.Entry<String, Document> entry : map.entrySet()) {
-			ChatCompletionsResponse_Extension responseExtension = new ChatCompletionsResponse_Extension(getContext());
-			responseExtension.setKey(entry.getKey());
-			responseExtension.setValue(entry.getValue().toString());
-			responseExtension.setChatCompletionsResponse_Extension_Response(mxResponse);
+			RequestedResponseField responseField = new RequestedResponseField(getContext());
+			responseField.setKey(entry.getKey());
+			responseField.setValue(entry.getValue().toString());
+			responseField.setRequestedResponseField_ChatCompletionsResponse(mxResponse);
 		}
 	}
 	
