@@ -43,7 +43,7 @@ public class ProviderConfig_SetActionMicroflow extends CustomJavaAction<java.lan
 		try {
 			requireNonNull(ProviderConfig, "ProviderConfig is required.");
 			requireNonNull(ActionMicroflow, "ActionMicroflow is required.");
-			ProviderConfigImpl.validate(ActionMicroflow);
+			ProviderConfigImpl.validateActionMicroflow(ActionMicroflow);
 			
 			ProviderConfig.setActionMicroflow(ActionMicroflow);	
 			return null;

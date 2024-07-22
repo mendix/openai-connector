@@ -17,6 +17,6 @@ import { Base64 } from 'js-base64';
  */
 export async function Base64Encode(string) {
 	// BEGIN USER CODE
-    return Base64.encode(string);
+    return Base64.encode(base64);
 	// END USER CODE
 }
