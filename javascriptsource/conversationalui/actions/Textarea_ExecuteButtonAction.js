@@ -5,11 +5,17 @@
 // - the code between BEGIN USER CODE and END USER CODE
 // - the code between BEGIN EXTRA CODE and END EXTRA CODE
 // Other code you write will be lost the next time you deploy the project.
-import { Big } from "big.js";
 import "mx-global";
 
 // BEGIN EXTRA CODE
-function clickButton(buttonElement){
+function clickButton(buttonName) {
+	//Get buttonElement. The mx-name is part of the class name
+
+	const buttonElement = document.querySelector('button[class*="' + buttonName + '"]');
+	if (buttonElement === null) {
+		throw new Error("Button with that name could not be found.")
+	}
+
 	buttonElement.click();
 }
 // END EXTRA CODE
@@ -28,45 +34,38 @@ function clickButton(buttonElement){
  */
 export async function Textarea_ExecuteButtonAction(textAreaName, buttonName, submitOnEnter, submitOnShiftEnter) {
 	// BEGIN USER CODE
-	try{
+	try {
 		//Validations
-		if (!textAreaName || textAreaName.trim().length === 0){
+		if (!textAreaName || textAreaName.trim().length === 0) {
 			throw new Error("TextAreaName is required.")
 		}
-		if (!buttonName || buttonName.trim().length === 0){
+		if (!buttonName || buttonName.trim().length === 0) {
 			throw new Error("ButtonName is required.")
 		}
 
 		//Get textAreaElement. The mx-name is part of the ID.
 		const textAreaElement = document.querySelector('textarea[id*="' + textAreaName + '"]');
-		if (textAreaElement === null){
-				throw new Error("Textarea with that name could not be found.")
+		if (textAreaElement === null) {
+			throw new Error("Textarea with that name could not be found.")
 		}
 
 		//Add Event Listener that clicks the button
 		textAreaElement.addEventListener('keydown', function(event) {
-			//Get buttonElement. The mx-name is part of the class name
-			const buttonElement = document.querySelector('button[class*="' + buttonName + '"]');
-			if (buttonElement === null){
-				throw new Error("Button with that name could not be found.")
+			if (event.key === 'Enter') {
+				if (event.shiftKey) {
+					if (submitOnShiftEnter) {
+						clickButton(buttonName);			
+					}
+				} else if (!event.ctrlKey && !event.altKey && !event.metaKey) {
+					if (submitOnEnter) {
+						clickButton(buttonName);
+					}
+				}
 			}
-
-    		if (event.key === 'Enter') {
-      			if (event.shiftKey) {
-        			if (submitOnShiftEnter) {
-						clickButton(buttonElement);			
-        			}
-      			} else if (!event.ctrlKey && !event.altKey && !event.metaKey) {
-        			if (submitOnEnter) {
-						clickButton(buttonElement);
-        			}
-      			}
-    		}
-  		});
+		});
 	}
-	catch(err) {
+	catch (err) {
 		console.error(err)
 	} 
-
 	// END USER CODE
 }
