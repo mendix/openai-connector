@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.webui.CustomJavaAction;
-import genaicommons.proxies.ENUM_FileContentType;
+import genaicommons.proxies.ENUM_ContentType;
 import openaiconnector.impl.MxLogger;
 
 public class ImageResponse_PrepareForImportMapping extends CustomJavaAction<java.lang.String>
@@ -78,11 +78,11 @@ public class ImageResponse_PrepareForImportMapping extends CustomJavaAction<java
 		JsonNode imageB64 = data.path("b64_json");
 		
 		if(!imageURL.isNull() && !imageURL.asText().isBlank()) {
-			((ObjectNode) data).put("fileContentType", ENUM_FileContentType.Url.name());
+			((ObjectNode) data).put("fileContentType", ENUM_ContentType.Url.name());
 			((ObjectNode) data).put("fileContent", imageURL.asText());
 		}
 		else if(!imageB64.isNull() && !imageB64.asText().isBlank()){
-			((ObjectNode) data).put("fileContentType", ENUM_FileContentType.Base64.name());
+			((ObjectNode) data).put("fileContentType", ENUM_ContentType.Base64.name());
 			((ObjectNode) data).put("fileContent", imageB64.asText());
 		}
 	}
