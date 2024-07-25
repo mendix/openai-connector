@@ -180,6 +180,13 @@ public class InvokeAgent extends CustomJavaAction<java.lang.Void>
 			throw new IllegalArgumentException("The AgentId cannot be empty.");
 		}
 		
+		// Validate that the agent exists
+		software.amazon.awssdk.services.bedrockagent.model.GetAgentRequest awsRequest = software.amazon.awssdk.services.bedrockagent.model.GetAgentRequest.builder()
+				.agentId(this.InvokeAgentRequest.getAgentId())
+				.build();
+		software.amazon.awssdk.services.bedrockagent.BedrockAgentClient client = AmazonBedrockClient.getBedrockAgentClient(Credentials, ENUM_Region, InvokeAgentRequest);
+		client.getAgent(awsRequest);
+		
 		if (InvokeAgentRequest.getSessionId() == null || InvokeAgentRequest.getSessionId().isBlank()) {
 			throw new IllegalArgumentException("The SessionId cannot be empty.");
 		}
