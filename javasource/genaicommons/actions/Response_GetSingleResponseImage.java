@@ -20,7 +20,7 @@ import genaicommons.proxies.FileContent;
 import static java.util.Objects.requireNonNull;
 
 /**
- * This operations processes a response that was created by an image generation operation. A return entity can be specified using ResponseImageEntity (needs to be of type image or its specialization). An image of that type will be created and returned.
+ * This operation processes a response that was created by an image generation operation. A return entity can be specified using ResponseImageEntity (needs to be of type System.Image or its specialization). An image of that type will be created and returned.
  */
 public class Response_GetSingleResponseImage extends CustomJavaAction<IMendixObject>
 {

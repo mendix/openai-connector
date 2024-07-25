@@ -21,7 +21,7 @@ import genaicommons.impl.MxLogger;
 import genaicommons.proxies.FileContent;
 
 /**
- * This operations processes a response that was created by an image generation operation. A return entity can be specified using ResponseImageEntity (needs to be of type image or its specialization). A list of images of that type will be created and returned.
+ * This operation processes a response that was created by an image generation operation. A return entity can be specified using ResponseImageEntity (needs to be of type System.Image or its specialization). A list of images of that type will be created and returned.
  */
 public class Response_GetResponseImageList extends CustomJavaAction<java.util.List<IMendixObject>>
 {
