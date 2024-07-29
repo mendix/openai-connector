@@ -1,0 +1,11 @@
+@import '../../../../theme/web/custom-variables';
+
+.mx-layoutgrid.card-container >.row {
+    padding-bottom: 24px;
+    .card {
+        height: 100%;
+        margin-bottom: 0px;
+    }
+}
+
+    
