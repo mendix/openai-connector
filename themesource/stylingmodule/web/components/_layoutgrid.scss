@@ -1,10 +1,15 @@
 @import '../../../../theme/web/custom-variables';
 
-.mx-layoutgrid.card-container >.row {
+.mx-layoutgrid.card-container>.row {
     padding-bottom: 24px;
-    .card {
+
+    .col>.card {
         height: 100%;
         margin-bottom: 0px;
+        .widget-datagrid{
+            margin-right: -24px;
+            margin-left: -24px;
+        }
     }
 }
 

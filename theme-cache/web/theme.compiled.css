@@ -35465,9 +35465,13 @@ $callout-info-bg: $color-info-lighter;
 .mx-layoutgrid.card-container > .row {
   padding-bottom: 24px;
 }
-.mx-layoutgrid.card-container > .row .card {
+.mx-layoutgrid.card-container > .row .col > .card {
   height: 100%;
   margin-bottom: 0px;
+}
+.mx-layoutgrid.card-container > .row .col > .card .widget-datagrid {
+  margin-right: -24px;
+  margin-left: -24px;
 }
 
 .listview-horizontal.mx-listview > ul {
