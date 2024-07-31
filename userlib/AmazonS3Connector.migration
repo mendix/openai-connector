@@ -1,0 +1,7 @@
+dependency software.amazon.awssdk:s3:[2,3)
+delete arns-2.21.9.jar
+delete arns-2.21.9.jar.AmazonS3Connector.RequiredLib
+delete aws-xml-protocol-2.21.9.jar
+delete aws-xml-protocol-2.21.9.jar.AmazonS3Connector.RequiredLib
+delete s3-2.21.9.jar
+delete s3-2.21.9.jar.AmazonS3Connector.RequiredLib
