@@ -30,11 +30,9 @@ public class MxLocation {
 		case S3:
 			return ENUM_DataSourceType.S3;
 		// TODO: Add other location types after updating the SDK and ENUM
-		case UNKNOWN_TO_SDK_VERSION:
+		default:
 			LOGGER.warn("A knowledge base with a currently unsupported source type was queried. Not all information such as the source URL of the returned references can be mapped to Mendix. ");
 			return ENUM_DataSourceType.UNKNOWN_TO_SDK_VERSION;
-		default:
-			return null;
 		}
 	}
 	
