@@ -10,23 +10,20 @@
 package amazonbedrockconnector.actions;
 
 import static java.util.Objects.requireNonNull;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import com.mendix.core.CoreException;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 import com.mendix.webui.CustomJavaAction;
+import amazonbedrockconnector.genaicommons_impl.ReferenceImpl;
 import amazonbedrockconnector.impl.AmazonBedrockClient;
 import amazonbedrockconnector.impl.MxLogger;
 import amazonbedrockconnector.proxies.KnowledgeBaseTool;
-import genaicommons.proxies.ENUM_SourceType;
 import genaicommons.proxies.Message;
 import genaicommons.proxies.Reference;
 import genaicommons.proxies.Request;
 import genaicommons.proxies.Tool;
 import genaicommons.proxies.ToolCollection;
-import software.amazon.awssdk.services.bedrockagentruntime.model.Citation;
 import software.amazon.awssdk.services.bedrockagentruntime.model.KnowledgeBaseRetrieveAndGenerateConfiguration;
 import software.amazon.awssdk.services.bedrockagentruntime.model.RetrieveAndGenerateConfiguration;
 import software.amazon.awssdk.services.bedrockagentruntime.model.RetrieveAndGenerateInput;
@@ -145,7 +142,7 @@ public class RetrieveAndGenerate extends CustomJavaAction<IMendixObject>
 		
 		String inputText = getInputText(commonRequest);
 		if (inputText == null || inputText.isBlank()) {
-			throw new IllegalArgumentException("The InputText attribute of the RetrieveAndGenerateRequest object is required.");
+			throw new IllegalArgumentException("The Content attribute of the Message entity is required.");
 		}
 		
 		String knowledgeBaseId = getKnowledgeBaseId(commonRequest);
@@ -228,52 +225,13 @@ public class RetrieveAndGenerate extends CustomJavaAction<IMendixObject>
 		Message responseMsg = new Message(getContext());
 		responseMsg.setContent(awsResponse.output().text());
 		
-		List<Reference> mxReferences = getMxReferences(awsResponse.citations());
+		List<Reference> mxReferences = ReferenceImpl.getMxReferences(awsResponse.citations(), getContext());
 		responseMsg.setMessage_Reference(mxReferences);
 		
 		mxResponse.setResponse_Message(responseMsg);
 		return mxResponse;
 	}
 	
-	private List<Reference> getMxReferences(List<Citation> awsCitations) {
-			
-		List<Reference> mxReferences = new ArrayList<>();
-		
-		awsCitations.forEach(awsCitation -> {
-			genaicommons.proxies.Citation mxCitation = new genaicommons.proxies.Citation(getContext());
-			mxCitation.setStartIndex(awsCitation.generatedResponsePart().textResponsePart().span().start());
-			mxCitation.setEndIndex(awsCitation.generatedResponsePart().textResponsePart().span().end());
-			mxCitation.setText(awsCitation.generatedResponsePart().textResponsePart().text());
-			
-			List<genaicommons.proxies.Citation> singleCitationList = Arrays.asList(mxCitation);
-			awsCitation.retrievedReferences().forEach(awsReference -> {
-				String sourceUrl = awsReference.location().s3Location().uri();
-				Reference mxReference = new Reference(getContext());
-				mxReference.setContent(awsReference.content().text());
-				mxReference.setSource(sourceUrl);
-				mxReference.setSourceType(ENUM_SourceType.Url);
-				mxReference.setTitle(getReferenceTitle(sourceUrl));
-				mxReference.setReference_Citation(singleCitationList);
-				mxReferences.add(mxReference);
-			});
-			
-		});
-		
-		return mxReferences;
-	}
-	
-	private String getReferenceTitle(String url) {
-		if (url == null || url.isBlank()) {
-			return null;
-		}
-		
-		if (url.contains("/")) {
-			int last = url.lastIndexOf("/");
-			return url.substring(last + 1);
-			
-		} else return url;
-		
-	}
 	
 	
 	

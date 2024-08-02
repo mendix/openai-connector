@@ -11,17 +11,23 @@ package amazonbedrockconnector.actions;
 
 import static java.util.Objects.requireNonNull;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import com.mendix.core.CoreException;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 import com.mendix.webui.CustomJavaAction;
+import amazonbedrockconnector.genaicommons_impl.ReferenceImpl;
 import amazonbedrockconnector.impl.AmazonBedrockClient;
 import amazonbedrockconnector.impl.MxLocation;
 import amazonbedrockconnector.impl.MxLogger;
-import amazonbedrockconnector.proxies.Content;
+import amazonbedrockconnector.proxies.ENUM_DataSourceType;
 import amazonbedrockconnector.proxies.RetrievalResult;
-import amazonbedrockconnector.proxies.RetrieveLocation;
 import amazonbedrockconnector.proxies.RetrieveResponse;
+import genaicommons.proxies.ENUM_SourceType;
+import genaicommons.proxies.Message;
+import genaicommons.proxies.Reference;
+import genaicommons.proxies.Request;
 import software.amazon.awssdk.services.bedrockagentruntime.BedrockAgentRuntimeClient;
 
 public class Retrieve extends CustomJavaAction<IMendixObject>
@@ -30,7 +36,7 @@ public class Retrieve extends CustomJavaAction<IMendixObject>
 	private IMendixObject __Credentials;
 	private awsauthentication.proxies.Credentials Credentials;
 	private IMendixObject __RetrieveRequest;
-	private amazonbedrockconnector.proxies.RetrieveRequest RetrieveRequest;
+	private amazonbedrockconnector.proxies.RetrieveRequest_Extension RetrieveRequest;
 
 	public Retrieve(IContext context, java.lang.String Region, IMendixObject Credentials, IMendixObject RetrieveRequest)
 	{
@@ -45,7 +51,7 @@ public class Retrieve extends CustomJavaAction<IMendixObject>
 	{
 		this.Credentials = this.__Credentials == null ? null : awsauthentication.proxies.Credentials.initialize(getContext(), __Credentials);
 
-		this.RetrieveRequest = this.__RetrieveRequest == null ? null : amazonbedrockconnector.proxies.RetrieveRequest.initialize(getContext(), __RetrieveRequest);
+		this.RetrieveRequest = this.__RetrieveRequest == null ? null : amazonbedrockconnector.proxies.RetrieveRequest_Extension.initialize(getContext(), __RetrieveRequest);
 
 		// BEGIN USER CODE
 		try {
@@ -87,15 +93,29 @@ public class Retrieve extends CustomJavaAction<IMendixObject>
 
 	// BEGIN EXTRA CODE
 private static final MxLogger LOGGER = new MxLogger(Retrieve.class);
+
+private String getInputText(Request commonRequest) throws CoreException {
+	List<Message> messages = commonRequest.getRequest_Message();
+	
+	if (messages.size() == 0) {
+		throw new IllegalArgumentException("The request does not contain a Message object. It must contain exactly one Message object with the Content attribute set.");
+	}
+	
+	if (messages.size() > 1) {
+		throw new IllegalArgumentException("The request contains more than one Message object. This is not supported for this operation. Exactly one Message object is expected");
+	}
+	return commonRequest.getRequest_Message().get(0).getContent();
+}
 	
 	private void validateRequest() throws CoreException { 
-		if (this.RetrieveRequest.getKnowledgeBaseId() == null || this.RetrieveRequest.getKnowledgeBaseId().isBlank()) {
-			 throw new IllegalArgumentException("The knowledge base ID cannot be empty or blank.");
+		Request commonRequest = RetrieveRequest.getRetrieveRequest_Extension_Request();
+		if (commonRequest == null) {
+			throw new IllegalArgumentException("No GenAICommons.Request entity found. A GenAICommons.Request entity is required.");
 		}
-		
-		if (this.RetrieveRequest.getQueryText() == null || this.RetrieveRequest.getQueryText().isBlank()) {
-			throw new IllegalArgumentException("The retrieval query text cannot be empty or blank.");
-		}
+		String inputText = getInputText(commonRequest);
+		if (inputText == null || inputText.isBlank()) {
+			throw new IllegalArgumentException("The content attribute of the Message entity is required.");
+		}	
 	}
 	
 	private software.amazon.awssdk.services.bedrockagentruntime.model.RetrieveRequest createAwsRequest() throws CoreException {
@@ -104,7 +124,7 @@ private static final MxLogger LOGGER = new MxLogger(Retrieve.class);
 				.nextToken(this.RetrieveRequest.getNextToken())
 				.retrievalQuery(createRetrievalQuery());
 		
-		if (RetrieveRequest.getRetrieveRequest_RetrievalConfiguration() != null && RetrieveRequest.getRetrieveRequest_RetrievalConfiguration().getNumberOfResults() != null) {
+		if (RetrieveRequest.getRetrieveRequest_Extension_RetrievalConfiguration() != null && RetrieveRequest.getRetrieveRequest_Extension_RetrievalConfiguration().getNumberOfResults() != null) {
 			awsRequestBuilder.retrievalConfiguration(createAwsRetrievalConfiguration());
 		}
 		
@@ -112,15 +132,18 @@ private static final MxLogger LOGGER = new MxLogger(Retrieve.class);
 	}
 	
 	private software.amazon.awssdk.services.bedrockagentruntime.model.KnowledgeBaseQuery createRetrievalQuery() throws CoreException {
+		Request commonRequest = RetrieveRequest.getRetrieveRequest_Extension_Request();
 		var awsRetrievalQuery = software.amazon.awssdk.services.bedrockagentruntime.model.KnowledgeBaseQuery.builder()
-				.text(this.RetrieveRequest.getQueryText())
+				.text(this.getInputText(commonRequest))
 				.build();
 		return awsRetrievalQuery;
 	}
 	
+	
+	
 	private software.amazon.awssdk.services.bedrockagentruntime.model.KnowledgeBaseRetrievalConfiguration createAwsRetrievalConfiguration() throws CoreException {
 		var awsKnowledgeBaseVectorSearchConfiguration = software.amazon.awssdk.services.bedrockagentruntime.model.KnowledgeBaseVectorSearchConfiguration.builder()
-				.numberOfResults(this.RetrieveRequest.getRetrieveRequest_RetrievalConfiguration().getNumberOfResults())
+				.numberOfResults(this.RetrieveRequest.getRetrieveRequest_Extension_RetrievalConfiguration().getNumberOfResults())
 				.build();
 		
 		var awsRetrievalConfiguration = software.amazon.awssdk.services.bedrockagentruntime.model.KnowledgeBaseRetrievalConfiguration.builder()
@@ -134,30 +157,36 @@ private static final MxLogger LOGGER = new MxLogger(Retrieve.class);
 		RetrieveResponse mxResponse = new RetrieveResponse(getContext());
 		mxResponse.setNextToken(awsResponse.nextToken());
 		
-		if (!awsResponse.retrievalResults().isEmpty()) {
-			awsResponse.retrievalResults().forEach(awsRetrievalResult -> createMxRetrievalResult(awsRetrievalResult,mxResponse));
-		}
-		
+		createMxRetrieveResults(mxResponse, awsResponse);
+				
 		return mxResponse;
 	}
 	
-	private void createMxRetrievalResult(software.amazon.awssdk.services.bedrockagentruntime.model.KnowledgeBaseRetrievalResult awsRetrievalResult, RetrieveResponse mxResponse) {
-		RetrievalResult mxRetrievalResult = new RetrievalResult(getContext());
-		mxRetrievalResult.setScore(BigDecimal.valueOf(awsRetrievalResult.score()));
-		mxRetrievalResult.setRetrievalResult_RetrieveResponse(mxResponse);
+	private void createMxRetrieveResults(RetrieveResponse mxResponse, software.amazon.awssdk.services.bedrockagentruntime.model.RetrieveResponse awsResponse) {
+		// Have a list of GenAiCommons.Reference objects
+		List<Reference> referenceList = new ArrayList<>();
+		awsResponse.retrievalResults().forEach(awsRetrievalResult -> {
+			
+			RetrievalResult mxRetrievalResult = new RetrievalResult(getContext());
+			
+			ENUM_DataSourceType mxDataSourceType = MxLocation.getMxDataSourceType(awsRetrievalResult.location().type());
+			String sourceUrl = ReferenceImpl.getSourceUrl(mxDataSourceType, awsRetrievalResult.location());
+			ENUM_SourceType sourceType = ReferenceImpl.getSourceType(mxDataSourceType);
+			
+			ReferenceImpl.setMxReference(mxRetrievalResult, awsRetrievalResult.content().text(), sourceUrl, sourceType, awsRetrievalResult.location());
+			mxRetrievalResult.setScore(BigDecimal.valueOf(awsRetrievalResult.score()));
+
+			referenceList.add(mxRetrievalResult);
+		});
 		
-		Content mxContent = createMxContent(awsRetrievalResult.content());
-		mxContent.setRetrievalResult_Content(mxRetrievalResult);
 		
-		RetrieveLocation mxLocation = new RetrieveLocation(getContext());
-		MxLocation.setMxLocation(mxLocation, awsRetrievalResult.location(), getContext());
-		mxLocation.setRetrievalResult_RetrieveLocation(mxRetrievalResult);
-	}
-	
-	private Content createMxContent(software.amazon.awssdk.services.bedrockagentruntime.model.RetrievalResultContent awsContent) {
-		Content mxContent = new Content(getContext());
-		mxContent.setText(awsContent.text());
-		return mxContent;
+		// Have a single GenAICommons.Message object
+		Message responseMsg = new Message(getContext());
+		// Associate the list of Reference objects to the Message object
+		responseMsg.setMessage_Reference(referenceList);
+		
+		// Associate the Message to the Response object
+		mxResponse.setResponse_Message(responseMsg);
 	}
 	
 	
