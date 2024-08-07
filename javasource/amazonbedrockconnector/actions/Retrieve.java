@@ -17,11 +17,8 @@ import com.mendix.core.CoreException;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 import com.mendix.webui.CustomJavaAction;
-import amazonbedrockconnector.genaicommons_impl.ReferenceImpl;
 import amazonbedrockconnector.impl.AmazonBedrockClient;
-import amazonbedrockconnector.impl.MxLocation;
 import amazonbedrockconnector.impl.MxLogger;
-import amazonbedrockconnector.proxies.ENUM_DataSourceType;
 import amazonbedrockconnector.proxies.RetrievalResult;
 import amazonbedrockconnector.proxies.RetrieveResponse;
 import genaicommons.proxies.ENUM_SourceType;
@@ -157,25 +154,27 @@ private String getInputText(Request commonRequest) throws CoreException {
 		RetrieveResponse mxResponse = new RetrieveResponse(getContext());
 		mxResponse.setNextToken(awsResponse.nextToken());
 		
-		createMxRetrieveResults(mxResponse, awsResponse);
-				
-		return mxResponse;
-	}
-	
-	private void createMxRetrieveResults(RetrieveResponse mxResponse, software.amazon.awssdk.services.bedrockagentruntime.model.RetrieveResponse awsResponse) {
 		// Have a list of GenAiCommons.Reference objects
 		List<Reference> referenceList = new ArrayList<>();
 		awsResponse.retrievalResults().forEach(awsRetrievalResult -> {
 			
+			String sourceURL = "";
 			RetrievalResult mxRetrievalResult = new RetrievalResult(getContext());
-			
-			ENUM_DataSourceType mxDataSourceType = MxLocation.getMxDataSourceType(awsRetrievalResult.location().type());
-			String sourceUrl = ReferenceImpl.getSourceUrl(mxDataSourceType, awsRetrievalResult.location());
-			ENUM_SourceType sourceType = ReferenceImpl.getSourceType(mxDataSourceType);
-			
-			ReferenceImpl.setMxReference(mxRetrievalResult, awsRetrievalResult.content().text(), sourceUrl, sourceType, awsRetrievalResult.location());
 			mxRetrievalResult.setScore(BigDecimal.valueOf(awsRetrievalResult.score()));
-
+			mxRetrievalResult.setContent(awsRetrievalResult.content().text());
+			
+			if (awsRetrievalResult.location().s3Location() != null) {
+			sourceURL= awsRetrievalResult.location().s3Location().uri();
+			
+			mxRetrievalResult.setSourceType(ENUM_SourceType.Url) ;	
+			
+			}
+			else {
+			sourceURL = "UnSupported Source type ";
+			mxRetrievalResult.setSourceType(null) ;
+			LOGGER.debug("An unknown data source type was returned by the Amazon Bedrock service.");
+			}
+			mxRetrievalResult.setSource(sourceURL);
 			referenceList.add(mxRetrievalResult);
 		});
 		
@@ -187,6 +186,10 @@ private String getInputText(Request commonRequest) throws CoreException {
 		
 		// Associate the Message to the Response object
 		mxResponse.setResponse_Message(responseMsg);
+		
+				
+		
+		return mxResponse;
 	}
 	
 	
