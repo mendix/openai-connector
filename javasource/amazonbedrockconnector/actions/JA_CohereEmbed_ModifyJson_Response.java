@@ -54,6 +54,7 @@ public class JA_CohereEmbed_ModifyJson_Response extends CustomJavaAction<java.la
 				// Create output JSON object
 				outputNode = mapper.createObjectNode();
 				outputNode.set("id", inputNode.get("id"));
+				outputNode.set("request_tokens", inputNode.get("request_tokens"));
 				outputNode.set("response_type", inputNode.get("response_type"));
 
 				// Create the embeddings array for the output
