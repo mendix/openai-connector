@@ -346,6 +346,10 @@ public class Converse extends CustomJavaAction<IMendixObject>
 				contentBlockList.add(textContent);
 			}
 			
+			// Count for documents in message
+			// Used for unique document name
+			int j = 0; 
+			
 			// Adding file content for each file
 			List<FileContent> files = getFiles(mxMsg);
 			for (FileContent file : files) {
@@ -370,8 +374,9 @@ public class Converse extends CustomJavaAction<IMendixObject>
 						break;
 					}
 					case document: {
-						ContentBlock documentContentBlock = getDocumentContent(file);
+						ContentBlock documentContentBlock = getDocumentContent(file, i, j);
 						contentBlockList.add(documentContentBlock);
+						j++;
 						break;
 					}
 					default:
@@ -444,12 +449,12 @@ public class Converse extends CustomJavaAction<IMendixObject>
 		return true;
 	}
 	
-	private ContentBlock getDocumentContent(FileContent doc) {
+	private ContentBlock getDocumentContent(FileContent doc, int i, int j) {
 		// Creating document content block
 		// Using fixed name because this field is vulnerable to prompt injection
 		// source is fileContent attribute as byte[] from base64 string
 		String format = getDocFormat(doc);
-		String name = DOC_NAME;
+		String name = String.format("%s-%s-%s", DOC_NAME, i, j);
 		DocumentSource source = getDocSource(doc);
 		
 		DocumentBlock docBlock = DocumentBlock.builder().format(format)
