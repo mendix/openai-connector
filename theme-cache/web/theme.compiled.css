@@ -34686,6 +34686,10 @@ $callout-info-bg: $color-info-lighter;
   word-break: break-word;
 }
 
+.min-width--280 {
+  min-width: 280px;
+}
+
 .product-tag {
   border-radius: 24px;
 }
