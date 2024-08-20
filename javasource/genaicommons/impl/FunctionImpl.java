@@ -38,7 +38,7 @@ public class FunctionImpl {
 	private static void validateFunctionMicroflow(String functionMicroflow) throws Exception {
 		Set<String> microflowNames = Core.getMicroflowNames();
 		if(!microflowNames.contains(functionMicroflow)) {
-			throw new IllegalArgumentException("Function Microflow " + functionMicroflow + " does not exists.");
+			throw new IllegalArgumentException("Function Microflow with name " + functionMicroflow + " does not exist.");
 		}
 		
 		Map<String, IDataType> inputParameters = Core.getInputParameters(functionMicroflow);
