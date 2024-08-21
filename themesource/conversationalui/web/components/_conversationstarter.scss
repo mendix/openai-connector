@@ -1,0 +1,48 @@
+@import '../../../../theme/web/custom-variables';
+
+//Cards for ConversationStarters
+.conversationstarter.card {
+    margin-bottom: $spacing-small;
+    padding: $spacing-small;
+    border: 1px solid $brand-default;
+    position: relative;
+
+    &:hover {
+        background-color: $grid-bg-hover
+    }
+
+    .mx-link {
+        color: $brand-primary;
+        margin-bottom: $spacing-small;
+        margin-top: $spacing-small;
+    }
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+} 
+
+//Card containers for ConversationStarters
+.conversationstarter-container--vertical {
+    margin-top: 20%;
+}
+
+.conversationstarter-container--horizontal {
+    margin-top: 20%;
+    .mx-layoutgrid {
+        height: 100%;
+
+        &>.row {
+            .col>.card{
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+
+            }
+        }
+    }
+
+    .conversationstarter-arrow {
+        display: none;
+    }
+}   
