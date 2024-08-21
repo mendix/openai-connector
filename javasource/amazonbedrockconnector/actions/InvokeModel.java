@@ -10,13 +10,17 @@
 package amazonbedrockconnector.actions;
 
 import static java.util.Objects.requireNonNull;
+import java.util.Optional;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 import com.mendix.webui.CustomJavaAction;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import amazonbedrockconnector.impl.AmazonBedrockClient;
 import amazonbedrockconnector.impl.MxLogger;
 import amazonbedrockconnector.proxies.InvokeModelResponse;
 import software.amazon.awssdk.services.bedrockruntime.BedrockRuntimeClient;
+import software.amazon.awssdk.http.SdkHttpResponse;
 
 public class InvokeModel extends CustomJavaAction<IMendixObject>
 {
@@ -56,6 +60,7 @@ public class InvokeModel extends CustomJavaAction<IMendixObject>
 			LOGGER.info("AWS request: " + awsRequest);
 			
 			software.amazon.awssdk.services.bedrockruntime.model.InvokeModelResponse awsResponse = client.invokeModel(awsRequest);
+
 			LOGGER.info("AWS response: " + awsResponse);
 			
 			InvokeModelResponse mxResponse = getMxResponse(awsResponse);
@@ -81,6 +86,7 @@ public class InvokeModel extends CustomJavaAction<IMendixObject>
 
 	// BEGIN EXTRA CODE
 	private static final MxLogger LOGGER = new MxLogger(InvokeModel.class);
+	private static final ObjectMapper objectMapper = new ObjectMapper();
 	
 	private void validateRequest() {
 		if (InvokeModelRequest.getModelID() == null|| InvokeModelRequest.getModelID().isBlank()) {
@@ -99,10 +105,34 @@ public class InvokeModel extends CustomJavaAction<IMendixObject>
 		.build();
 	}
 	
-	private InvokeModelResponse getMxResponse(software.amazon.awssdk.services.bedrockruntime.model.InvokeModelResponse awsResponse) {
+	private InvokeModelResponse getMxResponse(software.amazon.awssdk.services.bedrockruntime.model.InvokeModelResponse awsResponse) throws Exception {
 		var mxResponse = new InvokeModelResponse(getContext());
-		
-		mxResponse.setResponseBody(awsResponse.body().asUtf8String());
+
+		SdkHttpResponse httpResponse = awsResponse.sdkHttpResponse();
+        Optional<String> inputTokenCountHeader = httpResponse.firstMatchingHeader("X-Amzn-Bedrock-Input-Token-Count");
+
+        // Retrieve the existing JSON body
+        String responseBody = awsResponse.body().asUtf8String();
+
+        try {
+            // Parse the existing JSON body
+            ObjectNode jsonNode = (ObjectNode) objectMapper.readTree(responseBody);
+
+            // If the header is present, add it to the JSON as a key-value pair
+            inputTokenCountHeader.ifPresent(headerValue -> {
+                jsonNode.put("request_tokens", headerValue);
+            });
+
+            // Convert the updated JSON back to a string
+            String updatedResponseBody = jsonNode.toString();
+
+            // Set the updated JSON string as the response body
+            mxResponse.setResponseBody(updatedResponseBody);
+
+        } catch (Exception e) {
+                    LOGGER.error("Error processing JSON response: " + e.getMessage());
+                    throw e;
+        }
 		
 		return mxResponse;
 	}
