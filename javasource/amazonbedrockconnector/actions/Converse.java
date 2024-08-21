@@ -59,6 +59,8 @@ import software.amazon.awssdk.core.document.Document;
 import software.amazon.awssdk.services.bedrockruntime.model.ContentBlock;
 import software.amazon.awssdk.services.bedrockruntime.model.ConverseOutput;
 import software.amazon.awssdk.services.bedrockruntime.model.ConverseResponse;
+import software.amazon.awssdk.services.bedrockruntime.model.DocumentBlock;
+import software.amazon.awssdk.services.bedrockruntime.model.DocumentSource;
 import software.amazon.awssdk.services.bedrockruntime.model.ImageBlock;
 import software.amazon.awssdk.services.bedrockruntime.model.ImageSource;
 import software.amazon.awssdk.services.bedrockruntime.model.InferenceConfiguration;
@@ -138,6 +140,13 @@ public class Converse extends CustomJavaAction<IMendixObject>
 	// BEGIN EXTRA CODE
 	private static final MxLogger LOGGER = new MxLogger(Converse.class);
 	private static final ObjectMapper MAPPER = new ObjectMapper();
+	
+	/* 
+	 * The name attribute of a document that is sent to the model.
+	 * This field is vulnerable to prompt injections, because the model might inadvertently interpret it as instructions
+	 * Therefore, it is recommended to use a hardcoded name. 
+	 */
+	private static final String DOC_NAME = "user document";
 	
 	//Request Mapping 
 	
@@ -327,27 +336,57 @@ public class Converse extends CustomJavaAction<IMendixObject>
 		
 		List<ContentBlock> contentBlockList = new ArrayList<>();
 		
-		// Case 1: Message contains images. 
-		if (hasImages(mxMsg)) {
-			LOGGER.debug("Message with Image found");
-			// Check if a message content is present and add as additional text content.
+		// Case 1: Message has a FileCollection with FileContent(s). 
+		if (hasFiles(mxMsg)) {
+			LOGGER.debug("Message with Files found");
+			
+			// Check if a message content is present it can be added as a separate text content.
 			if (mxMsg.getContent() != null && !mxMsg.getContent().isBlank()) {
 				ContentBlock textContent = getTextContent(mxMsg.getContent());
 				contentBlockList.add(textContent);
 			}
 			
-			// Adding image content for each file
-			List<FileContent> images = getImages(mxMsg);
-			for (FileContent image : images) {
+			// Count for documents in message
+			// Used for unique document name
+			int j = 0; 
+			
+			// Adding file content for each file
+			List<FileContent> files = getFiles(mxMsg);
+			for (FileContent file : files) {
+				
 				// Adding additional text content if TextContent attribute contains content
-				if (image.getTextContent() != null && !image.getTextContent().isBlank()) {
-					ContentBlock imgTextContent = getTextContent(image.getTextContent());
+				if (file.getTextContent() != null && !file.getTextContent().isBlank()) {
+					ContentBlock imgTextContent = getTextContent(file.getTextContent());
 					contentBlockList.add(imgTextContent);
 				}
-				ContentBlock imageContent = getImageContent(image);
-				if (imageContent != null) {
-					contentBlockList.add(imageContent);
+				
+				// Checking if file is image or document
+				// Then creating the corresponding content block types for it
+				ENUM_FileType fileType = file.getFileType();
+				if (fileType != null) {
+					
+					switch (fileType) {
+					case image: {
+						ContentBlock imageContentBlock = getImageContent(file);
+						if (imageContentBlock != null) {
+							contentBlockList.add(imageContentBlock);
+						}
+						break;
+					}
+					case document: {
+						ContentBlock documentContentBlock = getDocumentContent(file, i, j);
+						contentBlockList.add(documentContentBlock);
+						j++;
+						break;
+					}
+					default:
+						LOGGER.warn("Unsupported FileContent FileType found in request.");
+						break;
+					}
+				} else {
+					LOGGER.error("FileContent with empty FileType found in request.");
 				}
+				
 			}
 		
 		// Case 2: After a Function Call, a Tool Result message is being sent	
@@ -396,7 +435,7 @@ public class Converse extends CustomJavaAction<IMendixObject>
 	}
 	
 	// Check if the message has images
-	private boolean hasImages(genaicommons.proxies.Message mxMsg) throws CoreException {
+	private boolean hasFiles(genaicommons.proxies.Message mxMsg) throws CoreException {
 		FileCollection fileCol = mxMsg.getMessage_FileCollection();
 		if (fileCol == null) {
 			return false;
@@ -407,19 +446,49 @@ public class Converse extends CustomJavaAction<IMendixObject>
 			return false;
 		}
 		
-		List<FileContent> images = filterFileContentByFileType(fileContents, ENUM_FileType.image);
-		return images.size() > 0;
+		return true;
 	}
 	
-	// Helper to filter FileContent objects
-	private List<FileContent> filterFileContentByFileType(List<FileContent> fileContent, ENUM_FileType type) {
-		return fileContent.stream().filter(fc -> fc.getFileType() == type).collect(Collectors.toList());
+	private ContentBlock getDocumentContent(FileContent doc, int i, int j) {
+		// Creating document content block
+		// Using fixed name because this field is vulnerable to prompt injection
+		// source is fileContent attribute as byte[] from base64 string
+		String format = getDocFormat(doc);
+		String name = String.format("%s-%s-%s", DOC_NAME, i, j);
+		DocumentSource source = getDocSource(doc);
+		
+		DocumentBlock docBlock = DocumentBlock.builder().format(format)
+				.name(name)
+				.source(source)
+				.build();
+		
+		return ContentBlock.builder()
+				.document(docBlock)
+				.build();
+	}
+	
+	private String getDocFormat(FileContent doc) {
+		String mediaType = doc.getMediaType();
+		if (mediaType == null || mediaType.isBlank()) {
+			LOGGER.error("FileContent with empty MediaType found in request.");
+			return null;
+		}
+		
+		int index = mediaType.indexOf("/");
+		String format = index == -1 ? mediaType : mediaType.substring(index+1);
+		return format;
+	}
+	
+	private DocumentSource getDocSource(FileContent doc) {
+		byte[] bytes = Base64.getDecoder().decode(doc.getFileContent());
+		var builder = DocumentSource.builder()
+				.bytes(SdkBytes.fromByteArray(bytes));
+		return builder.build();
 	}
 	
 	// Helper to get all Image FileContent objects from a message
-	private List<FileContent> getImages(genaicommons.proxies.Message mxMsg) throws CoreException {
-		List<FileContent> fileContents = mxMsg.getMessage_FileCollection().getFileCollection_FileContent();
-		return filterFileContentByFileType(fileContents, ENUM_FileType.image);
+	private List<FileContent> getFiles(genaicommons.proxies.Message mxMsg) throws CoreException {
+		return mxMsg.getMessage_FileCollection().getFileCollection_FileContent();
 	}
 	
 	// Creating a Content Block with text 
