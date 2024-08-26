@@ -453,11 +453,12 @@ public class Converse extends CustomJavaAction<IMendixObject>
 		// Creating document content block
 		// Using fixed name because this field is vulnerable to prompt injection
 		// source is fileContent attribute as byte[] from base64 string
-		String format = getDocFormat(doc);
+		String format = getFileExtension(doc);
 		String name = String.format("%s-%s-%s", DOC_NAME, i, j);
 		DocumentSource source = getDocSource(doc);
 		
-		DocumentBlock docBlock = DocumentBlock.builder().format(format)
+		DocumentBlock docBlock = DocumentBlock.builder()
+				.format(format)
 				.name(name)
 				.source(source)
 				.build();
@@ -467,16 +468,14 @@ public class Converse extends CustomJavaAction<IMendixObject>
 				.build();
 	}
 	
-	private String getDocFormat(FileContent doc) {
-		String mediaType = doc.getMediaType();
-		if (mediaType == null || mediaType.isBlank()) {
-			LOGGER.error("FileContent with empty MediaType found in request.");
+	private String getFileExtension(FileContent fc) {
+		String extension = fc.getFileExtension();
+		if (extension == null || extension.isBlank()) {
+			LOGGER.error("FileContent with empty FileExtension found in request.");
 			return null;
 		}
-		
-		int index = mediaType.indexOf("/");
-		String format = index == -1 ? mediaType : mediaType.substring(index+1);
-		return format;
+
+		return extension;
 	}
 	
 	private DocumentSource getDocSource(FileContent doc) {
@@ -526,7 +525,7 @@ public class Converse extends CustomJavaAction<IMendixObject>
 	}
 	
 	private ContentBlock getImageContentBase64(FileContent mxImage) {
-		String format = getImageFormat(mxImage.getMediaType());
+		String format = getImageExtension(mxImage);
 		byte[] bytes = Base64.getDecoder().decode(mxImage.getFileContent());
 		
 		return getImageContentBlock(format, bytes);
@@ -542,8 +541,8 @@ public class Converse extends CustomJavaAction<IMendixObject>
 		  byte[] imageBytes = IOUtils.toByteArray(is);
 			
 			String format;
-			if (mxImage.getMediaType() != null && !mxImage.getMediaType().isBlank()) {
-				format = getImageFormat(mxImage.getMediaType());
+			if (mxImage.getFileExtension() != null && !mxImage.getFileExtension().isBlank()) {
+				format = getFileExtension(mxImage);
 			} else {
 				format = getFormatFromURL(url);
 			}
@@ -552,20 +551,19 @@ public class Converse extends CustomJavaAction<IMendixObject>
 		}
 	}
 	
-	// Image Format from mediaType attribute
 	// Bedrock accetps "jpeg", not "jpp"
-	private String getImageFormat(String mediaType) {
-		String format = mediaType.substring(mediaType.indexOf("/") + 1);
-		if (format.equals("jpg")) {
-			format = "jpeg";
+	private String getImageExtension(FileContent fc) {
+		String extension = getFileExtension(fc);
+		if (extension != null && extension.equals("jpg")) {
+			extension = "jpeg";
 		}
-		return format;
+		return extension;
 	}
 	
 	// Image Format from URL
 	private String getFormatFromURL(URL url) throws MalformedURLException {
         String file = url.getFile();
-        String format = file.substring(file.lastIndexOf('.') + 1);
+        String format = file.substring(file.lastIndexOf(".") + 1);
         if (format.equals("jpg")) {
         	format= "jpeg";
 		}
@@ -592,7 +590,7 @@ public class Converse extends CustomJavaAction<IMendixObject>
 				.toolUseId(mxToolCall.getToolCallId());
 		
 		if (mxToolCall.getArguments() == null || mxToolCall.getArguments().isBlank()) {
-			builder.input(Document.mapBuilder().putString("", "").build());
+			builder.input(Document.mapBuilder().build());
 			
 		} else {
 			// Arguments JSON must be build by Document.mapBuilder()
@@ -682,7 +680,7 @@ public class Converse extends CustomJavaAction<IMendixObject>
 				.name(mxTool.getName())
 				.description(mxTool.getDescription())
 				.inputSchema(getToolInputSchema(mxTool));
-		
+				
 		return software.amazon.awssdk.services.bedrockruntime.model.Tool.builder().toolSpec(toolSpecBuilder.build()).build();
 	}
 	
@@ -692,7 +690,13 @@ public class Converse extends CustomJavaAction<IMendixObject>
 		Function function = (Function) mxTool;
 		String inputParamName = FunctionMappingImpl.getFirstInputParamName(function.getMicroflow());
 		if (inputParamName == null) {
-			return null;
+			LOGGER.debug("Function Microflow without input parameter");
+			
+			Document json = Document.mapBuilder()
+					.putString("type", "object")
+					.build();
+			
+			return ToolInputSchema.builder().json(json).build();
 		}
 		// Must be created using Document.mapBuilder()
 		// Constructing the JSON in a different way causes errors
@@ -894,8 +898,8 @@ public class Converse extends CustomJavaAction<IMendixObject>
 	// Getting requested input parameters and storing them as Json string
 	private String getInputParamsJson(Document awsDoc) throws JsonProcessingException {
 		if (!awsDoc.isMap() || awsDoc.asMap().isEmpty()) {
-			LOGGER.error("No Input Schema for Tool Use received.");
-			return "{}";
+			LOGGER.debug("Tool without parameter called");
+			return null;
 		}
 		// Returned map always has only one value because Function microflows have single parameter
 		Map.Entry<String, Document> entry = awsDoc.asMap().entrySet().iterator().next();
