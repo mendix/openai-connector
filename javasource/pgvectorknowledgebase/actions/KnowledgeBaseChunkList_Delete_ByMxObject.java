@@ -19,9 +19,15 @@ import com.mendix.systemwideinterfaces.core.IMendixObject;
 
 /**
  * Use this operation to delete existing chunks and corresponding metadata in a knowledge base based on the MxObjectID. 
- * MxObject is the (original) Mendix object that the chunks in the knowledge base represent. Only chunks related to this Mendix object are to be deleted.
  * 
- * The Connection entity passed must be of type PgVectorKnowledgebaseConnection and must contain the KnowledgeBaseName string attribute filled and a DatabaseConfiguration associated with the connection details to a PostgreSQL database server with the PgVector extension installed. This DatabaseConfiguration entity is typically configured at runtime or in after-startup logic. By providing the KnowledgeBaseName on the Connection, you determine the knowledge base from which the chunks are to be deleted.
+ * Input:
+ * - MxObject: `This is the (original) Mendix object that the chunks in the knowledge base represent. Only chunks related to this Mendix object are to be deleted.
+ * - Connectoin  This is a connection object that holds the knowledge base name and database connection details. This must be of type PgVectorKnowledgeBaseConnection.
+ * 
+ * Output:
+ * - IsSuccess: This Boolean indicates if the deletion of data in the knowledge base was successful. This can be used for custom error-handling.
+ * 
+ * The Connection entity passed must be of type PgVectorKnowledgebaseConnection. It must contain the KnowledgeBaseName string attribute filled and a DatabaseConfiguration associated with the connection details to a PostgreSQL database server with the PgVector extension installed. This DatabaseConfiguration entity is typically configured at runtime or in after-startup logic. By providing the KnowledgeBaseName on the Connection, you determine the knowledge base.
  */
 public class KnowledgeBaseChunkList_Delete_ByMxObject extends CustomJavaAction<java.lang.Boolean>
 {
