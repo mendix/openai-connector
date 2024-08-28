@@ -19,11 +19,15 @@ import pgvectorknowledgebase.impl.ChunkUtils;
 import pgvectorknowledgebase.impl.MxLogger;
 
 /**
- * Use this operation to retrieve chunks from the knowledge base and set associations to the related mendix objects (if applicable). The retrieval is based on similarity with respect to the input vector provided.  This operation returns a list of the same type of the TargetChunk input variable. The returned list is sorted on similarity.
+ * The Retrieve Nearest Neighbors & Associate activity is used to retrieve chunks from the knowledge base ordered by similarity based on the given vector. In addition to the Retrieve Nearest Neighbors operation, this operation also sets the associations to the Mendix objects for which the chunks were created. In order for this to work, it is necessary to create a custom specialization of the KnowledgeBaseChunk entity in the domain model of the application and to make sure the necessary associations exist towards the Mendix objects that the chunks represent. This specialization must be passed as an entity parameter called TargetChunk. A list of this type is then returned which can be used for retrieval of the Mendix objects in custom logic. For additional filtering, provide a MetadataCollection (see the Initialize MetadataCollection with Metadata section and the Add Metadata to MetadataCollection section). Lastly, MinimumSimilarity (range 0 - 1.0) and MaxNumberOfResults can be used for optional filtering. This operation returns a list of the same type of the TargetChunk input variable. The returned list is sorted on similarity.
+ * 
  * Additional filtering can be done by specifying the optional input parameters:
  * -MinimumSimilarity (in the range 0-1.0): acts as a cut-off: chunks are not retrieved if they have a similarity below this value.
  * -MaxNumberOfResults: determines the max number of similar chunks that are returned.
  * -MetadataCollection: when provided, this operation only returns chunks that are conform with all of the metadata key/value pairs in the collection.
+ * 
+ * Output:
+ * -TargetChunkList This list is the result of the retrieval.
  * 
  * The Connection entity passed must be of type PgVectorKnowledgebaseConnection and must contain the KnowledgeBaseName string attribute filled and a DatabaseConfiguration associated with the connection details to a PostgreSQL database server with the PgVector extension installed. This DatabaseConfiguration entity is typically configured at runtime or in after-startup logic. By providing the KnowledgeBaseName on the Connection, you determine the knowledge base. 
  * The TargetChunk entity (type parameter) must be a specialization of the Chunk entity from this module. If it contains associations to (specializations of) the related mendix object for which the chunk was created, this will be set by this operation for easy processing afterwards.
