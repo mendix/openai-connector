@@ -15,7 +15,7 @@ import software.amazon.awssdk.services.s3.S3Configuration;
 public class AmazonS3Client {
 		private static final MxLogger LOGGER = new MxLogger(AmazonS3Client.class);
 
-		private static final String AWS_HEADER_VALUE = "Mendix-S3-4.0.0";
+		private static final String AWS_HEADER_VALUE = "Mendix-S3-4.0.1";
 		
 		public static S3Client getS3Client(Credentials credentials, ENUM_Region region, AbstractS3Request request) throws CoreException {
 			
