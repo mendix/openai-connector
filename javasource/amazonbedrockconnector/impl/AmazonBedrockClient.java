@@ -21,7 +21,7 @@ public class AmazonBedrockClient {
 		private static final MxLogger LOGGER = new MxLogger(AmazonBedrockClient.class);
 
 		//TODO Replace X.Y.Z below with correct version nr and delete this line in rc-branch
-		private static final String AWS_HEADER_VALUE = "Mendix-Bedrock-5.2.0";
+		private static final String AWS_HEADER_VALUE = "Mendix-Bedrock-5.2.1";
 		
 		public static BedrockClient getBedrockClient(Credentials credentials, ENUM_Region region, AbstractRequest request) {
 			
