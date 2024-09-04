@@ -1,6 +1,6 @@
 Repository of
 * [OpenAI Connector](https://marketplace.mendix.com/link/component/220472)
-* [OpenAI Showcase App](https://marketplace.mendix.com/link/component/220475)
+* [GenAI Showcase App](https://marketplace.mendix.com/link/component/220475)
 * [PgVector Knowledge Base](https://marketplace.mendix.com/link/component/225063)
 * [Conversational UI](https://marketplace.mendix.com/link/component/227931)
 * [GenAI Commons](https://marketplace.mendix.com/link/component/227933)
