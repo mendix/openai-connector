@@ -5,8 +5,6 @@
 /.mendix-cache/
 /.classpath
 /.project
-/openai connector.mpr.bak
-/openai connector.mpr.lock
 /modeler-merge-marker
 /project-settings.user.json
 /javasource/*/proxies/
@@ -14,5 +12,5 @@
 /**/node_modules/
 !/javascriptsource/**/node_modules/
 /nativemobile/builds/
-/openai showcase app.mpr.bak
-/openai showcase app.mpr.lock
+/genai showcase app.mpr.bak
+/genai showcase app.mpr.lock
