@@ -35368,6 +35368,18 @@ $callout-info-bg: $color-info-lighter;
   height: 100%;
 }
 
+.segmented-control {
+  border: 1px solid #ced0d3;
+  border-radius: 24px;
+  padding: 4px;
+  width: fit-content;
+  background-color: #f8f8f8;
+}
+.segmented-control .btn.btn-default {
+  border: 1px solid transparent;
+  background: transparent;
+}
+
 .layout-chat-sidebar {
   right: 0 !important;
   top: 0 !important;
@@ -35402,6 +35414,18 @@ $callout-info-bg: $color-info-lighter;
 
 .text-italic {
   font-style: italic;
+}
+
+.segmented-control {
+  border: 1px solid #ced0d3;
+  border-radius: 24px;
+  padding: 4px;
+  width: fit-content;
+  background-color: #f8f8f8;
+}
+.segmented-control .btn.btn-default {
+  border: 1px solid transparent;
+  background: transparent;
 }
 
 /*
