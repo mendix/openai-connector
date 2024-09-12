@@ -35289,6 +35289,24 @@ $callout-info-bg: $color-info-lighter;
   display: contents;
 }
 
+.datetime-inputs-wrapper {
+  display: flex;
+  justify-content: flex-end;
+}
+.datetime-inputs-wrapper .time-input {
+  max-width: 100px;
+  margin-left: -1px;
+}
+.datetime-inputs-wrapper .date-input {
+  max-width: 150px;
+  margin-left: 16px;
+}
+.datetime-inputs-wrapper .mx-compound-control .btn {
+  margin-left: -44px;
+  border: 1px solid transparent;
+  background: transparent;
+}
+
 .layoutgrid--full-height {
   height: 100%;
 }
@@ -35414,24 +35432,6 @@ $callout-info-bg: $color-info-lighter;
 
 .text-italic {
   font-style: italic;
-}
-
-.datetime-inputs-wrapper {
-  display: flex;
-  justify-content: flex-end;
-}
-.datetime-inputs-wrapper .time-input {
-  max-width: 100px;
-  margin-left: -1px;
-}
-.datetime-inputs-wrapper .date-input {
-  max-width: 150px;
-  margin-left: 16px;
-}
-.datetime-inputs-wrapper .mx-compound-control .btn {
-  margin-left: -44px;
-  border: 1px solid transparent;
-  background: transparent;
 }
 
 /*

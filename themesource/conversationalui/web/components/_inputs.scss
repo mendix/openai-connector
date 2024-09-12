@@ -1,0 +1,17 @@
+.datetime-inputs-wrapper{
+    display: flex;
+    justify-content: flex-end;
+    .time-input{
+        max-width: 100px;
+        margin-left: -1px;
+    }
+    .date-input{
+        max-width: 150px;
+        margin-left: $spacing-medium;
+    }
+    .mx-compound-control .btn{
+        margin-left: -44px;
+        border: 1px solid transparent;
+        background: transparent;
+    }
+}
