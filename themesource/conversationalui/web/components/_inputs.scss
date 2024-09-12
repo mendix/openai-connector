@@ -4,14 +4,23 @@
     .time-input{
         max-width: 100px;
         margin-left: -1px;
+        margin-bottom: 0;
     }
     .date-input{
         max-width: 150px;
         margin-left: $spacing-medium;
+        margin-bottom: 0;
     }
     .mx-compound-control .btn{
         margin-left: -44px;
         border: 1px solid transparent;
         background: transparent;
     }
+}
+
+.input-container{
+    border-bottom: 1px solid $light-border-color;
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
 }
