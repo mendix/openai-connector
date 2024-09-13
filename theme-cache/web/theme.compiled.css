@@ -35327,6 +35327,10 @@ $callout-info-bg: $color-info-lighter;
   align-items: start;
 }
 
+.combo-deployment-selection {
+  min-width: 360px;
+}
+
 .layoutgrid--full-height {
   height: 100%;
 }
