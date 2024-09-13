@@ -2,7 +2,13 @@
     height: 100%;
 }
 
-.card-border{
+.card-border {
     border: 1px solid $light-border-color;
 }
 
+.card-statistics {
+    width: fit-content;
+    .mx-text.statistic {
+        min-width: 200px;
+    }
+}

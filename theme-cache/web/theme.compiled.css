@@ -34419,6 +34419,13 @@ $callout-info-bg: $color-info-lighter;
   border: 1px solid #e7e8e9;
 }
 
+.card-statistics {
+  width: fit-content;
+}
+.card-statistics .mx-text.statistic {
+  min-width: 200px;
+}
+
 .chat-loading-wrapper {
   display: flex;
   justify-content: left;
