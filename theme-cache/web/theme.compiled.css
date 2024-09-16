@@ -34535,6 +34535,24 @@ $callout-info-bg: $color-info-lighter;
   font-weight: bold;
 }
 
+.chart-input.widget-chart .fills .js-fill,
+.chart-input.widget-chart .legendfill .js-fill {
+  fill: #82a6ca !important;
+}
+.chart-input.widget-chart .lines .js-line,
+.chart-input.widget-chart .legendlines .js-line {
+  stroke: #2f6ba7 !important;
+}
+
+.chart-output.widget-chart .fills .js-fill,
+.chart-output.widget-chart .legendfill .js-fill {
+  fill: #c8d7e8 !important;
+}
+.chart-output.widget-chart .lines .js-line,
+.chart-output.widget-chart .legendlines .js-line {
+  stroke: #a3bdd8 !important;
+}
+
 /*
 //
 // ██████╗  █████╗ ███████╗██╗ ██████╗
