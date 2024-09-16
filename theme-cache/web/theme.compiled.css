@@ -34426,6 +34426,19 @@ $callout-info-bg: $color-info-lighter;
   min-width: 200px;
 }
 
+.card--sticky-content {
+  overflow: unset;
+  padding-top: 0;
+}
+
+.sticky-header {
+  position: sticky;
+  background-color: inherit;
+  top: 1px;
+  padding-top: 24px;
+  z-index: 101;
+}
+
 .chat-loading-wrapper {
   display: flex;
   justify-content: left;

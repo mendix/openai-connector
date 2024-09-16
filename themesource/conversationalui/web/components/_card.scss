@@ -13,3 +13,15 @@
     }
 }
 
+.card--sticky-content{
+    overflow: unset;
+    padding-top: 0;
+}
+
+.sticky-header{
+    position: sticky;
+    background-color: inherit;
+    top: 1px;
+    padding-top: $spacing-large;
+    z-index: 101;
+}
