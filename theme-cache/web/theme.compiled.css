@@ -35318,6 +35318,10 @@ $callout-info-bg: $color-info-lighter;
   display: contents;
 }
 
+.dataview--display-contents > div {
+  display: contents;
+}
+
 .datetime-inputs-wrapper {
   display: flex;
   justify-content: flex-end;
