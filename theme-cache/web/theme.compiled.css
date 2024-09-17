@@ -35369,6 +35369,15 @@ $callout-info-bg: $color-info-lighter;
 .combo-deployment-selection {
   min-width: 360px;
 }
+.combo-deployment-selection .deployment-selection {
+  display: flex;
+  align-items: center;
+  height: max-content;
+}
+.combo-deployment-selection .mx-image {
+  height: 14px;
+  margin-right: 8px;
+}
 
 .layoutgrid--full-height {
   height: 100%;
