@@ -6,6 +6,10 @@
     border: 1px solid $light-border-color;
 }
 
+.card-border-top{
+    border-top: 1px solid $light-border-color;
+}
+
 .card-statistics {
     width: fit-content;
     .mx-text.statistic {

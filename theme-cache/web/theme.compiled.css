@@ -34419,6 +34419,10 @@ $callout-info-bg: $color-info-lighter;
   border: 1px solid #e7e8e9;
 }
 
+.card-border-top {
+  border-top: 1px solid #e7e8e9;
+}
+
 .card-statistics {
   width: fit-content;
 }
