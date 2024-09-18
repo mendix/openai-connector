@@ -20,7 +20,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -742,7 +742,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -1463,7 +1463,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -2184,7 +2184,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -2905,7 +2905,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -3626,7 +3626,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -4347,7 +4347,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -5068,7 +5068,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -5789,7 +5789,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -6510,7 +6510,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -7231,7 +7231,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -7952,7 +7952,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -30156,7 +30156,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -31486,7 +31486,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -32678,6 +32678,7 @@ Space between the fields and the popup
   display: flex;
   flex-direction: row;
   flex-grow: 1;
+  position: relative;
 }
 .filter-container .filter-input {
   border-top-left-radius: 0;
@@ -33661,7 +33662,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -34415,6 +34416,34 @@ $callout-info-bg: $color-info-lighter;
   height: 100%;
 }
 
+.card-border {
+  border: 1px solid #e7e8e9;
+}
+
+.card-border-top {
+  border-top: 1px solid #e7e8e9;
+}
+
+.card-statistics {
+  width: fit-content;
+}
+.card-statistics .mx-text.statistic {
+  min-width: 200px;
+}
+
+.card--sticky-content {
+  overflow: unset;
+  padding-top: 0;
+}
+
+.sticky-header {
+  position: sticky;
+  background-color: inherit;
+  top: 0px;
+  padding-top: 24px;
+  z-index: 101;
+}
+
 .chat-loading-wrapper {
   display: flex;
   justify-content: left;
@@ -34524,6 +34553,24 @@ $callout-info-bg: $color-info-lighter;
   font-weight: bold;
 }
 
+.chart-input.widget-chart .fills .js-fill,
+.chart-input.widget-chart .legendfill .js-fill {
+  fill: #82a6ca !important;
+}
+.chart-input.widget-chart .lines .js-line,
+.chart-input.widget-chart .legendlines .js-line {
+  stroke: #2f6ba7 !important;
+}
+
+.chart-output.widget-chart .fills .js-fill,
+.chart-output.widget-chart .legendfill .js-fill {
+  fill: #c8d7e8 !important;
+}
+.chart-output.widget-chart .lines .js-line,
+.chart-output.widget-chart .legendlines .js-line {
+  stroke: #a3bdd8 !important;
+}
+
 /*
 //
 // ██████╗  █████╗ ███████╗██╗ ██████╗
@@ -34545,7 +34592,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -35289,6 +35336,50 @@ $callout-info-bg: $color-info-lighter;
   display: contents;
 }
 
+.dataview--display-contents > div {
+  display: contents;
+}
+
+.datetime-inputs-wrapper {
+  display: flex;
+  justify-content: flex-end;
+}
+.datetime-inputs-wrapper .time-input {
+  max-width: 100px;
+  margin-left: -1px;
+  margin-bottom: 0;
+}
+.datetime-inputs-wrapper .date-input {
+  max-width: 150px;
+  margin-left: 16px;
+  margin-bottom: 0;
+}
+.datetime-inputs-wrapper .mx-compound-control .btn {
+  margin-left: -44px;
+  border: 1px solid transparent;
+  background: transparent;
+}
+
+.input-container {
+  border-bottom: 1px solid #e7e8e9;
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+}
+
+.combo-deployment-selection {
+  min-width: 360px;
+}
+.combo-deployment-selection .deployment-selection {
+  display: flex;
+  align-items: center;
+  height: max-content;
+}
+.combo-deployment-selection .mx-image {
+  height: 14px;
+  margin-right: 8px;
+}
+
 .layoutgrid--full-height {
   height: 100%;
 }
@@ -35368,6 +35459,19 @@ $callout-info-bg: $color-info-lighter;
   height: 100%;
 }
 
+.segmented-control {
+  height: fit-content;
+  border: 1px solid #ced0d3;
+  border-radius: 24px;
+  padding: 4px;
+  width: fit-content;
+  background-color: #f8f8f8;
+}
+.segmented-control .btn.btn-default {
+  border: 1px solid transparent;
+  background: transparent;
+}
+
 .layout-chat-sidebar {
   right: 0 !important;
   top: 0 !important;
@@ -35425,7 +35529,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -36245,7 +36349,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -37066,7 +37170,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -37787,7 +37891,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -38508,7 +38612,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -39229,7 +39333,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -39950,7 +40054,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -40671,7 +40775,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -41392,7 +41496,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -42113,7 +42217,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -42834,7 +42938,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -43555,7 +43659,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -44276,7 +44380,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -44997,7 +45101,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -45718,7 +45822,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -46439,7 +46543,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -47160,7 +47264,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -47881,7 +47985,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -48602,7 +48706,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
@@ -49323,7 +49427,7 @@ $gray-lighter: #f8f8f8;
 
 //== Step 1: Brand Colors
 $brand-default: $gray-primary;
-$brand-primary: gre;
+$brand-primary: #264ae5
 $brand-success: #3cb33d;
 $brand-warning: #eca51c;
 $brand-danger: #e33f4e;
