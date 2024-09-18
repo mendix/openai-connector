@@ -34439,7 +34439,7 @@ $callout-info-bg: $color-info-lighter;
 .sticky-header {
   position: sticky;
   background-color: inherit;
-  top: 1px;
+  top: 0px;
   padding-top: 24px;
   z-index: 101;
 }

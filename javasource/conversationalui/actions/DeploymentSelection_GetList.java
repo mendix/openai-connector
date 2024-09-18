@@ -9,8 +9,6 @@
 
 package conversationalui.actions;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 import com.mendix.core.Core;
 import com.mendix.systemwideinterfaces.connectionbus.data.IDataTable;
@@ -19,9 +17,9 @@ import com.mendix.webui.CustomJavaAction;
 import conversationalui.proxies.DeploymentSelection;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 
-public class JA_DeploymentSelection_GetList extends CustomJavaAction<java.util.List<IMendixObject>>
+public class DeploymentSelection_GetList extends CustomJavaAction<java.util.List<IMendixObject>>
 {
-	public JA_DeploymentSelection_GetList(IContext context)
+	public DeploymentSelection_GetList(IContext context)
 	{
 		super(context);
 	}
@@ -50,7 +48,7 @@ public class JA_DeploymentSelection_GetList extends CustomJavaAction<java.util.L
 	@java.lang.Override
 	public java.lang.String toString()
 	{
-		return "JA_DeploymentSelection_GetList";
+		return "DeploymentSelection_GetList";
 	}
 
 	// BEGIN EXTRA CODE
