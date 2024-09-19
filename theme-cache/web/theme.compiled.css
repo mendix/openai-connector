@@ -34384,6 +34384,7 @@ $callout-info-bg: $color-info-lighter;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+  line-clamp: 2;
 }
 
 .line-height--1 {
@@ -35324,6 +35325,16 @@ $callout-info-bg: $color-info-lighter;
   height: 100%;
   display: flex;
   flex-direction: column;
+}
+.conversationstarter-container--horizontal .conversationstarter.card {
+  height: 100%;
+}
+.conversationstarter-container--horizontal .conversationstarter.card div {
+  display: flex;
+  flex-direction: column;
+}
+.conversationstarter-container--horizontal .widget-gallery-item-button {
+  height: 100%;
 }
 .conversationstarter-container--horizontal .conversationstarter-arrow {
   display: none;
