@@ -9,15 +9,16 @@
 
 package genaicommons.actions;
 
-import org.checkerframework.checker.initialization.qual.Initialized;
+import static java.util.Objects.requireNonNull;
+import java.util.Map;
 import com.mendix.core.Core;
 import com.mendix.systemwideinterfaces.core.IContext;
+import com.mendix.systemwideinterfaces.core.IDataType;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 import com.mendix.webui.CustomJavaAction;
 import genaicommons.proxies.Response;
 import genaicommons.proxies.microflows.Microflows;
 import genaicommons.impl.MxLogger;
-import genaicommons.proxies.Connection;
 
 public class Response_Process extends CustomJavaAction<IMendixObject>
 {
@@ -48,9 +49,11 @@ public class Response_Process extends CustomJavaAction<IMendixObject>
 		this.Connection = this.__Connection == null ? null : genaicommons.proxies.Connection.initialize(getContext(), __Connection);
 
 		// BEGIN USER CODE
-		
-		
-		//Validations TBD
+		//Validations
+		requireNonNull(Request, "Request is required.");
+		requireNonNull(Response, "Response is required.");
+		requireNonNull(Connection, "Connection is required.");
+		validateMicroflowToExecuteRequest(MicroflowToExecuteRequest);
 		
 		//Returns true if there is a ToolCall
 		boolean toolCallAvailable = Microflows.response_PrepareRequestForFunctionCalling(getContext(), Response, Request, Connection);
@@ -59,30 +62,35 @@ public class Response_Process extends CustomJavaAction<IMendixObject>
 		if (toolCallAvailable == false) {
 			return Response.getMendixObject();
 		}
-		
 		responseUpdateTokenCount(Response);
 		
 		//Needed in order to pass to MicroflowToExecuteRequest
 		IMendixObject connectionToPass = Connection.getMendixObject();
 		IMendixObject requestToPass = Request.getMendixObject();
 		
-		while(toolCallAvailable) {
-			//Execute LLM call
-			IMendixObject responseMendixObject = Core.microflowCall(MicroflowToExecuteRequest).withParam("Connection", connectionToPass).withParam("Request", requestToPass).execute(getContext());
-			Response responseToolCall = Response.initialize(getContext(), responseMendixObject);
-			responseUpdateTokenCount(responseToolCall);
-			
-			//Prepare next Request for tool call if needed
-			if (responseMendixObject != null) {
-				toolCallAvailable = Core.microflowCall("GenAICommons.Response_PrepareRequestForFunctionCalling").withParam("Response", responseMendixObject).withParam("Request", requestToPass).withParam("Connection", connectionToPass).execute(getContext());
+		//Looping as long as there is a ToolCall in the Response
+		try {
+			while(toolCallAvailable) {
+				//Execute LLM call
+				IMendixObject responseMendixObject = Core.microflowCall(MicroflowToExecuteRequest).withParam("Connection", connectionToPass).withParam("Request", requestToPass).execute(getContext());
+				Response responseToolCall = Response.initialize(getContext(), responseMendixObject);
+				responseUpdateTokenCount(responseToolCall);
+				
+				//Prepare next Request for tool call if needed
+				if (responseMendixObject != null) {
+					toolCallAvailable = Core.microflowCall("GenAICommons.Response_PrepareRequestForFunctionCalling").withParam("Response", responseMendixObject).withParam("Request", requestToPass).withParam("Connection", connectionToPass).execute(getContext());
+				}
+				
+				//Return latest Response if no ToolCalls are requested
+				if(toolCallAvailable == false) {
+					return responseToolCall.getMendixObject();
+				}
 			}
-			
-			//Return latest Response if no ToolCalls are requested
-			if(toolCallAvailable == false) {
-				return responseToolCall.getMendixObject();
-			}
+		} catch (Exception e) {
+			LOGGER.error(e);
 		}
-		return null;		
+		//Should never be reached
+		return null;
 		// END USER CODE
 	}
 
@@ -103,6 +111,7 @@ public class Response_Process extends CustomJavaAction<IMendixObject>
 	private int requestTokens = 0;
 	private int responseTokens = 0;
 	
+	//Update tokens of Response
 	private void responseUpdateTokenCount(Response response) {
 		requestTokens += response.getRequestTokens();
 		responseTokens += response.getResponseTokens();
@@ -110,7 +119,37 @@ public class Response_Process extends CustomJavaAction<IMendixObject>
 		response.setRequestTokens(requestTokens);
 		response.setResponseTokens(responseTokens);
 		response.setTotalTokens(totalTokens);
+		//Testing purposes
 		LOGGER.info("Request: " +requestTokens+ ", response: "+ responseTokens + ", total: " + totalTokens);
+	}
+	
+	//Validate input (Request, Connection) and output (Response or specialization) entities
+	private static void validateMicroflowToExecuteRequest(String microflowToExecuteRequest) {
+		if (microflowToExecuteRequest == null || microflowToExecuteRequest.isBlank()) {
+			throw new IllegalArgumentException("MicroflowToExecuteRequest is required.");
+		}
+		
+		validateMicroflowInput(microflowToExecuteRequest);
+		
+		//Check if the return Type is a Response object
+		if(!Core.getReturnType(microflowToExecuteRequest).getObjectType().equals(genaicommons.proxies.Response.entityName)) {
+			throw new IllegalArgumentException("The MicroflowToExecuteRequest " + microflowToExecuteRequest + " should have "+ genaicommons.proxies.Response.entityName + " as return object.");
+		}
+	}
+	
+	
+	//Check if the input parameters match exactly Connection and Request
+	private static void validateMicroflowInput(String microflowToExecuteRequest){
+		Map<String, IDataType> inputParameters = Core.getInputParameters(microflowToExecuteRequest);
+		if (inputParameters == null || inputParameters.size() != 2) {
+			throw new IllegalArgumentException("The MicroflowToExecuteRequest " + microflowToExecuteRequest + " should have input parameters of type " + genaicommons.proxies.Request.getType() + " and " + genaicommons.proxies.Connection.getType()+".");
+		}
+		for( Map.Entry<String, IDataType> entry : inputParameters.entrySet()) {
+			String value = entry.getValue().getObjectType();
+            if (!value.equals(genaicommons.proxies.Request.entityName) && !value.equals(genaicommons.proxies.Connection.entityName)) {
+            	throw new IllegalArgumentException("The MicroflowToExecuteRequest " + microflowToExecuteRequest + " should have input parameters of type " + genaicommons.proxies.Request.getType() + " and " + genaicommons.proxies.Connection.getType()+".");
+            }
+		}
 	}
 	// END EXTRA CODE
 }
