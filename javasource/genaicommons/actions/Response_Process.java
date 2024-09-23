@@ -98,8 +98,7 @@ public class Response_Process extends CustomJavaAction<IMendixObject>
 	
 		//Execute LLM call
 		IMendixObject responseMendixObject = Core.microflowCall(MicroflowToExecuteRequest).withParam("Connection", Connection.getMendixObject()).withParam("Request", Request.getMendixObject()).execute(this.getContext());
-		Response responseToolCall = genaicommons.proxies.Response.load(getContext(), responseMendixObject.getId());
-		return processResponse(responseToolCall);
+		return processResponse(genaicommons.proxies.Response.load(getContext(), responseMendixObject.getId()));
 	}
 	
 	//Update tokens of Response
