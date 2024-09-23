@@ -12,6 +12,7 @@ package genaicommons.actions;
 import static java.util.Objects.requireNonNull;
 import java.util.Map;
 import com.mendix.core.Core;
+import com.mendix.core.CoreException;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.systemwideinterfaces.core.IDataType;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
@@ -20,6 +21,11 @@ import genaicommons.proxies.Response;
 import genaicommons.proxies.microflows.Microflows;
 import genaicommons.impl.MxLogger;
 
+/**
+ * This Java Action processes function calling (if requested by the model) until there is no ToolCall requested anymore. It will call the LLM via the passed MicroflowToExecuteRequest.
+ * 
+ * The tool result is added as message with MessageRole "tool" to the request.
+ */
 public class Response_Process extends CustomJavaAction<IMendixObject>
 {
 	private java.lang.String MicroflowToExecuteRequest;
@@ -55,14 +61,11 @@ public class Response_Process extends CustomJavaAction<IMendixObject>
 		requireNonNull(Connection, "Connection is required.");
 		validateMicroflowToExecuteRequest(MicroflowToExecuteRequest);
 		try {
-			responseUpdateTokenCount(Response); //count first API call; is this needed?
 			return processResponse(Response).getMendixObject();
 		} catch (Exception e) {
 			LOGGER.error(e);
 			throw e;
 		}
-		//Should never be reached
-		//return null;
 		// END USER CODE
 	}
 
@@ -83,25 +86,19 @@ public class Response_Process extends CustomJavaAction<IMendixObject>
 	private int requestTokens = 0;
 	private int responseTokens = 0;
 	
-	private Response processResponse(Response response) {
+	//Recursive response processing until there is no ToolCall available
+	private Response processResponse(Response response) throws CoreException {
 		//Returns true if there is a ToolCall
-		boolean toolCallAvailable = Microflows.response_PrepareRequestForFunctionCalling(getContext(), response, Request, Connection);
-		
+		boolean toolCallAvailable = Microflows.response_PrepareRequestForFunctionCalling(getContext(), response, Request);
+		responseUpdateTokenCount(response);
 		//Return the response if there is no ToolCall available
 		if (toolCallAvailable == false) {
 			return response;
 		}
-		//responseUpdateTokenCount(Response);
-		
-		//Needed in order to pass to MicroflowToExecuteRequest
-		//IMendixObject connectionToPass = Connection.getMendixObject();
-		//IMendixObject requestToPass = Request.getMendixObject();
-		
+	
 		//Execute LLM call
 		IMendixObject responseMendixObject = Core.microflowCall(MicroflowToExecuteRequest).withParam("Connection", Connection.getMendixObject()).withParam("Request", Request.getMendixObject()).execute(this.getContext());
-		Response responseToolCall = Response.initialize(getContext(), responseMendixObject); //@Liam can you see if you can remove the warning?
-		responseUpdateTokenCount(responseToolCall);
-						
+		Response responseToolCall = genaicommons.proxies.Response.load(getContext(), responseMendixObject.getId());
 		return processResponse(responseToolCall);
 	}
 	
@@ -113,11 +110,9 @@ public class Response_Process extends CustomJavaAction<IMendixObject>
 		response.setRequestTokens(requestTokens);
 		response.setResponseTokens(responseTokens);
 		response.setTotalTokens(totalTokens);
-		//Testing purposes
-		LOGGER.info("Request: " +requestTokens+ ", response: "+ responseTokens + ", total: " + totalTokens);
 	}
 	
-	//Validate input (Request, Connection) and output (Response or specialization) entities
+	//Validate input (Request, Connection) and output (Response) entities
 	private static void validateMicroflowToExecuteRequest(String microflowToExecuteRequest) {
 		if (microflowToExecuteRequest == null || microflowToExecuteRequest.isBlank()) {
 			throw new IllegalArgumentException("MicroflowToExecuteRequest is required.");
