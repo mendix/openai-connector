@@ -43,8 +43,8 @@ public class ProviderConfig_ExecuteAction extends CustomJavaAction<java.lang.Boo
 			requireNonNull(ProviderConfig, "ProviderConfig is required.");
 			requireNonNull(ChatContext, "ChatContext is required.");
 			ProviderConfigImpl.validateActionMicroflow(ProviderConfig.getActionMicroflow());
-			
-			return Core.microflowCall(ProviderConfig.getActionMicroflow()).withParam("ChatContext", ChatContext.getMendixObject()).execute(this.getContext());
+			String chatContextParameterString = Core.getInputParameters(ProviderConfig.getActionMicroflow()).keySet().iterator().next();
+			return Core.microflowCall(ProviderConfig.getActionMicroflow()).withParam(chatContextParameterString, ChatContext.getMendixObject()).execute(this.getContext());
 		
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());

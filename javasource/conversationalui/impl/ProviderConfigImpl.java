@@ -22,8 +22,8 @@ public class ProviderConfigImpl{
 			throw new IllegalArgumentException("ActionMicroflow " + ActionMicroflow + " should only have one input parameter of type " + ChatContext.getType() + ".");
 		}
 		
-		if(ChatContext.getType().equals(inputParameters.entrySet().iterator().next().getValue().getObjectType()) == false) {
-			throw new IllegalArgumentException("ActionMicroflow " + ActionMicroflow + " should have an input parameter of type " + ChatContext.getType()+ ".");			
+		if(Core.getMetaObject(inputParameters.entrySet().iterator().next().getValue().getObjectType()).isSubClassOf(ChatContext.getType()) == false) {
+			throw new IllegalArgumentException("ActionMicroflow " + ActionMicroflow + " should have an input parameter of type " + ChatContext.getType()+ " or a specialization thereof.");			
 		}
 
 		if(Core.getReturnType(ActionMicroflow) == null || IDataType.DataTypeEnum.Boolean.equals(Core.getReturnType(ActionMicroflow).getType()) == false) {
