@@ -22,8 +22,11 @@ import genaicommons.proxies.microflows.Microflows;
 import genaicommons.impl.MxLogger;
 
 /**
- * This Java Action executes the Request by calling the LLM via the passed ModelCallMicroflow.
+ * This Java Action should only be used by connector developers. It executes the Request by calling an LLM via the passed ModelCallMicroflow.
+ * 
  * If the model returns a tool call response, the function microflows are automatically executed and added as messages with MessageRole "tool" to the request. Afterwards the ModelCallMicroflow is executed again. This process is repeated until the model returns a final assistant response.
+ * 
+ * Additionally, this java action takes care of storing token usage metrics by calling the Usage_Create_TextAndFiles microflow, if the StoreUsageMetrics constant was set to true by the developer.
  */
 public class Request_Execute extends CustomJavaAction<IMendixObject>
 {
@@ -32,13 +35,15 @@ public class Request_Execute extends CustomJavaAction<IMendixObject>
 	private IMendixObject __Connection;
 	private genaicommons.proxies.Connection Connection;
 	private java.lang.String CallModelMicroflow;
+	private java.lang.String DeploymentIdentifier;
 
-	public Request_Execute(IContext context, IMendixObject Request, IMendixObject Connection, java.lang.String CallModelMicroflow)
+	public Request_Execute(IContext context, IMendixObject Request, IMendixObject Connection, java.lang.String CallModelMicroflow, java.lang.String DeploymentIdentifier)
 	{
 		super(context);
 		this.__Request = Request;
 		this.__Connection = Connection;
 		this.CallModelMicroflow = CallModelMicroflow;
+		this.DeploymentIdentifier = DeploymentIdentifier;
 	}
 
 	@java.lang.Override
@@ -96,11 +101,17 @@ public class Request_Execute extends CustomJavaAction<IMendixObject>
 			return processRequest();
 		}
 		
-		response.setDurationMilliseconds((int) Math.ceil(System.currentTimeMillis() - startTime));
+		responseStoreDurationAndUsage(response);
 		return response;
 	}
+
+	private void responseStoreDurationAndUsage(Response response) {
+		response.setDurationMilliseconds((int) Math.ceil(System.currentTimeMillis() - startTime));
+		if (genaicommons.proxies.constants.Constants.getStoreUsageMetrics()) {
+			Microflows.usage_Create_TextAndFiles(getContext(), response, DeploymentIdentifier);
+		}
+	}
 	
-	//Update tokens of Response
 	private void responseUpdateTokenCount(Response response) {
 		requestTokens += response.getRequestTokens();
 		responseTokens += response.getResponseTokens();
