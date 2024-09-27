@@ -55,9 +55,7 @@ public class Request_Execute extends CustomJavaAction<IMendixObject>
 		requireNonNull(Connection, "Connection is required.");
 		validateMicroflow(CallModelMicroflow);
 		try {
-			LOGGER.info(startTime);
 			startTime = System.currentTimeMillis();
-			LOGGER.info(startTime);
 			return processRequest().getMendixObject();
 		} catch (Exception e) {
 			LOGGER.error(e);
