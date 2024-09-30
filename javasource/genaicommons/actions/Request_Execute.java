@@ -107,7 +107,7 @@ public class Request_Execute extends CustomJavaAction<IMendixObject>
 
 	private void responseStoreDurationAndUsage(Response response) {
 		response.setDurationMilliseconds((int) Math.ceil(System.currentTimeMillis() - startTime));
-		if (genaicommons.proxies.constants.Constants.getStoreUsageMetrics()) {
+		if (genaicommons.proxies.constants.Constants.getStoreUsageMetrics() && DeploymentIdentifier != null && !DeploymentIdentifier.isBlank()) {
 			Microflows.usage_Create_TextAndFiles(getContext(), response, DeploymentIdentifier);
 		}
 	}
