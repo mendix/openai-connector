@@ -326,7 +326,7 @@ public class RequestMapping_ManipulateJson extends CustomJavaAction<java.lang.St
 	
 	private ObjectNode createFunctionParametersNode(String functionMicroflow) {
 		String inputParamName = FunctionMappingImpl.getFirstInputParamName(functionMicroflow);
-		// FunctionImpl.getFirstInputParamName(functionMicroflow);
+		
 		if (inputParamName == null || inputParamName.isBlank()) {
 			return null;
 		}

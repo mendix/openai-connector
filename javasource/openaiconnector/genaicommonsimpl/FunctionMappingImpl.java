@@ -6,7 +6,7 @@ import com.mendix.core.Core;
 import com.mendix.systemwideinterfaces.core.IDataType;
 
 public class FunctionMappingImpl {
-	// to be used later when manipulating JSON and actually calling the function
+	// Used in RequestMapping_ManipulateJson
 	public static String getFirstInputParamName(String functionMicroflow) {
 		Map<String, IDataType> inputParameters = Core.getInputParameters(functionMicroflow);
 		if(inputParameters != null && !inputParameters.entrySet().isEmpty()) {
@@ -15,5 +15,4 @@ public class FunctionMappingImpl {
 			return null;
 		}
 	}
-	
 }
