@@ -28,7 +28,7 @@ import genaicommons.impl.MxLogger;
  * 
  * Additionally, this java action takes care of storing token usage metrics by calling the Usage_Create_TextAndFiles microflow, if the StoreUsageMetrics constant was set to true by the developer.
  */
-public class Request_Execute extends CustomJavaAction<IMendixObject>
+public class Request_ExecuteFromConnector extends CustomJavaAction<IMendixObject>
 {
 	private IMendixObject __Request;
 	private genaicommons.proxies.Request Request;
@@ -37,7 +37,7 @@ public class Request_Execute extends CustomJavaAction<IMendixObject>
 	private java.lang.String CallModelMicroflow;
 	private java.lang.String DeploymentIdentifier;
 
-	public Request_Execute(IContext context, IMendixObject Request, IMendixObject Connection, java.lang.String CallModelMicroflow, java.lang.String DeploymentIdentifier)
+	public Request_ExecuteFromConnector(IContext context, IMendixObject Request, IMendixObject Connection, java.lang.String CallModelMicroflow, java.lang.String DeploymentIdentifier)
 	{
 		super(context);
 		this.__Request = Request;
@@ -76,11 +76,11 @@ public class Request_Execute extends CustomJavaAction<IMendixObject>
 	@java.lang.Override
 	public java.lang.String toString()
 	{
-		return "Request_Execute";
+		return "Request_ExecuteFromConnector";
 	}
 
 	// BEGIN EXTRA CODE
-	private static final MxLogger LOGGER = new MxLogger(Request_Execute.class);
+	private static final MxLogger LOGGER = new MxLogger(Request_ExecuteFromConnector.class);
 	
 	private int totalTokens = 0;
 	private int requestTokens = 0;
